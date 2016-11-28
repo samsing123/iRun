@@ -1,0 +1,1003 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ * @flow
+ */
+
+import React, { Component } from 'react';
+var ENG =  require('../Language/Language_ENG');
+var TC =  require('../Language/Language_TC');
+import AppEventEmitter from "../../Services/AppEventEmitter";
+import {
+  AppRegistry,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Dimensions,
+  Switch,
+  TextInput,
+  Animated,
+  BackAndroid,
+  AsyncStorage,
+  TouchableWithoutFeedback
+} from 'react-native';
+import {Actions,ActionConst} from "react-native-router-flux";
+var Tabs = require('react-native-tabs');
+import GoogleAnalytics from 'react-native-google-analytics-bridge';
+import Swiper from 'react-native-swiper';
+var height = Dimensions.get('window').height;
+var width = Dimensions.get('window').width;
+var navbarHeight = Platform.OS === 'ios' ? 64 : 54;
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Picker from 'react-native-picker';
+var Util = require('../Util');
+var Global = require('../Global');
+var aqi = 0;
+var temperature = 0;
+var humidity = 0;
+var uvi = 0;
+var weather = '';
+var _scrollView:ScrollView;
+var SwitchAlt = require('react-native-material-switch');
+import Accordion from 'react-native-collapsible/Accordion';
+var profileEdit = false;
+let ageArr = ['below 15','15-20','20-25','25-30','30-35','35-40','40-45','45-50','50-55','55-60','60 or above'];
+let running_level = ['None','Very Light','Light','Medium','Heavy','Heavy','Every day'];
+import * as Animatable from 'react-native-animatable';
+var ImagePicker = require('react-native-image-picker');
+
+function createHeight(){
+  let heightArr = [];
+  for(let i=150;i<=250;i++){
+    heightArr.push(i+' cm');
+  }
+  return heightArr;
+}
+function createWeight(){
+  let weightArr = [];
+  for(let i=30;i<=200;i++){
+    weightArr.push(i+' kg');
+  }
+  return weightArr;
+}
+function createDistance(){
+  let distance = [];
+  for(let i=1;i<=30;i++){
+    distance.push(i+' km');
+  }
+  return distance;
+}
+function createDuration(){
+  let duration = [];
+  for(let i=1;i<=60;i++){
+    if(i<10){
+      duration.push('0'+i+':00');
+    }else{
+      duration.push(i+':00');
+    }
+  }
+  return duration;
+}
+var testingFeed={
+  "FeedList":[
+    {
+      "Title":"",
+      "Category":"",
+      "Image":"",
+    },
+  ]
+}
+const SECTIONS = [
+  {
+    title: 'First',
+    content: 'Lorem ipsum...',
+  }
+];
+var options = {
+  title: 'Select Your User Icon',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images'
+  }
+};
+class Setting extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      trueSwitchIsOn: false,
+      t1:"LET'S GO",
+      t2:"FOR YOUR",
+      t3:"FIRST RUN!",
+      is_run_now:true,
+      distance:'Distance',
+      duration:'Duration',
+      opacity:0,
+      p1:styles.period_selected,
+      p1t:styles.period_text,
+      p2:styles.period_non_selected,
+      p2t:styles.period_text_non,
+      p3:styles.period_non_selected,
+      p3t:styles.period_text_non,
+      p4:styles.period_non_selected,
+      p4t:styles.period_text_non,
+      language:'eng',
+      language_eng:styles.language_selected,
+      language_eng_text:styles.language_text_selected,
+      language_chi:styles.language_non_selected,
+      language_chi_text:styles.language_text_non_selected,
+      isEditting:false,
+      isRunSetting:false,
+      height:Global.user_profile.height,
+      weight:Global.user_profile.weight,
+      gender:Global.user_profile.gender,
+      age_range:Global.user_profile.age_range,
+      exercise:Global.user_profile.exercise,
+      imagePath:Global.user_icon,
+    }
+    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.trackScreenView('Home');
+    GoogleAnalytics.trackEvent('testcategory', 'testaction');
+  }
+
+  _sendFormData(imagePath){
+    let formData = new FormData();
+    formData.append('icon', {uri: imagePath, type: 'image/jpeg', name: 'image.jpg'});
+    let option = {};
+    option.body = formData;
+    option.method = 'POST';
+    //https://www.posttestserver.com
+    //Global.serverHost+"api/personal-icon"
+    fetch(Global.serverHost+"api/personal-icon", option)
+    .then((response) => response.json())
+    .then((responseJson)=>{
+      console.log(responseJson);
+      if(responseJson.status=='success'){
+
+      }
+    });
+  }
+
+  _imagePick(){
+    ImagePicker.showImagePicker(options, (response) => {
+      this._sendFormData(response.uri);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // You can display the image using either data...
+        const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+        Global.user_icon = 'data:image/jpeg;base64,' + response.data;
+        // or a reference to the platform specific asset location
+        if (Platform.OS === 'ios') {
+          const source = {uri: response.uri.replace('file://', ''), isStatic: true};
+        } else {
+          const source = {uri: response.uri, isStatic: true};
+        }
+
+        this.setState(
+          {
+            imagePath:'data:image/png;base64,'+response.data
+          }
+        );
+      }
+    });
+  }
+
+  componentDidMount(){
+    if(Global.language.languagename!='ENG'){
+      this.setState({
+        language:'chi',
+        language_eng:styles.language_non_selected,
+        language_eng_text:styles.language_text_non_selected,
+        language_chi:styles.language_selected,
+        language_chi_text:styles.language_text_selected,
+      });
+    }else{
+      this.setState({
+        language:'eng',
+        language_eng:styles.language_selected,
+        language_eng_text:styles.language_text_selected,
+        language_chi:styles.language_non_selected,
+        language_chi_text:styles.language_text_non_selected,
+      });
+    }
+  }
+  _testRunRequest(){
+    Actions.numbercount();
+  }
+  _sendStartRunSessionRequest(){
+    console.log(this.state.distance[0]);
+    var date = new Date();
+    let data = {};
+    if(this.state.distance!='Distance'){
+      data = {
+        method: 'POST',
+        body: JSON.stringify({
+          start_time: Util._getDateFormat(date),
+          weather: weather,
+          temperature: temperature,
+          humidity: humidity,
+          uvi: uvi,
+          aqi: aqi,
+          is_session:true,
+          session_distance:this.state.distance.split(' ')[0],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+    }else if(this.state.duration!='Duration'){
+      data = {
+        method: 'POST',
+        body: JSON.stringify({
+          start_time: Util._getDateFormat(date),
+          weather: weather,
+          temperature: temperature,
+          humidity: humidity,
+          uvi: uvi,
+          aqi: aqi,
+          is_session:true,
+          session_duration:this.state.duration.split(':')[0],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+    }else{
+      alert('Please Select one either Distance or Duration');
+      return;
+    }
+
+    Global._sendPostRequest(data,'api/run-start',this._registerCallback);
+  }
+
+  _sendStartRunRequest(){
+    var date = new Date();
+    let data = {
+      method: 'POST',
+      body: JSON.stringify({
+        start_time: Util._getDateFormat(date),
+        weather: weather,
+        temperature: temperature,
+        humidity: humidity,
+        uvi: uvi,
+        aqi: aqi,
+        is_session:false,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/run-start',this._registerCallback);
+  }
+  _registerCallback(responseJson){
+    if(responseJson.status=='success'){
+      Global.current_run_id = responseJson.response.run_id;
+      Global.current_run_token = responseJson.response.run_token;
+      Actions.numbercount();
+    }else{
+      Global.current_run_id = responseJson.response.run_id;
+      Global.current_run_token = responseJson.response.run_token;
+      Actions.numbercount();
+      alert(responseJson.response.error);
+    }
+    //Actions.numbercount();
+  }
+
+  _showDistancePicker() {
+      Picker.init({
+          pickerData: createDistance(),
+          selectedValue: ['1 km'],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Distance',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                distance:pickedValue[0],
+                duration:'Duration',
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _showGenderPicker() {
+      Picker.init({
+          pickerData: ['Male','Female'],
+          selectedValue: [Global.user_profile.gender],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Age Range',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                age:pickedValue[0],
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _showAgePicker() {
+      Picker.init({
+          pickerData: ageArr,
+          selectedValue: [Global.user_profile.age_range],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Age Range',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                age_range:pickedValue[0],
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _showWeightPicker() {
+      Picker.init({
+          pickerData: createWeight(),
+          selectedValue: [Global.user_profile.weight+' kg'],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Weight',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                weight:pickedValue[0],
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _showHeightPicker() {
+      Picker.init({
+          pickerData: createHeight(),
+          selectedValue: [Global.user_profile.height+' cm'],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Height',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                height:pickedValue[0],
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _showRlevelPicker() {
+      Picker.init({
+          pickerData: running_level,
+          selectedValue: [Global.user_profile.exercise],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Running Level',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                exercise:pickedValue[0],
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _showGenderPicker() {
+      Picker.init({
+          pickerData: ['Male','Female'],
+          selectedValue: [Global.user_profile.gender],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Gender',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                gender:pickedValue[0],
+                opacity:0
+              });
+          },
+          onPickerCancel: pickedValue => {
+              this.setState({
+                opacity:0
+              });
+          },
+          onPickerSelect: pickedValue => {
+
+          }
+      });
+      Picker.show();
+      this.setState({
+        opacity:0.5
+      });
+  }
+  _profileCallback(status){
+    console.log(status);
+    var s = status+'';
+    if(s=='0'){
+      console.log('profile editing');
+      profileEdit=true;
+      this.setState({
+        isEditting:true
+      });
+    }else{
+      console.log('profile edit finish');
+      let data = {
+        method: 'POST',
+        body: JSON.stringify({
+          age_range : this.state.age_range,
+          gender : this.state.gender,
+          height : this.state.height,
+          weight : this.state.weight,
+          exercise : 1,
+          interest : [],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      Global._sendPostRequest(data,'api/personal-info',(v)=>{this._editPersonalCallback(v)});
+      profileEdit=false;
+      this.setState({
+        isEditting:false
+      });
+    }
+  }
+
+  _editPersonalCallback(responseJson){
+    console.log(responseJson);
+  }
+
+  _overlay(){
+    if(this.state.opacity!=0){
+      return (
+        <View style={{width:width,height:height*2,position:'absolute',top:0,left:0,opacity:this.state.opacity,backgroundColor:'black'}}>
+
+        </View>
+      )
+    }
+  }
+  _startRun(){
+    this._sendStartRunRequest();
+
+  }
+  _startRunSession(){
+    this._sendStartRunSessionRequest();
+  }
+
+
+  _renderRedeemHstory(){
+
+  }
+  /*
+  static renderNavigationBar(props){
+    return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
+  }
+  */
+  _changePeriod(num){
+    switch(num){
+      case '1':this._changeAllToNotSelect();this.setState({p1:styles.period_selected,p1t:styles.period_text});break;
+      case '2':this._changeAllToNotSelect();this.setState({p2:styles.period_selected,p2t:styles.period_text});break;
+      case '3':this._changeAllToNotSelect();this.setState({p3:styles.period_selected,p3t:styles.period_text});break;
+      case '4':this._changeAllToNotSelect();this.setState({p4:styles.period_selected,p4t:styles.period_text});break;
+    }
+  }
+  _changeAllToNotSelect(){
+    this.setState({
+      p1:styles.period_non_selected,
+      p1t:styles.period_text_non,
+      p2:styles.period_non_selected,
+      p2t:styles.period_text_non,
+      p3:styles.period_non_selected,
+      p3t:styles.period_text_non,
+      p4:styles.period_non_selected,
+      p4t:styles.period_text_non,
+    });
+  }
+  async _saveLanguage(){
+      try{
+         await AsyncStorage.setItem('language',Global.language.languagename);
+         let data = {
+           method: 'POST',
+           body: JSON.stringify({
+             lang : Global.language.lang
+           }),
+           headers: {
+             'Content-Type': 'application/json',
+           }
+         };
+         Global._sendPostRequest(data,'api/change-lang',(v)=>{this._changeLanguageCallback(v)});
+         //Actions.home({type:ActionConst.RESET});
+      }catch(error){
+         console.log(error);
+      }
+  }
+  _changeLanguage(){
+    Global.language = Global.language.languagename=='ENG'?TC:ENG;
+    AppEventEmitter.emit('changeLanguage');
+    Actions.refresh({title:Global.language.setting});
+    if(this.state.language=='eng'){
+      this.setState({
+        language:'chi',
+        language_eng:styles.language_non_selected,
+        language_eng_text:styles.language_text_non_selected,
+        language_chi:styles.language_selected,
+        language_chi_text:styles.language_text_selected,
+      });
+    }else{
+      this.setState({
+        language:'eng',
+        language_eng:styles.language_selected,
+        language_eng_text:styles.language_text_selected,
+        language_chi:styles.language_non_selected,
+        language_chi_text:styles.language_text_non_selected,
+      });
+    }
+    this._saveLanguage();
+
+
+  }
+  _changeLanguageCallback(responseJson){
+    console.log(responseJson);
+  }
+  _profileHeader(){
+    /*
+    if(!profileEdit){
+      return <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
+        <Text style={{fontSize:14,color:'white'}}>EDIT PROFILE</Text>
+      </View>;
+    }else{
+      return <View/>;
+    }
+    */
+    return <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
+      <Text style={{fontSize:14,color:'white'}}>{Global.language.edit_profile}</Text>
+    </View>;
+  }
+  async _logout(){
+      try{
+         await AsyncStorage.removeItem('email');
+         await AsyncStorage.removeItem('password');
+         await AsyncStorage.removeItem('is_login');
+         Actions.frontpage({type:ActionConst.RESET});
+         //Actions.home({type:ActionConst.RESET});
+      }catch(error){
+         console.log(error);
+      }
+  }
+
+  _profileEdit(){
+    return <View style={{flex:1}}>
+    <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
+        <View>
+          <Text>{Global.language.display_name}</Text>
+          <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}}>
+            <Text>{Global.user_profile.display_name}</Text>
+          </View>
+        </View>
+        <View style={{flexDirection:'row',paddingTop:10}}>
+          <View style={{flex:0.7}}>
+            <Text>{Global.language.email}</Text>
+            <View style={{width:width-160,height:20,justifyContent:'center'}}>
+              <Text>{Global.email}</Text>
+            </View>
+          </View>
+          <View style={{flex:0.3}}>
+            <Text>{Global.language.birthday}</Text>
+            <View style={{width:width-80,height:20,justifyContent:'center'}}>
+              <Text>{Global.user_profile.birthday}</Text>
+            </View>
+          </View>
+        </View>
+        <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <Text>{Global.language.change_password}</Text><Text>></Text>
+          </View>
+        </TouchableOpacity>
+        <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+          <Text>{Global.language.your_interest}</Text><Text>></Text>
+        </View>
+        <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <Text>{Global.language.gender}</Text><Text>{this.state.gender} ></Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._showAgePicker()}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <Text>{Global.language.age_range}</Text><Text>{this.state.age_range} ></Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._showHeightPicker()}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <Text>{Global.language.height}</Text><Text>{this.state.height} ></Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._showWeightPicker()}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <Text>{Global.language.weight}</Text><Text>{this.state.weight} ></Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._showRlevelPicker()}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <Text>{Global.language.running_level}</Text><Text>{this.state.exercise} ></Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity onPress={()=>{this._logout();}}>
+        <View style={{marginTop:20,width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
+          <Text style={{fontSize:14,color:'white'}}>{Global.language.logout}</Text>
+        </View>
+      </TouchableOpacity>
+      </View>;
+  }
+
+  _backClick(){
+    this.setState({isRunSetting:false});
+    Actions.refresh({title:'SETTING',onBack:()=>{Actions.pop()}});
+  }
+
+  render() {
+    var self = this;
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+        try {
+            if(!this.state.isRunSetting){
+              Actions.pop();
+              return true;
+            }else{
+              this._backClick();
+              return true;
+            }
+        }
+        catch (err) {
+            BackAndroid.exitApp();
+            return true;
+        }
+    });
+
+    const settingContent = <Animatable.View animation="fadeIn">
+      <TouchableOpacity onPress={()=>{this.setState({isRunSetting:true});Actions.refresh({title:Global.language.run_setting,onBack:()=>{this._backClick();}})}}>
+        <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+          <Animatable.Text ref="text" style={{fontSize:14}}>{Global.language.run_setting}</Animatable.Text><Animatable.Text style={{fontSize:16}}>></Animatable.Text>
+        </View>
+      </TouchableOpacity>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.language}</Text>
+        <TouchableOpacity onPress={()=>{this._changeLanguage()}}>
+          <View style={{width:60,height:28,borderRadius:8,flexDirection:'row'}}>
+            <View style={this.state.language_eng}>
+              <Text style={this.state.language_eng_text}>Eng</Text>
+            </View>
+            <View style={this.state.language_chi}>
+              <Text style={this.state.language_chi_text}>中</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.push_notification}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+      <TouchableOpacity onPress={()=>{Actions.fitnesstracker()}}>
+        <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+          <Text style={{fontSize:14}}>{Global.language.fitness_tracked_connection}</Text><Text style={{fontSize:16}}>></Text>
+        </View>
+      </TouchableOpacity>
+      <View style={{backgroundColor:'#F5F5F5',height:20,width:width}}></View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.privacy_policy}</Text><Text style={{fontSize:16}}>></Text>
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.term_of_use}</Text><Text style={{fontSize:16}}>></Text>
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.contact_us}</Text><Text style={{fontSize:16}}>></Text>
+      </View>
+    </Animatable.View>;
+    const runSetting = <Animatable.View animation="fadeInRight" duration={500}>
+      <View style={{backgroundColor:'#F5F5F5',height:40,width:width,paddingLeft:20,justifyContent:'center'}}>
+        <Text style={{fontSize:14,color:'#C2C2C2'}}>{Global.language.on_screen}</Text>
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.lock_when_run_begins}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+      <View style={{backgroundColor:'#F5F5F5',height:40,width:width,paddingLeft:20,justifyContent:'center'}}>
+        <Text style={{fontSize:14,color:'#C2C2C2'}}>{Global.language.audio_feedback}</Text>
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.voice_feedback}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.time}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.distance}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.speed}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+        <Text style={{fontSize:14}}>{Global.language.feedback_frequency}</Text>
+        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+      </View>
+    </Animatable.View>;
+    const noSettingContent = <View/>;
+    var settingContents = settingContent;
+    if(!this.state.isEditting){
+      if(this.state.isRunSetting){
+        settingContents = runSetting;
+      }else{
+        settingContents = settingContent;
+      }
+    }else{
+      settingContents = noSettingContent;
+    }
+    var value = new Animated.Value(0);
+    var running_setting_view = <Animated.View
+                style={[styles.demo, {
+                    left: value.interpolate({
+                        inputRange: [0,1],
+                        outputRange: [0,200]
+                    })
+                }]}>
+                <Text style={styles.text}>View</Text>
+
+            </Animated.View>;
+            var profileImage = <View/>;
+            if(this.state.imagePath=='data:image/jpeg;base64,'){
+              profileImage = <Image style={{width:80,height:80,borderRadius:80/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}/>;
+            }else{
+              profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;
+            }
+    return (
+      <ScrollView animation="fadeIn">
+
+        <View style={styles.container}>
+          <Image style={{width:width,height:120,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_setting.png')}>
+            <TouchableOpacity onPress={()=>{this._imagePick()}}>
+              <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
+                {profileImage}
+                <Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_profile_setting.png')}></Image>
+              </View>
+            </TouchableOpacity>
+          </Image>
+
+        </View>
+        <Accordion
+          sections={SECTIONS}
+          renderHeader={()=>this._profileHeader()}
+          renderContent={()=>this._profileEdit()}
+          onChange={(s)=>{this._profileCallback(s)}}
+          duration={1000}
+        />
+        {settingContents}
+        {this._overlay()}
+      </ScrollView>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingTop:navbarHeight
+  },
+  language_text_selected:{
+    fontSize:10,
+    color:'#198CCE'
+  },
+  demo:{
+    width:width,
+    height:200,
+  },
+  language_text_non_selected:{
+    fontSize:10,
+    color:'white'
+  },
+  language_selected:{
+    flex:0.5,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'white',
+    borderWidth:2,
+    borderColor:'#198CCE'
+  },
+  language_non_selected:{
+    flex:0.5,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#198CCE'
+  },
+  period_non_selected:{
+    width:80,
+    height:40,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  period_selected:{
+    width:76,
+    height:36,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'rgba(20,139,205,1)',
+    borderRadius:40/2,
+    marginLeft:2,
+    marginRight:2,
+    marginTop:1
+  },
+  period_text_non:{
+    fontSize:14,
+    color:'black'
+  },
+  period_text:{
+    fontSize:14,
+    color:'white'
+  },
+  scrollContainer:{
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text:{
+    fontSize:20,
+    color:'black'
+  },
+  t1:{
+    fontSize:50,
+    fontWeight:'bold',
+    color:'white',
+  },
+  t2:{
+    fontSize:50,
+    fontWeight:'bold',
+    color:'white',
+    position:'relative',
+    top:-30
+  },
+  t3:{
+    fontSize:50,
+    fontWeight:'bold',
+    color:'white',
+    position:'relative',
+    top:-60
+  },
+
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  wrapper: {
+
+  },
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+});
+
+/*
+<Switch
+onValueChange={(value) => this.setState({trueSwitchIsOn: value})}
+style={{marginBottom: 10}}
+value={this.state.trueSwitchIsOn} />
+*/
+
+module.exports = Setting;

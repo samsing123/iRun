@@ -1,0 +1,342 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ * @flow
+ */
+
+import React, { Component } from 'react';
+import {
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  TouchOpacity,
+  Dimensions,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  findNodeHandle,
+  Platform,
+  Switch
+} from 'react-native';
+import {Actions,ActionConst} from "react-native-router-flux";
+var Tabs = require('react-native-tabs');
+import GoogleAnalytics from 'react-native-google-analytics-bridge';
+import Swiper from 'react-native-swiper';
+import CheckBox from 'react-native-checkbox';
+import {Header,Button,H1,Input,Content} from 'native-base';
+import KeyboardHandler from '../Controls/KeyboardHandler';
+import InputScrollView from '../Controls/InputScrollView';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+var height = Dimensions.get('window').height;
+var width = Dimensions.get('window').width;
+var privacyText = "By creating an account, you agree to AXA's";
+var temp = [];
+const FBSDK = require('react-native-fbsdk');
+import RNFetchBlob from 'react-native-fetch-blob';
+var ImagePicker = require('react-native-image-picker');
+const fs = RNFetchBlob.fs;
+import Picker from 'react-native-picker';
+let imagePath = null;
+var DeviceInfo = require('react-native-device-info');
+const {
+  LoginManager,
+  AccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} = FBSDK;
+var options = {
+  title: 'Select Your User Icon',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images'
+  }
+};
+var Global = require('../Global');
+function createDateData(){
+    let month = [];
+    for(let j = 1;j<13;j++){
+        let day = [];
+        if(j === 2){
+            for(let k=1;k<29;k++){
+                if(k<10){
+                  k='0'+k;
+                }
+                day.push(k);
+            }
+        }
+        else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
+            for(let k=1;k<32;k++){
+                if(k<10){
+                  k='0'+k;
+                }
+                day.push(k);
+            }
+        }
+        else{
+            for(let k=1;k<31;k++){
+                if(k<10){
+                  k='0'+k;
+                }
+                day.push(k);
+            }
+        }
+        if(j<10){
+          j='0'+j;
+        }
+        let _month = {};
+        _month[j] = day;
+        month.push(_month);
+    }
+    return month;
+};
+class FB_Register extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      trueSwitchIsOn: false,
+      checked:false,
+      email:'',
+      password:'',
+      display_name:'',
+      mobile_no:'',
+      imagePath:'',
+      birthday:'Birthday(mm/dd)',
+    }
+    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.trackScreenView('Home');
+    GoogleAnalytics.trackEvent('testcategory', 'testaction');
+
+  }
+  _showDatePicker() {
+      Picker.init({
+          pickerData: createDateData(),
+          selectedValue: ['1', '1'],
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
+          pickerBg:[255,255,255,1],
+          pickerToolBarBg:[255,255,255,1],
+          pickerTitleText:'Birthday',
+          onPickerConfirm: pickedValue => {
+              this.setState({
+                birthday:pickedValue[0]+'/'+pickedValue[1]
+              });
+          },
+          onPickerCancel: pickedValue => {
+              console.log('date', pickedValue);
+          },
+          onPickerSelect: pickedValue => {
+              console.log('date', pickedValue);
+          }
+      });
+      Picker.show();
+  }
+  _imagePick(){
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // You can display the image using either data...
+        const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+
+        // or a reference to the platform specific asset location
+        if (Platform.OS === 'ios') {
+          const source = {uri: response.uri.replace('file://', ''), isStatic: true};
+        } else {
+          const source = {uri: response.uri, isStatic: true};
+        }
+
+        this.setState(
+          {
+            imagePath:'data:image/png;base64,'+response.data
+          }
+        );
+      }
+    });
+  }
+  componentDidMount(){
+    temp.push(findNodeHandle(this.refs.display_name));
+    temp.push(findNodeHandle(this.refs.mobile_no));
+    temp.push(findNodeHandle(this.refs.birthday));
+    RNFetchBlob
+     .config({
+           fileCache : true
+      })
+     .fetch('GET', this.props.icon_url)
+     // the image is now dowloaded to device's storage
+     .then((resp) => {
+         // the image path you can use it directly with Image component
+         imagePath = resp.path();
+         return resp.readFile('base64');
+     })
+     .then((base64Data) => {
+         // here's base64 encoded image
+         this.setState(
+           {
+             imagePath:'data:image/png;base64,'+base64Data
+           }
+         );
+         // remove the file from storage
+         return fs.unlink(imagePath);
+     });
+  }
+
+  _vaildateFormSubmit(){
+    if(Global._vaildateInputBlank(this.state.display_name,'display name')
+    ||Global._vaildateInputFormat(this.state.display_name,'display name','chinese+english',20,3)){
+      return;
+    }
+    if(Global._vaildateInputBlank(this.state.mobile_no,'mobile phone number')
+    ||Global._vaildateInputFormat(this.state.mobile_no,'mobile phone number','mobile',8)){
+      return;
+    }
+    if(Global._vaildateSelectBlank(this.state.birthday,'birthday')){
+      return;
+    }
+    this._sendFBRegister();
+
+  }
+
+  _sendFBRegister(){
+    var data={
+      method:'POST',
+      body:JSON.stringify({
+        auth_token:this.props.accessToken,
+        display_name:this.state.display_name,
+        mobile_number:this.state.mobile_no,
+        birthday:this.state.birthday,
+        device_id:DeviceInfo.getUniqueID(),
+      }),
+      headers:{
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/register-fb',(v)=>this._callback(v));
+  }
+  _callback(responseJson){
+    console.log(responseJson);
+    if(responseJson.status=='success'){
+      Global.display_name = this.state.display_name;
+      Actions.welcome({photo:this.state.imagePath});
+    }else{
+      alert(responseJson.response.error);
+    }
+  }
+  /*
+  static renderNavigationBar(props){
+    return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
+  }
+  */
+
+  render() {
+    var self = this;
+    var photoImage;
+    if(this.state.imagePath!=''){
+      photoImage = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:100,height:100,borderRadius:100/2}} source={{uri:this.state.imagePath}} /></TouchableOpacity>
+    }
+    return (
+      <View>
+      <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
+      <InputScrollView style={styles.container} inputs={temp}>
+        <View style={{paddingTop:height*0.1,width:width,alignItems:'center'}}>
+          <H1 style={{color:"white",fontWeight:'bold'}}>ALMOST THERE</H1>
+          <View style={{paddingTop:20}}>
+            {photoImage}
+          </View>
+          <View style={{paddingTop:8}}>
+            <Text style={{color:'white',fontSize:18,fontWeight:'bold'}}>{this.props.display_name}</Text>
+          </View>
+        </View>
+        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:24}}>
+          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
+            <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+          </View>
+          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
+            <TextInput keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+          </View>
+          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
+            <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
+          </View>
+          <View style={{width:width-64,marginTop:16}}>
+            <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>
+              <CheckBox
+                checkboxStyle={{width:16,height:16,tintColor:'white'}}
+                checked={this.state.checked}
+                onChange={(checked) => this.setState({checked:checked})}
+              />
+              <View style={{flexDirection:'column',marginLeft:5}}>
+                <View style={{flexDirection:'row'}}>
+                  <Text style={{color:'white',fontSize:12}}>{privacyText}</Text>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                  <TouchableOpacity><Text style={{color:'white',fontSize:12,textDecorationLine:'underline'}}>privacy Policy</Text></TouchableOpacity><Text style={{color:'white',fontSize:11}}>and </Text><TouchableOpacity><Text style={{color:'white',fontSize:12,textDecorationLine:'underline'}}>Terms of use.</Text></TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={{paddingTop:44}}>
+            <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
+          </View>
+          <View style={{paddingTop:5,flexDirection:'row'}}>
+            <Text style={{color:"white"}}>Already a member? </Text><TouchableOpacity onPress={()=>{Actions.login({type:ActionConst.REPLACE})}}><Text style={{textDecorationLine:'underline',color:"white"}}>Sign In</Text></TouchableOpacity>
+          </View>
+        </View>
+      </InputScrollView>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#9DD6EB',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  wrapper: {
+
+  },
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+});
+
+module.exports = FB_Register;

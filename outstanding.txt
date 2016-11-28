@@ -1,0 +1,20 @@
+outstanding:
+facebook login error  ios
+share run result with facebook for ios
+share run result with IG ios,android
+music player ios,android
+inbox delete ios,android
+change all alert to same alert modal ios,android
+chart layout in profile page ios,android
+inbox refreshing problem iOS,android
+personal record iOS,android (it need to add a marker for all personal record in tracking)
+
+need api:
+data for drawing the graph (daily, monthly,yearly)
+run photo to public
+personal record
+Facebook sending mobile verify code(need to check the app code first)
+
+
+
+7day(by day),30day(by day),90day(by week),180day(by week),monthly(by month)
