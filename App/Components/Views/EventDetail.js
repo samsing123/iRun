@@ -55,6 +55,7 @@ var count = 0;
 class EventDetail extends Component {
   constructor(props){
     super(props);
+    var webviewWidth = width;
     this.state={
       trueSwitchIsOn: false,
       category:'FOOD',
@@ -70,6 +71,7 @@ class EventDetail extends Component {
       tag:'',
       date:'',
       arrow:'<',
+      videoContent:'<html><iframe align="center" width="'+webviewWidth+'" height="290" src="https://www.youtube.com/embed/RJa4kG1N3d0" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -159,8 +161,12 @@ class EventDetail extends Component {
             });
           }}
           renderForeground={() => (
-           <View style={{ height: 290,width:width, flex: 1}}>
-              <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
+           <View style={{ height: 290,width:width,flex: 1,}}>
+              <WebView
+                source={{html:this.state.videoContent}}
+                style={{width:width,height:290}}
+              />
+              {/*<Image style={{height:290,width:width}} source={{uri:this.props.image}} />*/}
            </View>
           )}
           renderStickyHeader={() => (

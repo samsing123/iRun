@@ -81,6 +81,24 @@ import ModalPicker from 'react-native-modal-picker';
 let index = 0;
 var pathArr;
 var polylineArr;
+
+var kmTimer;
+var kmArray = [];
+var pauseArray = [];
+var pauseTime = {
+  pause_time:'',
+  unpause_time:'',
+};
+var personalRecord={
+  distance:0,
+  duration:0,
+  latitude:'0,0',
+  record_time:'2016-11-28 16:44:11',
+};
+var kmStartTimeStamp;
+var kmCurrentTimeStamp;
+var perKmDistance=0;
+
 const data = [
     { key: index++, section: true, label: 'Fruits' },
     { key: index++, label: 'Red Apples' },
@@ -99,6 +117,8 @@ const data = [
     { key: index++, label: 'Tomatoes' }
 ];
 var tempArr = [];
+var Sound = require('react-native-sound');
+var music;
 class Tracking extends Component {
   constructor(props){
     super(props);
@@ -181,11 +201,41 @@ class Tracking extends Component {
     cur_lng = 0;
     console.log('reinitial!!');
   }
+
+  _startKmTimer(){
+    kmTimer = setInterval( () => {
+      kmCurrentTimeStamp = new Date().valueOf();
+      personalRecord.duration = (kmCurrentTimeStamp - kmStartTimeStamp)/1000;
+      console.log('per km distance:'+perKmDistance);
+      if(perKmDistance>=1000){
+        personalRecord.distance = perKmDistance/1000;
+        personalRecord.latitude = cur_lat+','+cur_lng;
+        personalRecord.record_time = Util._getTimestampDate(kmCurrentTimeStamp);
+        kmArray.push(personalRecord);
+        perKmDistance = 0;
+        kmStartTimeStamp = new Date().valueOf();
+      }
+    }, 1000);
+  }
+
   componentWillUnmount(){
     clearInterval(timer);
+    clearInterval(kmTimer);
     subscription = null;
     accelerometer = null;
   }
+
+  _setupMusic(){
+    music = new Sound(Global.musicToPlay,'', (error) => {
+      if (error) {
+        console.log('failed to load the sound', error);
+      } else { // loaded successfully
+        console.log('duration in seconds: ' + whoosh.getDuration() +
+            'number of channels: ' + whoosh.getNumberOfChannels());
+      }
+    });
+  }
+
   componentDidMount(){
     this._reInitial();
     mSensorManager.startAccelerometer(100);
@@ -193,6 +243,7 @@ class Tracking extends Component {
 
     pathArr = [];
     polylineArr = [];
+
     /*
     navigator.geolocation.watchPosition(
       (position) => {
@@ -219,7 +270,8 @@ class Tracking extends Component {
             cur_lng = location.longitude;
             if(true){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
               //is walking or not
-              //speed = location.speed*3.6;
+              acceleration = location.speed*3.6;
+              console.log('speed from loaction update'+acceleration);
               if(previousLats!=0&&previousLngs!=0){
                 this._calDistance(previousLats,previousLngs,location.latitude,location.longitude);
               }
@@ -230,15 +282,12 @@ class Tracking extends Component {
             }
         }
     );
+
     accelerometer = DeviceEventEmitter.addListener('Accelerometer', function (data) {
-      /**
-      * data.x
-      * data.y
-      * data.z
-      **/
       //cal the acceleration for both x,y and z direction
       acceleration = Math.sqrt(Math.pow(data.x,2) + Math.pow(data.y,2) + Math.pow(data.z,2));
     });
+
 
     startTimestamp = new Date().valueOf();
     timer = setInterval( () => {
@@ -337,8 +386,13 @@ class Tracking extends Component {
 
   _pauseTimer(){
     clearInterval(timer);
+    clearInterval(kmTimer);
+    pauseTime.pause_time = Util._getTimestampDate(new Date().valueOf());
   }
   _resumeTimer(){
+    pauseTime.unpause_time = Util._getTimestampDate(new Date().valueOf());
+    pauseArray.push(pauseTime);
+    this._startKmTimer();
     timer = setInterval( () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -399,7 +453,8 @@ class Tracking extends Component {
       distance_unit:distance_unit,
       time_formatted:this._secondToMinuteDisplay(totalDuration,'time'),
       cal:cal,
-
+      flag:kmArray,
+      pause:pauseArray,
     });
   }
 
@@ -455,6 +510,7 @@ class Tracking extends Component {
       longitude: lng2
     }
     distance += haversine(start,end,{unit: 'meter'});
+    perKmDistance += haversine(start,end,{unit: 'meter'});
     var tempDistance = 0;
     var tempUnit = 0;
     if(distance<10){
@@ -604,6 +660,19 @@ class Tracking extends Component {
       )
     }
   }
+  _getIconFromValue(value){
+    var case1 = value.indexOf(':');
+    var case2 = value.indexOf('"');
+    if(case1!=-1){
+      return 'time';
+    }else{
+      if(case2!=-1){
+        return 'speed';
+      }else{
+        return 'distance';
+      }
+    }
+  }
 
   render() {
 
@@ -618,6 +687,19 @@ class Tracking extends Component {
             return true;
         }
     });
+
+    var left_icon = null;
+    var right_icon = null;
+    switch(this._getIconFromValue(left_value)){
+      case 'time':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
+      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
+      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
+    }
+    switch(this._getIconFromValue(right_value)){
+      case 'time':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
+      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
+      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
+    }
     return (
 
       <View style={styles.container}>
@@ -634,7 +716,7 @@ class Tracking extends Component {
         </View>
 
         <View style={{alignItems:'center',width:width}}>
-          <Text style={{fontSize:120,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:35}}>{main_value}</Text>
+          <Text style={{fontSize:115,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:35}}>{main_value}</Text>
         </View>
         <View style={{flex:1,backgroundColor:'rgba(21,139,205,1)',width:width,alignItems:'center'}}>
           <View style={{paddingTop:15}}>
@@ -643,13 +725,13 @@ class Tracking extends Component {
           <View style={{width:width,paddingTop:30,flexDirection:'row'}}>
               <TouchableOpacity onPress={()=>{this._changeContentDisplay('left')}}>
                 <View style={{width:width/2,flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-                  <Icon name="clock-o" size={35} color="rgba(255,255,255,1)"/>
+                  {left_icon}
                   <Text style={{color:'white',fontSize:34}}>{left_value}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={()=>{this._changeContentDisplay('right')}}>
                 <View style={{width:width/2,flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-                  <Icon name="clock-o" size={35} color="rgba(255,255,255,1)"/>
+                  {right_icon}
                   <Text style={{color:'white',fontSize:34}}>{right_value}</Text>
                 </View>
               </TouchableOpacity>

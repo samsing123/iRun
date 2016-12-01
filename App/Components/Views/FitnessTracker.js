@@ -21,6 +21,8 @@ var disconnect = 'DISCONNECT';
 var connectBtnColor = '#f1f1f1';
 var disconnectBtnColor = '#1A8DD0';
 var bothNoConnected = true;
+var DeviceInfo = require('react-native-device-info');
+
 
 class FitnessTracker extends Component {
   constructor(props){
@@ -41,8 +43,8 @@ class FitnessTracker extends Component {
               redirect_uri: Global.fitbit_redirect,
               expires_in: '31536000',
               state:JSON.stringify({
-                user_id:Global.user_profile.user_id,
-                lang:Global.language.lang
+                mobile_number:Global.user_profile.mobile_number,
+                device_id:DeviceInfo.getUniqueID(),
               }),
             });
       Linking.openURL('https://www.fitbit.com/oauth2/authorize?'+data);
@@ -80,13 +82,22 @@ class FitnessTracker extends Component {
         return false;
       }
     }else{
-      console.log('JW Connect API Calling');
+
+      var data = qs.stringify({
+              mobile_number:Global.user_profile.mobile_number,
+              device_id:DeviceInfo.getUniqueID(),
+            });
+      data = data.replace("&","%26");
+      Linking.openURL('https://jawbone.com/auth/oauth2/auth?response_type=code&client_id=wAkf1kHX_NI&scope=basic_read move_read&redirect_uri=http://52.37.115.132/axa/irun/connect-jawbone?'+data);
     }
   }
 
+
   componentDidMount(){
 
+
   }
+
 
   _buttonColorControl(wearable_type){
     if(Global.user_profile.is_connected_fitbit||Global.user_profile.is_connected_jawbone){
@@ -108,6 +119,7 @@ class FitnessTracker extends Component {
       return 'CONNECT';
     }
   }
+
 
   render(){
     return(

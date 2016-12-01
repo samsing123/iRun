@@ -130,7 +130,7 @@ class Setting extends Component {
       language_chi:styles.language_non_selected,
       language_chi_text:styles.language_text_non_selected,
       isEditting:false,
-      isRunSetting:false,
+      isRunSetting:this.props.isRunSetting?true:false,
       height:Global.user_profile.height,
       weight:Global.user_profile.weight,
       gender:Global.user_profile.gender,

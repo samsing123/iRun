@@ -47,6 +47,7 @@ import resetpassword from './Views/ResetPasswords';
 import appintro from './Views/AppIntro';
 import fitnesstrackerconnect from './Views/FitnessTrackerConnect';
 import animationtest from './Views/AnimationTest';
+import personalrecord from './Views/PersonalRecord';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -338,6 +339,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="resetpassword" component={resetpassword} title="Reset Passwrd" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="fitnesstrackerconnect" component={fitnesstrackerconnect} title="Connet Fitness Tracker" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="animationtest" component={animationtest} title="Bar Animation Test" hideNavBar={true}/>
+                <Scene renderRightButton={createRightButton} key="personalrecord" component={personalrecord} title="PERSONAL RECORD" hideNavBar={false}/>
             </Scene>
         );
         return(

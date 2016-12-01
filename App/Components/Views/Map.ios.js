@@ -85,6 +85,7 @@ var currentTimestamp = 0; //unix time stamp
 var totalDuration = 0; //second
 var subscription;
 var timer;
+
 //var mSensorManager = require('NativeModules').SensorManager;
 const gravity = 9.81;
 const walkingFilter = 9.81*1.2;
@@ -124,7 +125,7 @@ class Map extends Component {
     };
     this.pathArr = [];
     startTimestamp = new Date().valueOf();
-
+    kmTimestamp = new Date().valueOf();
     timer = setInterval( () => {
       currentTimestamp = new Date().valueOf();
       totalDuration = (currentTimestamp - startTimestamp)/1000;
@@ -133,6 +134,7 @@ class Map extends Component {
       });
     }, 1000);
   }
+
   getDirections() {
     return new Promise((resolve, reject) => {
       var originLat = this.state.originLat;
@@ -573,8 +575,9 @@ class Map extends Component {
         pace: pace.toFixed(2),
         note: '',
         calories:0,
-        pause: [],
-        run_token: Global.current_run_token
+        pause: this.props.pause,
+        run_token: Global.current_run_token,
+        flag:this.props.flag
       }),
       headers: {
         'Content-Type': 'application/json',

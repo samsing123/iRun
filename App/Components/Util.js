@@ -6,6 +6,12 @@ function _getDateFormat(date){
   var month = parseInt(date.getMonth())+1;
   return date.getFullYear()+'-'+month+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
 }
+function _getTimestampDate(timestamp){
+  var date = new Date(timestamp);
+  var month = parseInt(date.getMonth())+1;
+  return date.getFullYear()+'-'+month+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+}
+
 function _findTumblrTag(tagArr){
   for(var i=0;i<tagArr.length;i++){
     switch(tagArr[i]){
@@ -70,6 +76,9 @@ function _sortArrayByNum(array,field){
   return sortArr;
 }
 function _getRunHistoryDateFormat(start_time){
+  if(start_time == 'HOW ABOUT TODAY?'){
+    return start_time;
+  }
   var date = start_time.split(' ')[0];
   var day = date.split('-')[2];
   var month = date.split('-')[1];
@@ -125,6 +134,9 @@ function _monthToEng(month){
   }
 }
 function _secondToMinuteDisplay(seconds,type){
+  if(seconds==' - '){
+    return seconds;
+  }
   var minute = 0;
   var second = 0;
 
@@ -166,6 +178,9 @@ function _dateLastRunFormat2(dateString){
 function _removeSymbol(title){
   return title.replace("<br/>", "");
 }
+
+
+
 var Util = {
     _getFileExtension:_getFileExtension,
     _getDateFormat:_getDateFormat,
@@ -186,5 +201,6 @@ var Util = {
     _dateLastRunFormat2:_dateLastRunFormat2,
     _removeSymbol:_removeSymbol,
     _findMaxInArray:_findMaxInArray,
+    _getTimestampDate:_getTimestampDate,
 };
 module.exports = Util;

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.zmxv.RNSound.RNSoundPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.mybigday.rnmediameta.RNMediaMetaPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
@@ -66,6 +67,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new RNSpinkitPackage(),
            new MainReactPackage(),
+            new RNSoundPackage(),
             new RNSvgPackage(),
             new RNMediaMetaPackage(),
             new RNSpinkitPackage(),

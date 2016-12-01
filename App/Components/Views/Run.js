@@ -302,7 +302,7 @@ class Run extends Component {
       </View>
       <View style={{position:'absolute',bottom:41,width:width,flexDirection:'row'}}>
         <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{console.log('123');}}>
+          <TouchableOpacity onPress={()=>{Actions.setting({isRunSetting:true,title:'Run Setting'})}}>
             <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_msuicsetting.png')} resizeMode={Image.resizeMode.contain}></Image>
           </TouchableOpacity>
         </View>
@@ -347,12 +347,14 @@ class Run extends Component {
       <View style={{width:width-80,height:1,backgroundColor:'rgba(216,216,216,1)',marginTop:12}} />
       <View style={{position:'absolute',bottom:41,width:width,flexDirection:'row'}}>
         <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{console.log('123');}}>
+          <TouchableOpacity onPress={()=>{Actions.setting({isRunSetting:true,title:'Run Setting'})}}>
             <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_msuicsetting.png')} resizeMode={Image.resizeMode.contain}></Image>
           </TouchableOpacity>
         </View>
         <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{this._startRunSession()}}><View style={{width:width/3,height:width/3,backgroundColor:'black'}}/></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._startRunSession()}}>
+            <Image style={{width:width/3,height:height/3}} source={require('../../Images/btn_go.png')} resizeMode={Image.resizeMode.contain}></Image>
+          </TouchableOpacity>
         </View>
         <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
           <TouchableOpacity onPress={()=>{Actions.musiclist({list:tempArr})}}>

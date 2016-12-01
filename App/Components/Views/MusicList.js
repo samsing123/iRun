@@ -75,7 +75,9 @@ class MusicList extends Component {
   _renderMusicList(){
     return tempArr.map(function(music,i){
       return (
-        <MusicElement title={music.title} path={music.path} />
+        <TouchableOpacity onPress={()=>{console.log('123');}}>
+          <MusicElement title={music.title} path={music.path}/>
+        </TouchableOpacity>
       )
     });
   }

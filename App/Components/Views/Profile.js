@@ -106,6 +106,7 @@ var testingFeed={
     },
   ]
 }
+var run_stat_arr = [Global.language.total_duration,Global.language.avg_speed,Global.language.total_cal,Global.language.total_step];
 class Profile extends Component {
   constructor(props){
     super(props);
@@ -134,15 +135,17 @@ class Profile extends Component {
       isSevenDay:true,
       display_title:Global.language.total_distance,
       display_content:'',
+      show_graph:'distance',
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
-
+    console.log(Global.user_profile.run_stat_week.plots);
   }
 
   componentDidMount(){
     this._getProfile();
+    this._getDateRangeFrom();
     if(Global.user_profile.is_connected_fitbit||Global.user_profile.is_connected_jawbone){
       this.setState({
         isHaveStep:true,
@@ -165,16 +168,60 @@ class Profile extends Component {
   }
   _requestCallback(responseJson){
     Global.user_profile = responseJson.response;
+
     let data = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       }
     };
+    this._pushDataToBarDataArr(Global.user_profile.run_stat_week,'Total Distance');
+    //Global.user_profile.run_stat_month.plots[21].distance = 30;
     Global._sendPostRequest(data,'api/run-history',(responseJson)=>{this._getRunHistory(responseJson)});
     Global._fetchImage('api/personal-icon',Global.user_profile.user_id,(v)=>{this._getUserCallback(v)});
+
+
     //Actions.home();
   }
+
+  _getDateRangeFrom(){
+    this.dateRangeArr = [];
+    var date = new Date();
+    var last = date.getDate()+'/'+date.getMonth();
+    var first = '';
+    for(var i=0;i<5;i++){
+      last = date.getDate()+'/'+date.getMonth();
+      date.setDate(date.getDate()-6);
+      first = date.getDate()+'/'+date.getMonth();
+      this.dateRangeArr.push(first+'-'+last);
+      date.setDate(date.getDate()-1);
+    }
+    console.log('the date range arr:');
+    console.log(this.dateRangeArr.reverse());
+  }
+
+  _pushDataToBarDataArr(data,type){
+      for(var i=0;i<7;i++){
+        var date = new Date(data.plots[i].name);
+        switch(date.getDay()){
+          case 0:sampleData.bar.data[i][0].name='S';break;
+          case 1:sampleData.bar.data[i][0].name='M';break;
+          case 2:sampleData.bar.data[i][0].name='T';break;
+          case 3:sampleData.bar.data[i][0].name='W';break;
+          case 4:sampleData.bar.data[i][0].name='T';break;
+          case 5:sampleData.bar.data[i][0].name='F';break;
+          case 6:sampleData.bar.data[i][0].name='S';break;
+        }
+        switch(type){
+          case 'Total Distance':sampleData.bar.data[i][0].v = data.plots[i].distance;break;
+          case 'Total Duration':sampleData.bar.data[i][0].v = data.plots[i].duration;break;
+          case 'Avg. Speed':sampleData.bar.data[i][0].v = data.plots[i].pace;break;
+          case 'Total Calories':sampleData.bar.data[i][0].v = data.plots[i].calories;break;
+          case 'Total Steps':sampleData.bar.data[i][0].v = data.plots[i].steps;break;
+        }
+      }
+  }
+
   _getRunHistory(response){
     Global.run_history = response.response.run;
     this.setState({
@@ -484,13 +531,60 @@ class Profile extends Component {
     return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
   }
   */
-  _changePeriod(num){
-    switch(num){
-      case '1':this._changeAllToNotSelect();this.setState({p1:styles.period_selected,p1t:styles.period_text,run_stat:Global.user_profile.run_stat_week,isSevenDay:true});break;
-      case '2':this._changeAllToNotSelect();this.setState({p2:styles.period_selected,p2t:styles.period_text,run_stat:Global.user_profile.run_stat_month,isSevenDay:false});break;
-      case '3':this._changeAllToNotSelect();this.setState({p3:styles.period_selected,p3t:styles.period_text,run_stat:Global.user_profile.run_stat_year,isSevenDay:false});break;
-      case '4':this._changeAllToNotSelect();this.setState({p4:styles.period_selected,p4t:styles.period_text,run_stat:Global.user_profile.run_stat_life,isSevenDay:false});break;
+  _getValueByType(type){
+    var content;
+    switch(this.state.display_title){
+      case Global.language.total_distance:content = this.wordShort(type.distance);break;
+      case Global.language.total_duration:content = type.duration;break;
+      case Global.language.avg_speed:content = type.pace_str;break;
+      case Global.language.calories:content = type.calories;break;
+      case Global.language.total_step:content = type.steps;break;
     }
+    return content;
+  }
+  _changePeriod(num){
+
+    switch(num){
+      case '1':var type = Global.user_profile.run_stat_week;
+      this._changeAllToNotSelect();this.setState({
+        p1:styles.period_selected,
+        p1t:styles.period_text,
+        run_stat:type,
+        isSevenDay:true,
+        display_content:this.wordShort(this._getValueByType(type)),
+      });break;
+      case '2':var type = Global.user_profile.run_stat_month;
+      this._changeAllToNotSelect();this.setState({
+        p2:styles.period_selected,
+        p2t:styles.period_text,
+        run_stat:type,
+        isSevenDay:false,
+        display_content:this._getValueByType(type),
+      });
+      sampleData.smoothLine.data = [Global.user_profile.run_stat_month.plots];
+      break;
+      case '3':var type = Global.user_profile.run_stat_year;
+      this._changeAllToNotSelect();this.setState({
+        p3:styles.period_selected,
+        p3t:styles.period_text,
+        run_stat:type,
+        isSevenDay:false,
+        display_content:this._getValueByType(type),
+      });
+      sampleData.smoothLine.data = [Global.user_profile.run_stat_year.plots];
+      break;
+      case '4':var type = Global.user_profile.run_stat_life;
+      this._changeAllToNotSelect();this.setState({
+        p4:styles.period_selected,
+        p4t:styles.period_text,
+        run_stat:type,
+        isSevenDay:false,
+        display_content:this._getValueByType(type),
+      });
+      sampleData.smoothLine.data = [Global.user_profile.run_stat_life.plots];
+      break;
+    }
+
   }
   _changeAllToNotSelect(){
     this.setState({
@@ -533,25 +627,106 @@ class Profile extends Component {
   }
 
   wordShort(value){
-    if(value>100&&value<999){
-      return value.toFixed(1);
-    }else if(value>1000&&value<9999){
-      return value.toFixed(0);
+    if(this.decimalPlaces(value)>2){
+      return value.toFixed(2);
+    }else{
+      return value;
     }
+  }
+
+  decimalPlaces(num) {
+    var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match) { return 0; }
+    return Math.max(
+         0,
+         // Number of digits right of decimal point.
+         (match[1] ? match[1].length : 0)
+         // Adjust for scientific notation.
+         - (match[2] ? +match[2] : 0));
   }
 
   _getDisplay(name){
     var content;
-    switch(name){
-      case Global.language.total_distance:content = this.wordShort(this.state.run_stat.distance);break;
-      case Global.language.total_duration:content = this.state.run_stat.duration;break;
-      case Global.language.avg_speed:content = this.state.run_stat.pace_str;break;
-      case Global.language.calories:content = this.state.run_stat.calories;break;
+    var chartValue;
+    for(var i=0;i<4;i++){
+      if(run_stat_arr[i]==name){
+        run_stat_arr[i] = this.state.display_title;
+      }
     }
+    switch(name){
+      case Global.language.total_distance:content = this.wordShort(this.state.run_stat.distance);chartValue='distance';break;
+      case Global.language.total_duration:content = this.state.run_stat.duration;chartValue='duration';break;
+      case Global.language.avg_speed:content = this.state.run_stat.pace_str;chartValue='pace';break;
+      case Global.language.calories:content = this.state.run_stat.calories;chartValue='calories';break;
+      case Global.language.total_step:content = this.state.run_stat.steps;chartValue='steps';break;
+    }
+    this._pushDataToBarDataArr(this.state.run_stat,name);
     this.setState({
       display_title:name,
       display_content:content,
+      show_graph:chartValue,
     });
+
+  }
+
+  _renderRunStat(){
+    var distance = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_distance)}}>
+      <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+        <Image source={require('../../Images/ic_distance.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.wordShort(this.state.run_stat.distance)}</Text>
+        <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_distance}</Text>
+      </View>
+    </TouchableOpacity>;
+    var duration = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_duration)}}>
+      <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+        <Image source={require('../../Images/ic_duration.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.duration}</Text>
+        <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_duration}</Text>
+      </View>
+    </TouchableOpacity>;
+    var pace = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.avg_speed)}}>
+      <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.pace_str}</Text>
+        <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.avg_speed}</Text>
+      </View>
+    </TouchableOpacity>;
+    var cal = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_cal)}}>
+      <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+        <Image source={require('../../Images/ic_cal.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.calories}</Text>
+        <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_cal}</Text>
+      </View>
+    </TouchableOpacity>;
+    var steps= null;
+    if(this.state.isHaveStep){
+      steps = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_step)}}>
+        <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+          <Image source={require('../../Images/btn_step.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.steps}</Text>
+          <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>
+        </View>
+      </TouchableOpacity>;
+    }else{
+      steps = <TouchableOpacity onPress={()=>{Actions.fitnesstracker()}}>
+        <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+          <Image source={require('../../Images/btn_step.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>n/a</Text>
+          <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>
+        </View>
+      </TouchableOpacity>;
+    }
+    var tempArr = [];
+    for(var i=0;i<4;i++){
+      switch(run_stat_arr[i]){
+        case Global.language.total_distance:tempArr.push(distance);break;
+        case Global.language.total_duration:tempArr.push(duration);break;
+        case Global.language.avg_speed:tempArr.push(pace);break;
+        case Global.language.total_cal:tempArr.push(cal);break;
+        case Global.language.total_step:tempArr.push(steps);break;
+      }
+    }
+    return tempArr;
   }
 
   render() {
@@ -588,38 +763,15 @@ class Profile extends Component {
       totalDistance = <Text style={{fontSize:10,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>;
     }
 
+    var run_stat_arr = this._renderRunStat();
     var run_stat_content = <View style={{position:'relative',top:10,height:100,flexDirection:'row'}}>
-      <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_distance)}}>
-        <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-          <Image source={require('../../Images/ic_distance.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.wordShort(this.state.run_stat.distance)}</Text>
-          <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_distance}</Text>
-        </View>
-      </TouchableOpacity>
+      {run_stat_arr[0]}
       <View style={{width:1,height:52,backgroundColor:'rgba(151,151,151,1)',marginTop:31}}/>
-      <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_duration)}}>
-        <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-          <Image source={require('../../Images/ic_duration.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.duration}</Text>
-          <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_duration}</Text>
-        </View>
-      </TouchableOpacity>
+      {run_stat_arr[1]}
       <View style={{width:1,height:52,backgroundColor:'rgba(151,151,151,1)',marginTop:31}}/>
-      <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.avg_speed)}}>
-        <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-          <Image source={require('../../Images/ic_avgspeed.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.pace_str}</Text>
-          <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.avg_speed}</Text>
-        </View>
-      </TouchableOpacity>
+      {run_stat_arr[2]}
       <View style={{width:1,height:52,backgroundColor:'rgba(151,151,151,1)',marginTop:31}}/>
-      <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_cal)}}>
-        <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-          <Image source={require('../../Images/ic_cal.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.calories}</Text>
-          <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_cal}</Text>
-        </View>
-      </TouchableOpacity>
+      {run_stat_arr[3]}
     </View>;
     var profileImage = <View/>;
     if(this.state.imagePath=='data:image/jpeg;base64,'){
@@ -627,6 +779,11 @@ class Profile extends Component {
     }else{
       profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;
     }
+    if(Global.user_profile.run_stat_week.plots!=null){
+      console.log('is have data:');
+      console.log(Global.user_profile.run_stat_week.distance);
+    }
+
     return (
       <ScrollView>
       <View style={styles.container}>
@@ -686,7 +843,7 @@ class Profile extends Component {
             </View>
           </View>
           <View style={{position:'absolute',top:50,left:30}}>
-            <Bar data={sampleData.bar.data} options={sampleData.bar.options} accessorKey='v'style={{marginLeft:20}}/>
+            <Bar data={sampleData.bar.data} options={sampleData.bar.options} accessorKey='v' style={{marginLeft:20}}/>
           </View>
         </View>:null}
         {this.state.isSevenDay?null:<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
@@ -696,12 +853,13 @@ class Profile extends Component {
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
           </View>
-          <View style={{position:'absolute',top:50,left:30}}>
+          <View style={{position:'absolute',top:50}}>
             <SmoothLine
               data={sampleData.smoothLine.data}
               options={sampleData.smoothLine.options}
+              dateRange={this.dateRangeArr}
               xKey='index'
-              yKey='steps' />
+              yKey={this.state.show_graph} />
           </View>
         </View>}
         <View style={{width:width-16,height:100,justifyContent:'center',position:'relative'}}>
@@ -714,7 +872,7 @@ class Profile extends Component {
               <Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>{Global.language.running_history}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.animationtest()}}>
+          <TouchableOpacity onPress={()=>{Actions.personalrecord()}}>
             <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/2-10,height:40,alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>{Global.language.personal_record}</Text>
             </View>

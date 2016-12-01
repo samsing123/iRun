@@ -15,6 +15,7 @@ import MediaMeta from 'react-native-media-meta';
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/FontAwesome';
+var Global = require('../Global');
 class MusicElement extends Component {
   constructor(props) {
     super(props);
@@ -26,25 +27,29 @@ class MusicElement extends Component {
     };
   }
   componentDidMount(){
-    /* //for getting the metadata for the media file.... but take long time in ui thread
+    //for getting the metadata for the media file.... but take long time in ui thread
     //TODO: make this to reading the meta data one by one
-    MediaMeta.get(this.props.path.replace('/sdcard/','/storage/emulated/0/'))
-    .then(metadata => {
-      var title = metadata.title==null?'<unknown>':metadata.title;
-      var artist = metadata.artist==null?'<unknown>':metadata.artist;
-      var image = metadata.thumb==null?'<unknown>':'data:image/jpeg;base64,'+metadata.thumb;
-      this.setState({
-        title:title,
-        artist:artist,
-        image:image
-      });
-    })
-    .catch(err => console.error(err));
-    */
+    // MediaMeta.get(this.props.path.replace('/sdcard/','/storage/emulated/0/'))
+    // .then(metadata => {
+    //   var title = metadata.title==null?'<unknown>':metadata.title;
+    //   var artist = metadata.artist==null?'<unknown>':metadata.artist;
+    //   var image = metadata.thumb==null?'<unknown>':'data:image/jpeg;base64,'+metadata.thumb;
+    //   this.setState({
+    //     title:title,
+    //     artist:artist,
+    //     image:image
+    //   });
+    // })
+    // .catch(err => console.error(err));
   }
 
   shouldComponentUpdate(){
-    return false;
+    return true;
+  }
+
+  _musicSelected(){
+    Global.musicToPlay = this.state.path;
+    console.log('music to play path:'+Global.musicToPlay);
   }
 
   render(){
@@ -56,7 +61,7 @@ class MusicElement extends Component {
         <Icon name="music" size={40} color="grey"/>
       </View>;
     }
-    return(<View style={{width:width,height:121,flexDirection:'row',borderBottomWidth:1,borderBottomColor:'rgba(200,200,200,1)'}}>
+    return(<TouchableOpacity onPress={()=>{this._musicSelected()}} style={{width:width,height:121,flexDirection:'row',borderBottomWidth:1,borderBottomColor:'rgba(200,200,200,1)'}}>
         <View style={{height:121,width:120,justifyContent:'center',alignItems:'center'}}>
           {image}
         </View>
@@ -64,7 +69,7 @@ class MusicElement extends Component {
           <Text style={{width:150}}>{this.state.title}</Text>
           <Text style={{width:150}}>{this.state.artist}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

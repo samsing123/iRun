@@ -1,10 +1,11 @@
+var Global = require('../Global');
+
 export default sampleData = {
     bar: {
         data: [
             [{
                 "v": 20,
                 "name": "M",
-                chartWidth:20,
             }],
             [{
                 "v": 30,
@@ -315,7 +316,7 @@ export default sampleData = {
             }],
         ],
         options: {
-            width: 300,
+            width: Global.deviceWidth-22,
             height: 100,
             color: '#2980B9',
             margin: {
@@ -333,11 +334,11 @@ export default sampleData = {
                 showLines: true,
                 showLabels: true,
                 showTicks: false,
-                zeroAxis: false,
+                zeroAxis: true,
                 orient: 'top',
                 label: {
                     fontFamily: 'Arial',
-                    fontSize: 14,
+                    fontSize: 10,
                     fontWeight: true,
                     fill: '#34495E'
                 }

@@ -526,8 +526,9 @@ class Map extends Component {
         pace: pace.toFixed(2),
         note: '',
         calories:0,
-        pause: [],
-        run_token: Global.current_run_token
+        pause: this.props.pause,
+        run_token: Global.current_run_token,
+        flag:this.props.flag
       }),
       headers: {
         'Content-Type': 'application/json',
