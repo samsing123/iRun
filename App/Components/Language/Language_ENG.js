@@ -54,7 +54,7 @@ var ENG = {
     privacy_policy:'Privacy Policy',
     term_of_use:'Terms of use',
     term_of_use_title:'TERMS OF USE',
-    contact_us:'Contace us',
+    contact_us:'Contact us',
     edit_profile:'EDIT PROFILE',
     display_name:'Display Name',
     email:'Email',

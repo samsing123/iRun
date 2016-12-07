@@ -516,6 +516,15 @@ class Tracking extends Component {
     });
     this._resumeTimer();
   }
+
+  _clickToPause(){
+    this._pauseTimer();
+    this.setState({
+      opacity:this.state.opacity==0?0.8:0,
+      canPress:false
+    });
+  }
+
   _longPressCallback(value){
     if(value === 100){
       this._pauseTimer();
@@ -790,8 +799,8 @@ class Tracking extends Component {
               </TouchableOpacity>
           </View>
           <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:30}}>
-            <TouchableOpacity onPressIn={()=>{this.setState({showProgress:true})}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={{uri:'https://cdn2.iconfinder.com/data/icons/perfect-flat-icons-2/512/Pause_button_play_stop_blue.png'}}/></TouchableOpacity>
-            {this._loadingProgress()}
+            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={{uri:'https://cdn2.iconfinder.com/data/icons/perfect-flat-icons-2/512/Pause_button_play_stop_blue.png'}}/></TouchableOpacity>
+            {/*this._loadingProgress()*/}
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>
             <View style={{width:width,height:28,alignItems:'center',justifyContent:'center'}}>

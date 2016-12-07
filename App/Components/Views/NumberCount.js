@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#158ACF'
   },
   scrollContainer:{
     justifyContent: 'center',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   t1:{
     fontSize:100,
     fontWeight:'bold',
-    color:'black',
+    color:'#FFFFFF',
   },
   t2:{
     fontSize:50,

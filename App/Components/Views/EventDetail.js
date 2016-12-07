@@ -162,11 +162,11 @@ class EventDetail extends Component {
           }}
           renderForeground={() => (
            <View style={{ height: 290,width:width,flex: 1,}}>
-              <WebView
+              {/*<WebView
                 source={{html:this.state.videoContent}}
                 style={{width:width,height:290}}
-              />
-              {/*<Image style={{height:290,width:width}} source={{uri:this.props.image}} />*/}
+              />*/}
+              <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
            </View>
           )}
           renderStickyHeader={() => (

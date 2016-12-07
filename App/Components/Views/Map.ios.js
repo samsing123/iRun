@@ -12,7 +12,11 @@ import {
   Dimensions,
   TouchableOpacity,
   DeviceEventEmitter,
-  AsyncStorage
+  AsyncStorage,
+  TextInput,
+  Image,
+  CameraRoll,
+  Linking
 } from 'react-native';
 var Tabs = require('react-native-tabs');
 const FBSDK = require('react-native-fbsdk');
@@ -23,6 +27,7 @@ import MapView from 'react-native-maps';
 import CustomCallout from './CustomCallout';
 const { width, height } = Dimensions.get('window');
 import {Actions,ActionConst} from "react-native-router-flux";
+import ImageCropper from 'react-native-image-crop-picker';
 
 const ASPECT_RATIO = width / height;
 const LATITUDE = 22.2595474;
@@ -44,6 +49,7 @@ import Share, {ShareSheet, Button} from 'react-native-share';
 let shareOptions = {
       title: "Share image to facebook",
       url: "http://facebook.github.io/react-native/",
+      message:'This is a message!!',
       subject: "Share Link" //  for email
     };
 let shareImageBase64 = {
@@ -94,6 +100,7 @@ var acceleration = 0;
 import RNViewShot from "react-native-view-shot";
 import RNFetchBlob from 'react-native-fetch-blob';
 var current_id = 0;
+var base64Uri='';
 
 class Map extends Component {
   /*
@@ -105,7 +112,6 @@ class Map extends Component {
   constructor(props) {
     super(props);
 
-    console.log('this is ios map view');
     this.state = {
       region: {
         latitude: this.props.lat,
@@ -122,6 +128,8 @@ class Map extends Component {
       totalDuration:0,
       point:0,
       share:false,
+      note:'',
+      camera_image:false,
     };
     this.pathArr = [];
     startTimestamp = new Date().valueOf();
@@ -153,12 +161,17 @@ class Map extends Component {
   }
 
 
-  componentDidMount(){
+  _doneRunEnd(){
+    this._sendEndRunRequest();
+  }
 
+  componentDidMount(){
     this.setState({
       polylineCoords:this.props.path,
+      camera_image:false,
     });
-    this._sendEndRunRequest();
+    this.takeSnapshot();
+    //this._sendEndRunRequest();
     //this.getMapImage();
     //this._takeSnapshot();
     /*
@@ -307,7 +320,7 @@ class Map extends Component {
   }
 
   _calDistance(lat1,lng1,lat2,lng2){
-    console.log('_calDistance start');
+
     var start = {
       latitude: lat1,
       longitude: lng1
@@ -317,7 +330,7 @@ class Map extends Component {
       longitude: lng2
     }
     distance += haversine(start,end,{unit: 'meter'});
-    console.log('_calDistance end');
+
   }
   _createRouteCoordinates(data) {
     if (data.status !== 'OK') {
@@ -401,13 +414,13 @@ class Map extends Component {
       latitude:this.props.lat,
       longitude:this.props.lng
     };
-    this.refs.map.takeSnapshot(300, 300, lastCord, (err, snapshot) => {
+    this.refs.map.takeSnapshot(width, (height/2)-Global.navbarHeight, lastCord, (err, snapshot) => {
       // snapshot contains image 'uri' - full path to image and 'data' - base64 encoded image
       //this.setState({ mapSnapshot: snapshot })
       imageUri = snapshot.uri;
       // Build up a shareable link.
-      console.log('snapshot path:'+snapshot.uri);
-      shareImageBase64.uri = snapshot.base64;
+      shareImageBase64.uri = snapshot.data;
+      base64Uri = snapshot.data;
       this.sharePhoto = {
         contentUrl: 'file://'+imageUri,// <diff_path_for_ios>
         userGenerated: false,
@@ -444,6 +457,7 @@ class Map extends Component {
     //MapView.Polygon for non circle 2d shape
     return <MapView.Circle center={this.state.coordinate} radius={distance} strokeColor="#F00" fillColor="rgba(255,0,0,0.5)" strokeWidth={1} />
   }
+
   _getSnapShot(id){
     const snapshot = this.refs.map.getSnapshot({
       width:720,
@@ -465,7 +479,6 @@ class Map extends Component {
       this.shareLinkContent = {
         contentType: 'photo',
         photos: [this.sharePhoto],
-        hashtags:'hashtag123'
       };
       this.shareLinkContents = {
         contentType: 'link',
@@ -503,11 +516,32 @@ class Map extends Component {
         }
       },
       function(error) {
-        alert("Please install a facebook app!");
+        alert("Please install facebook app before sharing");
       }
     );
 
   }
+
+  _shareToInstagram(){
+    // var url = 'instagram://camera';
+    // Linking.canOpenURL(url).then(supported => {
+    //   if (!supported) {
+    //     console.log('Can\'t handle url: ' + url);
+    //   } else {
+    //     return Linking.openURL(url);
+    //   }
+    // }).catch(err => console.error('An error occurred', err));
+    shareOptions = {
+          title: "Share image to facebook",
+          url: "http://facebook.github.io/react-native/",
+          message:'This is a message!!',
+          subject: "Share Link", //  for email
+          base64:"data:image/jpg;base64,"+base64Uri,
+          social: "instagram"
+    };
+    Share.shareSingle(Object.assign(shareOptions)).catch(err => console.error('An error occurred', err));
+  }
+
   _sendCacheCaptureImage(id){
     //console.log('image file path:'+imageUri);
     const settings = {
@@ -544,9 +578,7 @@ class Map extends Component {
     .then((response) => response.json())
     .then((responseJson)=>{
       if(responseJson.status=='success'){
-        console.log('get Run Photo:'+id);
-        Global._getImage(id,(v)=>this._imageCallback(v));
-        console.log(responseJson);
+        Actions.home({type:ActionConst.RESET});
       }
     });
   }
@@ -573,7 +605,7 @@ class Map extends Component {
         duration: this.props.time.toFixed(0),
         distance: distance.toFixed(2),
         pace: pace.toFixed(2),
-        note: '',
+        note: this.state.note,
         calories:0,
         pause: this.props.pause,
         run_token: Global.current_run_token,
@@ -583,18 +615,17 @@ class Map extends Component {
         'Content-Type': 'application/json',
       }
     };
-    console.log(data);
     //Actions.showphoto({pathImage:'data:image/jpeg;base64,'+imageData});
     Global._sendPostRequest(data,'api/run-end',(responseJson)=>{this._registerCallback(responseJson)});
   }
   _registerCallback(responseJson){
-    console.log(responseJson);
+
     if(responseJson.status='success'){
       this.setState({
         point:responseJson.response.points
       });
       current_id = responseJson.response.run_id;
-      this.takeSnapshot();
+      this._sendFormData(current_id);
     }
     //Actions.numbercount();
   }
@@ -613,6 +644,38 @@ class Map extends Component {
     Actions.refresh({onBack:()=>{this.setState({share:false})}});
   }
 
+  _openCamera(){
+    ImageCropper.openCamera({
+      width: width,
+      height: (height/2)-Global.navbarHeight,
+      cropping: true,
+      includeBase64:true
+    }).then(image => {
+      var commonParameter = {
+        hashtag:'hihi'
+      };
+      // Build up a shareable link.
+      this.sharePhoto = {
+        imageUrl: image.path,// <diff_path_for_ios>
+        userGenerated: false,
+        caption: 'hello'
+      };
+      this.shareLinkContent = {
+        contentType: 'photo',
+        photos: [this.sharePhoto],
+        commonParameters:commonParameter
+      };
+      this.setState({
+        img_data:'data:'+image.mime+';base64,'+image.data,
+        camera_image:true,
+      });
+    });
+  }
+
+  _saveToCameraRoll(){
+    //console.log('image Url:'+this.sharePhoto.contentUrl);
+    CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl);
+  }
 
   render() {
     //this._checkCurrentState();
@@ -625,12 +688,12 @@ class Map extends Component {
           <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>RUNNING HISTORY</Text>
         </View>
       </TouchableOpacity>
-      <View style={{marginTop:12,alignItems:'center',justifyContent:'center',width:width}}>
-        <Text style={{fontSize:12,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>Note</Text>
+      <View style={{marginTop:20}}>
+        <TextInput placeholder="Note" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})}/>
       </View>
-      <View style={{position:'relative',top:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+      <View style={{position:'relative',top:85,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
-        <TouchableOpacity onPress={()=>{Actions.home({type:ActionConst.RESET})}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
     </View>;
     if(this.state.share){
@@ -639,10 +702,10 @@ class Map extends Component {
         <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>FACEBOOK</Text></View></TouchableOpacity>
       </View>
         <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>INSTAGRAM</Text></View></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._shareToInstagram()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>INSTAGRAM</Text></View></TouchableOpacity>
         </View>
         <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SAVE TO CAMERA ROLL</Text></View></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._saveToCameraRoll()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SAVE TO CAMERA ROLL</Text></View></TouchableOpacity>
         </View>
       </View>;
     }
@@ -653,21 +716,23 @@ class Map extends Component {
       <View style={{flex:1}}>
         <View style={styles.container} >
 
-          <MapView
-            ref="map"
-            style={styles.map}
-            region={this.state.region}
-            showsUserLocation={true}
-            cacheEnabled={true}
-            onRegionChange={region => this.onRegionChange(region)}
-          >
-            <MapView.Polyline
-              coordinates={this.state.polylineCoords}
-              strokeWidth={5}
-              strokeColor="blue"
-             />
-          </MapView>
-
+        {!this.state.camera_image?<MapView
+          ref="map"
+          style={styles.map}
+          region={this.state.region}
+          showsUserLocation={true}
+          followsUserLocation={true}
+          onRegionChange={region => this.onRegionChange(region)}
+        >
+          <MapView.Polyline
+            coordinates={this.state.polylineCoords}
+            strokeWidth={5}
+            strokeColor="blue"
+           />
+        </MapView>:<Image source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
+          <TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
+            <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
+          </TouchableOpacity>
           <View style={styles.buttonContainer}>
             <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
           </View>

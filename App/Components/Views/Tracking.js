@@ -118,7 +118,8 @@ const data = [
 ];
 var tempArr = [];
 var Sound = require('react-native-sound');
-var music;
+var music=null;
+var Global = require('../Global');
 class Tracking extends Component {
   constructor(props){
     super(props);
@@ -144,6 +145,7 @@ class Tracking extends Component {
       left:'time',
       textInputValue:'',
       lock_icon:'unlock-alt',
+      is_playing:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -173,6 +175,7 @@ class Tracking extends Component {
       left:'time',
       textInputValue:'',
       lock_icon:'unlock-alt',
+      is_playing:false
     });
     fill = 0;
     showProgress = false;
@@ -226,13 +229,87 @@ class Tracking extends Component {
   }
 
   _setupMusic(){
-    music = new Sound(Global.musicToPlay,'', (error) => {
+    if(music){
+      music.release();
+    }
+    music = new Sound(Global.musicToPlay.path,'', (error) => {
       if (error) {
         console.log('failed to load the sound', error);
       } else { // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() +
-            'number of channels: ' + whoosh.getNumberOfChannels());
+        music.play((success) => {
+          if (success) {
+            console.log('successfully finished playing');
+            this._goToNextAndPlay();
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
+        this.setState({
+          is_playing:true,
+        });
       }
+    });
+  }
+
+  _pauseMusic(){
+    music.pause();
+    this.setState({
+      is_playing:false,
+    });
+  }
+  _goToNext(){
+    if(music){
+      music.release();
+    }
+    var current = Global.current_playing_index+1;
+    Global.musicToPlay.path = Global.tempMusicArr[current].path;
+    Global.musicToPlay.title = Global.tempMusicArr[current].title;
+    Global.musicToPlay.singer = Global.tempMusicArr[current].artist;
+    Global.current_playing_index = current;
+    this.setState({
+      is_playing:false
+    });
+  }
+
+  _goToNextAndPlay(){
+    if(music){
+      music.release();
+    }
+    var current = Global.current_playing_index+1;
+    Global.musicToPlay.path = Global.tempMusicArr[current].path;
+    Global.musicToPlay.title = Global.tempMusicArr[current].title;
+    Global.musicToPlay.singer = Global.tempMusicArr[current].artist;
+    Global.current_playing_index = current;
+    music = new Sound(Global.musicToPlay.path,'', (error) => {
+      if (error) {
+        console.log('failed to load the sound', error);
+      } else { // loaded successfully
+        music.play((success) => {
+          if (success) {
+            console.log('successfully finished playing');
+            this._goToNextAndPlay();
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
+        this.setState({
+          is_playing:true,
+        });
+      }
+    });
+  }
+
+  _goToPre(){
+    if(music){
+      music.release();
+    }
+    var current = Global.current_playing_index-1;
+    Global.musicToPlay.path = Global.tempMusicArr[current].path;
+    Global.musicToPlay.title = Global.tempMusicArr[current].title;
+    Global.musicToPlay.singer = Global.tempMusicArr[current].artist;
+    Global.current_playing_index = current;
+    this.setState({
+      is_playing:false
     });
   }
 
@@ -243,6 +320,8 @@ class Tracking extends Component {
 
     pathArr = [];
     polylineArr = [];
+
+
 
     /*
     navigator.geolocation.watchPosition(
@@ -472,6 +551,13 @@ class Tracking extends Component {
     });
     this._resumeTimer();
   }
+  _clickToPause(){
+    this._pauseTimer();
+    this.setState({
+      opacity:this.state.opacity==0?0.8:0,
+      canPress:false
+    });
+  }
   _longPressCallback(value){
     if(value === 100){
       this._pauseTimer();
@@ -642,7 +728,7 @@ class Tracking extends Component {
       return (
         <View style={{width:width,height:height,position:'absolute',top:0,left:0,opacity:this.state.opacity,backgroundColor:'white'}}>
           <View style={{flexDirection:'row',width:width,alignItems:'center',justifyContent:'space-around',height:82,position:'absolute',bottom:111}}>
-            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><View style={{width:48,height:48,backgroundColor:'black'}}></View></TouchableOpacity>
             <TouchableOpacity onPress={()=>{this._endRun()}}><View style={{width:82,height:82,backgroundColor:'black'}}></View></TouchableOpacity>
             <TouchableOpacity onPress={()=>{this._resumeRun()}}><View style={{width:82,height:82,backgroundColor:'black'}}></View></TouchableOpacity>
             <View style={{width:48,height:48,backgroundColor:'black'}}></View>
@@ -691,14 +777,14 @@ class Tracking extends Component {
     var left_icon = null;
     var right_icon = null;
     switch(this._getIconFromValue(left_value)){
-      case 'time':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
-      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
-      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
+      case 'time':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
+      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
+      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
     }
     switch(this._getIconFromValue(right_value)){
-      case 'time':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
-      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
-      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
+      case 'time':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
+      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
+      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
     }
     return (
 
@@ -737,17 +823,19 @@ class Tracking extends Component {
               </TouchableOpacity>
           </View>
           <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:30}}>
-            <TouchableOpacity onPressIn={()=>{this.setState({showProgress:true})}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={{uri:'https://cdn2.iconfinder.com/data/icons/perfect-flat-icons-2/512/Pause_button_play_stop_blue.png'}}/></TouchableOpacity>
-            {this._loadingProgress()}
+            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={{uri:'https://cdn2.iconfinder.com/data/icons/perfect-flat-icons-2/512/Pause_button_play_stop_blue.png'}}/></TouchableOpacity>
+            {/*this._loadingProgress()*/}
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>
-            <View style={{width:width,height:28,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:15}}>Music Title - Singer</Text>
-            </View>
+            {Global.musicToPlay.title==''?<View style={{width:width,height:28,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'white',fontSize:15}}>No Music Selected</Text>
+            </View>:<View style={{width:width,height:28,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'white',fontSize:15}}>{Global.musicToPlay.title} - {Global.musicToPlay.singer}</Text>
+            </View>}
             <View style={{width:width,height:28,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/>
-              <Icon name="play" size={13} color="rgba(255,255,255,1)"/>
-              <Icon name="step-forward" size={13} color="rgba(255,255,255,1)" style={{paddingLeft:50}}/>
+              <TouchableOpacity onPress={()=>{this._goToPre()}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/></TouchableOpacity>
+              {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._setupMusic()}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
+              <TouchableOpacity onPress={()=>{this._goToNext()}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)" style={{paddingLeft:50}}/></TouchableOpacity>
               <Icon name="music" size={40} color="rgba(255,255,255,1)" onPress={()=>{Actions.musiclist({musicArr:tempArr})}} style={{position:'absolute',right:20,bottom:9}}/>
             </View>
           </View>

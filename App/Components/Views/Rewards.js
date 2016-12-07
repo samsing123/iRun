@@ -111,7 +111,11 @@ class Rewards extends Component {
           <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{redeem.date}</Text>
           <Text style={{fontSize:24,color:'rgba(0,0,0,1)'}}>{redeem.title}</Text>
           <View style={{position:'absolute',right:0,bottom:20,flexDirection:'row'}}>
-            <Icon name="heart-o" size={24} color="rgba(227,1,58,1)" style={{position:'relative',top:10}}/><Text style={{color:'rgba(227,1,58,1)',fontSize:30}}>{redeem.point}</Text>
+
+            <Text style={{color:'rgba(227,1,58,1)',fontSize:30}}>
+              <Image style={{width:21,height:21,tintColor:'rgba(227,1,58,1)'}} source={require('../../Images/ic_pts_copy.png')}/>
+              {redeem.point}
+            </Text>
           </View>
 
         </View>
@@ -430,7 +434,13 @@ class Rewards extends Component {
                 <Text style={{fontSize:24,color:'white',fontWeight:'bold'}}>{Util._getTextWithEllipsis(news.title,40)}</Text>
               </View>
               <View style={{flexDirection:'row',width:width*0.3,justifyContent:'flex-end',paddingRight:10}}>
-                <Text style={{fontSize:20,color:'white',fontWeight:'bold'}}><Icon name='heart' size={18} color='white' style={{marginRight:5}}/>5000</Text>
+                <View style={{position:'relative',top:3,paddingRight:5}}>
+                  <Image style={{width:18.5,height:18.5}} source={require('../../Images/ic_pts_copy.png')}/>
+                </View>
+                <Text style={{fontSize:20,color:'white',fontWeight:'bold'}}>
+
+                  5000
+                </Text>
               </View>
             </View>
           </View>
@@ -495,7 +505,14 @@ class Rewards extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={{fontSize:17,paddingRight:30,color:'#268BC4'}}>{this.state.availPoint}</Text>
+          <View style={{flexDirection:'row'}}>
+            <View style={{position:'relative',top:2}}>
+              <Image style={{width:18.5,height:18.5,tintColor:'rgba(22,141,208,1)'}} source={require('../../Images/ic_pts_copy.png')}/>
+            </View>
+            <Text style={{fontSize:17,paddingRight:30,color:'#268BC4'}}>
+              {this.state.availPoint}
+            </Text>
+          </View>
         </View>
         <View style={{height:height-225,width:width}}>
           <ScrollView componentDidMount={()=>{this.scrollTo({x:0,y:0,animated:true})}} ref={(scrollView)=>{_scrollView = scrollView}}>

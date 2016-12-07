@@ -118,15 +118,9 @@ class Mores extends Component {
               <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.setting}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.setting({title:Global.language.setting})}}>
-            <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
-              <Image source={require('../../Images/ic_about.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
-              <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.about_us}</Text>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity onPress={()=>{Actions.frontpage({type:ActionConst.RESET})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
-              <Text style={{fontSize:14,padding:15,marginLeft:20}}>Back To FontPage</Text>
+              <Text style={{fontSize:14,padding:15,marginLeft:20}}>Back To FontPage (For Testing)</Text>
             </View>
           </TouchableOpacity>
         </View>

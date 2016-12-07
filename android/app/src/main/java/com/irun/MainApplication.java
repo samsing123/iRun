@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
+import com.microsoft.codepush.react.CodePush;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.mybigday.rnmediameta.RNMediaMetaPackage;
@@ -32,7 +34,6 @@ import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import cl.json.RNSharePackage;
-import com.zmxv.RNSound.RNSoundPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.syarul.rnlocation.RNLocation;
 import com.geektime.reactnativeonesignal.ReactNativeOneSignalPackage;  // <--- Import
@@ -57,6 +58,12 @@ public class MainApplication extends Application implements ReactApplication {
   }
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+
     @Override
     protected boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -67,6 +74,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new RNSpinkitPackage(),
            new MainReactPackage(),
+            new PickerPackage(),
+            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new RNSoundPackage(),
             new RNSvgPackage(),
             new RNMediaMetaPackage(),
@@ -88,7 +97,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MapsPackage(),
           new RCTCameraPackage(),
           new RNSharePackage(),
-          new RNSoundPackage(),
           new GoogleAnalyticsBridgePackage(),
           new RNLocation(),
           new ReactNativeOneSignalPackage()

@@ -110,6 +110,7 @@ class RunDetail extends Component {
       totalDuration:0,
       point:0,
       isLoading:true,
+      note:'',
     };
     this.pathArr = [];
     startTimestamp = new Date().valueOf();
@@ -156,6 +157,7 @@ class RunDetail extends Component {
       speed:response.response.pace_str,
       time:Util._secondToMinuteDisplay(response.response.duration,'time'),
       cal:response.response.calories,
+      note:response.response.note,
     });
     Global._fetchImage('api/run-photo',this.props.id,(v)=>{this._getImageCallback(v)});
   }
@@ -599,15 +601,13 @@ class RunDetail extends Component {
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14}}>
           <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
         </View>
-        <View style={{marginTop:12,height:48,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'rgba(103,103,103,0.5)',borderTopWidth:1,borderBottomColor:'rgba(103,103,103,0.5)',borderBottomWidth:1}}>
-          <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>RUNNING HISTORY</Text>
-        </View>
-        <View style={{marginTop:12,alignItems:'center',justifyContent:'center',width:width}}>
-          <Text style={{fontSize:12,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>Note</Text>
+        <View style={{marginTop:12,paddingTop:20,paddingBottom:20,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'#ebebeb',borderTopWidth:1,borderBottomColor:'#ebebeb',borderBottomWidth:1}}>
+          <Text style={{fontSize:14,fontWeight:'bold',textAlign:'center'}}>NOTES</Text>
+          <Text style={{fontSize:12,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{this.state.note}</Text>
         </View>
         <View style={{position:'absolute',bottom:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
 
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:300,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>BACK</Text></View></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.pop()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:300,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
         </View>
       </View>
     );

@@ -119,16 +119,29 @@ class Verify extends Component {
 
   _submitVerifyCode(){
 
-    Global.registerData.code = this.state.code;
-    let data = {
-      method:'POST',
-      body: JSON.stringify(Global.registerData),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    };
-    Global._sendPostRequest(data,'api/register',this._callback);
+    if(this.props.isFacebook){
+      Global.fbRegisterData.code = this.state.code;
+      let data = {
+        method:'POST',
+        body: JSON.stringify(Global.fbRegisterData),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      };
+      Global._sendPostRequest(data,'api/register-fb',this._callback);
+    }else{
+      Global.registerData.code = this.state.code;
+      let data = {
+        method:'POST',
+        body: JSON.stringify(Global.registerData),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      };
+      Global._sendPostRequest(data,'api/register',this._callback);
+    }
   }
   _callback(responseJson){
     console.log(responseJson);

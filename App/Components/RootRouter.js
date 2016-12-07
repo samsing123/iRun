@@ -233,6 +233,8 @@ export default class RootRouter extends Component {
             var email = await AsyncStorage.getItem('email');
             var password = await AsyncStorage.getItem('password');
             var language = await AsyncStorage.getItem('language');
+            var isLockWhenStart = await AsyncStorage.getItem('isLockWhenStart');
+            Global.isLockWhenStart = isLockWhenStart;
             Global.email = email;
             Global.password = password;
             if(language=='ENG'){

@@ -43,6 +43,7 @@ var AvailiblePointAlert = require('../Controls/AvailiblePointAlert');
 import RNFetchBlob from 'react-native-fetch-blob';
 
 import OneSignal from 'react-native-onesignal'; // Import package from node modules
+var RNFS = require('react-native-fs');
 
 
 var temperature='27';
@@ -77,6 +78,24 @@ class Intro extends Component {
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
 
+  }
+
+  _getTotalNumberMusicFile(path){
+    RNFS.readDir(path)
+    .then((files)=>{
+      for (var i = 0, len = files.length; i < len; i++) {
+        if(files[i].isDirectory()){
+          //console.log("This is directory");
+          this._getTotalNumberMusicFile(files[i].path);
+        }
+        if(files[i].isFile()){
+          if(Util._getFileExtension(files[i].name)=='mp3'){
+            //console.log(files[i].path);
+            Global.totalMusicNumber++;
+          }
+        }
+      }
+    }).done();
   }
 
   _testRunResultPage(){
@@ -213,6 +232,10 @@ class Intro extends Component {
     AppEventEmitter.addListener('image fetch finish', this._eventTrigger());
     AppEventEmitter.addListener('changeLanguage', ()=>{this.setState({refresh:true})});
     AppEventEmitter.addListener('overlayAlert', ()=>{this._openAlert()});
+    if(Platform.OS!='ios'){
+      this._getTotalNumberMusicFile('/sdcard/');
+    }
+
     //this._getProfile();
     // navigator.geolocation.getCurrentPosition(
     //   (position) => {
@@ -433,11 +456,11 @@ class Intro extends Component {
         {Global.status_bar}
         {this.state.page}
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}} onSelect={el=>this._tabChange(el.props.name)}>
-            <View name="home" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_home.png')} style={{width:24,height:24,tintColor:this.state.t1c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8}}>{Global.language.home}</Text></View>
-            <View name="event" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_event.png')} style={{width:24,height:24,tintColor:this.state.t2c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8}}>{Global.language.events}</Text></View>
-            <View name="run" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_run.png')} style={{width:24,height:24,tintColor:this.state.t3c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8}}>{Global.language.run}</Text></View>
-            <View name="reward" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_reward.png')} style={{width:24,height:24,tintColor:this.state.t4c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8}}>{Global.language.reward}</Text></View>
-            <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8}}>{Global.language.more}</Text></View>
+            <View name="home" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_home.png')} style={{width:24,height:24,tintColor:this.state.t1c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t1c}}>{Global.language.home}</Text></View>
+            <View name="event" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_event.png')} style={{width:24,height:24,tintColor:this.state.t2c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t2c}}>{Global.language.events}</Text></View>
+            <View name="run" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_run.png')} style={{width:24,height:24,tintColor:this.state.t3c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t3c}}>{Global.language.run}</Text></View>
+            <View name="reward" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_reward.png')} style={{width:24,height:24,tintColor:this.state.t4c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t4c}}>{Global.language.reward}</Text></View>
+            <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t5c}}>{Global.language.more}</Text></View>
         </Tabs>
         <AvailiblePointAlert ref="alert"/>
       </View>

@@ -207,6 +207,13 @@ class FB_Register extends Component {
   }
 
   _sendFBRegister(){
+    Global.fbRegisterData = {
+      auth_token:this.props.accessToken,
+      display_name:this.state.display_name,
+      mobile_number:this.state.mobile_no,
+      birthday:this.state.birthday,
+      device_id:DeviceInfo.getUniqueID(),
+    };
     var data={
       method:'POST',
       body:JSON.stringify({
@@ -226,7 +233,7 @@ class FB_Register extends Component {
     console.log(responseJson);
     if(responseJson.status=='success'){
       Global.display_name = this.state.display_name;
-      Actions.welcome({photo:this.state.imagePath});
+      Actions.verify({photo:this.state.imagePath,isFacebook:true});
     }else{
       alert(responseJson.response.error);
     }
@@ -299,7 +306,7 @@ class FB_Register extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#9DD6EB',
+    backgroundColor: 'rgba(0,0,0,0)',
   },
   welcome: {
     fontSize: 20,

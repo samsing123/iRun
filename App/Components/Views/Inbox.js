@@ -41,6 +41,9 @@ var Spinner = require('react-native-spinkit');
 var maxLimit = 34;
 var OkAlert = require('../Controls/OkAlert');
 import AppEventEmitter from "../../Services/AppEventEmitter";
+import CheckBox from 'react-native-check-box';
+var deleteArr = [];
+var deleteArrSend = [];
 
 function createDistance(){
   let distance = [];
@@ -84,6 +87,7 @@ class Inbox extends Component {
       loading:true,
       availPoint:0,
       isDelete:false,
+      isDeleteAll:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -146,6 +150,7 @@ class Inbox extends Component {
   componentDidMount(){
     this._getInboxList();
     AppEventEmitter.addListener('rerender', this.setState({refresh:true}));
+    deleteArr = [];
   }
 
 
@@ -413,18 +418,99 @@ class Inbox extends Component {
     //Actions.rewarddetail({hasImage:msg.hasImage,title:msg.heading,id:msg.id});
   }
 
+  _sendDeleteRequest(){
+    this._getDeleteArray();
+    let data = {
+      method: 'POST',
+      body: JSON.stringify({
+        id: deleteArrSend
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/inbox-remove',(responseJson)=>{this._deleteCallback(responseJson)});
+  }
+
+  _deleteCallback(responseJson){
+    this.setState({isDelete:false});
+    this._getInboxList();
+  }
+
+  _getDeleteArray(){
+    for(var i=0;i<deleteArr.length;i++){
+      deleteArrSend.push(deleteArr[i].id);
+    }
+  }
+
+  _deleteAll(){
+    this.setState({
+      isDeleteAll:true,
+    });
+  }
+
+  _removeFromDelete(index){
+    var number = 0;
+    for(var i=0;i<deleteArr.length;i++){
+      if(deleteArr[i].index==index){
+        number = i;
+      }
+    }
+    deleteArr.splice( number, 1 );
+    this.setState({
+      isDeleteAll:false
+    });
+  }
+
+  _addToDelete(id,index){
+    if(!this._findInArray(index)){
+      deleteArr.push({
+        id:id,
+        index:index
+      });
+    }else{
+      this._removeFromDelete(index);
+    }
+    this.setState({
+      refresh:true,
+    });
+  }
+  _addToDeleteAll(id,index){
+    if(!this._findInArray(index)){
+      deleteArr.push({
+        id:id,
+        index:index
+      });
+    }
+  }
+
+  _findInArray(index){
+    for(var i=0;i<deleteArr.length;i++){
+      if(deleteArr[i].index==index){
+        return true;
+      }
+    }
+    return false;
+  }
+
   _renderNewRewardList(){
     var self = this;
     return Global.inbox_list.map(function(msg, i){
       var bgColor = 'rgba(255,0,0,1)';
+      var isDelete = self._findInArray(i);
       if(msg.is_read){
         bgColor = 'rgba(0,0,0,0)';
+      }
+      if(self.state.isDeleteAll){
+        isDelete = true;
+        self._addToDeleteAll(msg.id,i);
       }
       if(msg.hasImage){
         var deletebtn = <View/>;
         if(self.state.isDelete){
-          deletebtn = <TouchableOpacity style={{justifyContent:'center',width:40,height:240,alignItems:'center',backgroundColor:'#81C1E7'}}>
+          deletebtn = <TouchableOpacity onPress={()=>{self._addToDelete(msg.id,i)}} style={{justifyContent:'center',width:40,height:240,alignItems:'center',backgroundColor:'#81C1E7'}}>
             <View style={{width:20,height:20,borderRadius:20/2,backgroundColor:'white'}}></View>
+            {isDelete?<View style={{width:15,height:15,borderRadius:15/2,backgroundColor:'#1A8BCF',position:'relative',top:-17.5}}></View>:<View/>}
           </TouchableOpacity>;
         }
         return (
@@ -447,8 +533,11 @@ class Inbox extends Component {
       }else{
         var deletebtn = <View/>;
         if(self.state.isDelete){
-          deletebtn = <TouchableOpacity style={{justifyContent:'center',width:40,height:100,alignItems:'center',backgroundColor:'#81C1E7'}}>
-            <View style={{width:20,height:20,borderRadius:20/2,backgroundColor:'white'}}></View>
+          deletebtn = <TouchableOpacity onPress={()=>{self._addToDelete(msg.id,i)}} style={{justifyContent:'center',width:40,height:100,alignItems:'center',backgroundColor:'#81C1E7'}}>
+            <View style={{width:20,height:20,borderRadius:20/2,backgroundColor:'white'}}>
+              {isDelete?<View style={{width:15,height:15,borderRadius:15/2,backgroundColor:'#1A8BCF',position:'relative',top:2.5,left:2.5}}></View>:<View/>}
+            </View>
+
           </TouchableOpacity>;
         }
         return (
@@ -526,8 +615,10 @@ class Inbox extends Component {
         </View>;
     }else{
       deleteBar = <View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
-          <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>DELETE ALL</Text>
-          <TouchableOpacity onPress={()=>{this.setState({isDelete:false})}}>
+          <TouchableOpacity onPress={()=>{this._deleteAll()}}>
+            <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>DELETE ALL</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._sendDeleteRequest()}}>
             <Text style={{fontSize:17,paddingRight:30,color:'#268BC4'}}>DONE</Text>
           </TouchableOpacity>
         </View>;

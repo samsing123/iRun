@@ -653,6 +653,7 @@ class Profile extends Component {
         run_stat_arr[i] = this.state.display_title;
       }
     }
+    console.log('title:'+name+' vs '+Global.language.total_distance);
     switch(name){
       case Global.language.total_distance:content = this.wordShort(this.state.run_stat.distance);chartValue='distance';break;
       case Global.language.total_duration:content = this.state.run_stat.duration;chartValue='duration';break;
@@ -670,6 +671,7 @@ class Profile extends Component {
   }
 
   _renderRunStat(){
+    console.log('check is calling?');
     var distance = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_distance)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
         <Image source={require('../../Images/ic_distance.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
@@ -718,12 +720,13 @@ class Profile extends Component {
     }
     var tempArr = [];
     for(var i=0;i<4;i++){
+
       switch(run_stat_arr[i]){
-        case Global.language.total_distance:tempArr.push(distance);break;
-        case Global.language.total_duration:tempArr.push(duration);break;
-        case Global.language.avg_speed:tempArr.push(pace);break;
-        case Global.language.total_cal:tempArr.push(cal);break;
-        case Global.language.total_step:tempArr.push(steps);break;
+        case 'Total Distance':tempArr.push(distance);break;
+        case 'Total Duration':tempArr.push(duration);break;
+        case 'Avg. Speed':tempArr.push(pace);break;
+        case 'Total Calories':tempArr.push(cal);break;
+        case 'Total Steps':tempArr.push(steps);break;
       }
     }
     return tempArr;
@@ -778,10 +781,6 @@ class Profile extends Component {
       profileImage = <Image style={{width:80,height:80,borderRadius:80/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}/>;
     }else{
       profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;
-    }
-    if(Global.user_profile.run_stat_week.plots!=null){
-      console.log('is have data:');
-      console.log(Global.user_profile.run_stat_week.distance);
     }
 
     return (

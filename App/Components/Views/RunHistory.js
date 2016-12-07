@@ -383,7 +383,6 @@ class RunHistory extends Component {
   _handleBottom(e){
     if(e.nativeEvent.layoutMeasurement.height+e.nativeEvent.contentOffset.y>=e.nativeEvent.contentSize.height){
       endPage += 10;
-      console.log(e.nativeEvent+'endPage :'+endPage);
       this.setState({refresh:true});
     }
   }

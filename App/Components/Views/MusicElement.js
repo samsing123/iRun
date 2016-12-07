@@ -15,6 +15,7 @@ import MediaMeta from 'react-native-media-meta';
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {Actions} from "react-native-router-flux";
 var Global = require('../Global');
 class MusicElement extends Component {
   constructor(props) {
@@ -24,32 +25,39 @@ class MusicElement extends Component {
       path:this.props.path,
       artist:'',
       image:'<unknown>',
+      can_refresh:true,
     };
   }
   componentDidMount(){
     //for getting the metadata for the media file.... but take long time in ui thread
     //TODO: make this to reading the meta data one by one
-    // MediaMeta.get(this.props.path.replace('/sdcard/','/storage/emulated/0/'))
-    // .then(metadata => {
-    //   var title = metadata.title==null?'<unknown>':metadata.title;
-    //   var artist = metadata.artist==null?'<unknown>':metadata.artist;
-    //   var image = metadata.thumb==null?'<unknown>':'data:image/jpeg;base64,'+metadata.thumb;
-    //   this.setState({
-    //     title:title,
-    //     artist:artist,
-    //     image:image
-    //   });
-    // })
-    // .catch(err => console.error(err));
+    MediaMeta.get(this.props.path.replace('/sdcard/','/storage/emulated/0/'))
+    .then(metadata => {
+      var title = metadata.title==null?'<unknown>':metadata.title;
+      var artist = metadata.artist==null?'<unknown>':metadata.artist;
+      var image = metadata.thumb==null?'<unknown>':'data:image/jpeg;base64,'+metadata.thumb;
+      Global.tempMusicArr[this.props.index].title = title;
+      Global.tempMusicArr[this.props.index].artist = artist;
+      this.setState({
+        title:title,
+        artist:artist,
+        image:image,
+        can_refresh:false
+      });
+    })
+    .catch(err => console.error(err));
   }
 
   shouldComponentUpdate(){
-    return true;
+    return this.state.can_refresh;
   }
 
   _musicSelected(){
-    Global.musicToPlay = this.state.path;
-    console.log('music to play path:'+Global.musicToPlay);
+    Global.current_playing_index = this.props.index;
+    Global.musicToPlay.path = this.state.path;
+    Global.musicToPlay.title = this.state.title;
+    Global.musicToPlay.singer = this.state.artist;
+    Actions.pop();
   }
 
   render(){

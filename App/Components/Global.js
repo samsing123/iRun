@@ -271,7 +271,16 @@ var Global = {
     createLeftButton:createLeftButton,
     createNoMailButton:createNoMailButton,
     deviceWidth:Dimensions.get('window').width,
-    musicToPlay:'',
+    musicToPlay:{
+      path:'',
+      title:'',
+      singer:'',
+    },
+    isLockWhenStart:false,
+    current_playing_index:0,
+    tempMusicArr:[],
+    totalMusicNumber:0,
+    fbRegisterData:null,
     mobilePermission:'{"category.categories.index":true,"category.categories.create":true,"category.categories.store":true,"category.categories.edit":true,"category.categories.update":true,"category.categories.destroy":true,"dashboard.grid.save":false,"dashboard.grid.reset":false,"dashboard.index":false,"greetingcardimage.greetingcardimages.index":true,"greetingcardimage.greetingcardimages.create":true,"greetingcardimage.greetingcardimages.store":true,"greetingcardimage.greetingcardimages.edit":true,"greetingcardimage.greetingcardimages.update":true,"greetingcardimage.greetingcardimages.destroy":true,"greetingcardimage.greetingcardimages.uploadImage":true,"greetingcardintegrated.greetingcardintegrateds.index":true,"greetingcardintegrated.greetingcardintegrateds.create":true,"greetingcardintegrated.greetingcardintegrateds.store":true,"greetingcardintegrated.greetingcardintegrateds.edit":true,"greetingcardintegrated.greetingcardintegrateds.update":true,"greetingcardintegrated.greetingcardintegrateds.destroy'+
 '":true,"greetingcardintegrated.greetingcardintegrateds.uploadGreetingCard":true,"greetingcardvideo.greetingcardvideos.index":true,"greetingcardvideo.greetingcardvideos.create":true,"greetingcardvideo.greetingcardvideos.store":true,"greetingcardvideo.greetingcardvideos.edit":true,"greetingcardvideo.greetingcardvideos.update":true,"greetingcardvideo.greetingcardvideos.destroy":true,"greetingcardvideo.greetingcardvideos.uploadVideo":true,"greetingtext.greetingtexts.index":true,"greetingtext.greetingtexts.create":true,"greetingtext.greetingtexts.store":true,"greetingtext.greetingtexts.edit":true,"greetingtext.greetingtexts.update":true,"greetingtext.greetingtexts.destroy":true,"media.media.index":true,"media.media.create":true,"media.media.store":true,"media.media.edit":true,"media.media.update":true,"media.media.destroy":true,"media.media.getCategoryList":true,"media.media-grid.index":true,"media.media-grid.ckIndex":true,"menu.menus.index":false,"menu.menus.create":false,"menu.menus.sto'+
 're":false,"menu.menus.edit":false,"menu.menus.update":false,"menu.menus.destroy":false,"menu.menuitem.index":false,"menu.menuitem.create":false,"menu.menuitem.store":false,"menu.menuitem.edit":false,"menu.menuitem.update":false,"menu.menuitem.destroy":false,"page.pages.index":false,"page.pages.create":false,"page.pages.store":false,"page.pages.edit":false,"page.pages.update":false,"page.pages.destroy":false,"setting.settings.index":false,"setting.settings.getModuleSettings":false,"setting.settings.store":false,"tag.tags.index":true,"tag.tags.create":true,"tag.tags.store":true,"tag.tags.edit":true,"tag.tags.update":true,"tag.tags.destroy":true,"translation.translations.index":false,"translation.translations.update":false,"translation.translations.export":false,"translation.translations.import":false,"user.users.index":false,"user.users.create":false,"user.users.store":false,"user.users.edit":false,"user.users.update":false,"user.users.destroy":false,"user.roles.index":false,"user.role'+

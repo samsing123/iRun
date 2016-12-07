@@ -13,10 +13,15 @@ import {
   TouchableOpacity,
   DeviceEventEmitter,
   AsyncStorage,
-  BackAndroid
+  BackAndroid,
+  TextInput,
+  Image,
+  CameraRoll,
+  Linking
 } from 'react-native';
 var Tabs = require('react-native-tabs');
 const FBSDK = require('react-native-fbsdk');
+import ImageCropper from 'react-native-image-crop-picker';
 const {
   ShareDialog,
 } = FBSDK;
@@ -41,6 +46,13 @@ var haversine = require('haversine');
 var Global = require('../Global');
 var Util = require('../Util');
 var imageUri = '';
+import Share, {ShareSheet, Button} from 'react-native-share';
+let shareOptions = {
+      title: "Share image to facebook",
+      url: "http://facebook.github.io/react-native/",
+      message:'This is a message!!',
+      subject: "Share Link" //  for email
+    };
 import FileUploader from 'react-native-file-uploader'
 var coordinateEX= {
   latitude: LATITUDE,
@@ -83,6 +95,228 @@ import RNViewShot from "react-native-view-shot";
 import RNFetchBlob from 'react-native-fetch-blob';
 var current_id = 0;
 
+var mapStyle=[
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#bdbdbd"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dadada"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#c9c9c9"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  }
+]
+
 class Map extends Component {
   /*
   static renderNavigationBar(props){
@@ -109,6 +343,9 @@ class Map extends Component {
       totalDuration:0,
       point:0,
       share:false,
+      note:'',
+      camera_image:false,
+      img_data:''
     };
     this.pathArr = [];
     startTimestamp = new Date().valueOf();
@@ -138,14 +375,18 @@ class Map extends Component {
     });
   }
 
+  _doneRunEnd(){
+    this._sendEndRunRequest();
+  }
+
 
   componentDidMount(){
     console.log('test reload');
-
+    setTimeout(() => {this._getSnapShot()}, 1000);
     this.setState({
-      polylineCoords:this.props.path
+      polylineCoords:this.props.path,
+      camera_image:false,
     });
-    this._sendEndRunRequest();
     //this.getMapImage();
     //this._takeSnapshot();
     /*
@@ -400,10 +641,34 @@ class Map extends Component {
     //MapView.Polygon for non circle 2d shape
     return <MapView.Circle center={this.state.coordinate} radius={distance} strokeColor="#F00" fillColor="rgba(255,0,0,0.5)" strokeWidth={1} />
   }
-  _getSnapShot(id){
-    const snapshot = this.refs.map.getSnapshot({
-      width:720,
-      height:640,
+
+  _shareToInstagram(){
+    // var url = 'instagram://camera';
+    // Linking.canOpenURL(url).then(supported => {
+    //   if (!supported) {
+    //     console.log('Can\'t handle url: ' + url);
+    //   } else {
+    //     return Linking.openURL(url);
+    //   }
+    // }).catch(err => console.error('An error occurred', err));
+    shareOptions = {
+          title: "Share image to facebook",
+          url: "http://facebook.github.io/react-native/",
+          message:'This is a message!!',
+          subject: "Share Link", //  for email,
+          filePath:imageUri
+        };
+
+    Share.shareSingle(Object.assign(shareOptions, {
+      "social": "instagram"
+    })).catch(err => console.error('An error occurred', err));
+  }
+
+  _getSnapShot(){
+    console.log('get snap shot!!');
+    const snapshot = this.refs.map.takeSnapshot_android({
+      width:width,
+      height:(height/2)-Global.navbarHeight,
       result: 'file', // values: 'file', 'base64' (default: 'file')
       format: 'jpg', // file-format: 'png', 'jpg' (default: 'png')
       quality: 1.0, // compression-quality (only relevant for jpg) (default: 1.0)
@@ -412,6 +677,9 @@ class Map extends Component {
       //this._sendEndRunRequest(uri);
       imageUri = uri;
       console.log('image URI: '+imageUri);
+      var commonParameter = {
+        hashtag:'hihi'
+      };
       // Build up a shareable link.
       this.sharePhoto = {
         imageUrl: imageUri,// <diff_path_for_ios>
@@ -421,15 +689,13 @@ class Map extends Component {
       this.shareLinkContent = {
         contentType: 'photo',
         photos: [this.sharePhoto],
-        hashtags:'hashtag123'
+        commonParameters:commonParameter
       };
       this.shareLinkContents = {
         contentType: 'link',
         contentUrl: "https://facebook.com",
         contentDescription: 'Wow, check out this great site!',
       };
-
-      this._sendFormData(current_id);
       //console.log(uri);
       //Actions.showphoto({pathImage:uri});//'data:image/png;base64,'+data
       //
@@ -494,11 +760,7 @@ class Map extends Component {
     fetch(Global.serverHost+"api/run-photo", options)
     .then((response) => response.json())
     .then((responseJson)=>{
-      if(responseJson.status=='success'){
-        console.log('get Run Photo:'+id);
-        Global._getImage(id,(v)=>this._imageCallback(v));
-        console.log(responseJson);
-      }
+      Actions.home({type:ActionConst.RESET});
     });
   }
   _imageCallback(base64Str){
@@ -524,7 +786,7 @@ class Map extends Component {
         duration: this.props.time.toFixed(0),
         distance: distance.toFixed(2),
         pace: pace.toFixed(2),
-        note: '',
+        note: this.state.note,
         calories:0,
         pause: this.props.pause,
         run_token: Global.current_run_token,
@@ -539,13 +801,12 @@ class Map extends Component {
     Global._sendPostRequest(data,'api/run-end',(responseJson)=>{this._registerCallback(responseJson)});
   }
   _registerCallback(responseJson){
-    console.log(responseJson);
     if(responseJson.status='success'){
       this.setState({
         point:responseJson.response.points
       });
       current_id = responseJson.response.run_id;
-      this._getSnapShot(current_id);
+      this._sendFormData(current_id);
     }
     //Actions.numbercount();
   }
@@ -572,6 +833,38 @@ class Map extends Component {
     });
   }
 
+  _openCamera(){
+    ImageCropper.openCamera({
+      width: width,
+      height: (height/2)-Global.navbarHeight,
+      cropping: true,
+      includeBase64:true
+    }).then(image => {
+      var commonParameter = {
+        hashtag:'hihi'
+      };
+      // Build up a shareable link.
+      this.sharePhoto = {
+        imageUrl: image.path,// <diff_path_for_ios>
+        userGenerated: false,
+        caption: 'hello'
+      };
+      this.shareLinkContent = {
+        contentType: 'photo',
+        photos: [this.sharePhoto],
+        commonParameters:commonParameter
+      };
+      this.setState({
+        img_data:'data:'+image.mime+';base64,'+image.data,
+        camera_image:true,
+      });
+    });
+  }
+
+  _saveToCameraRoll(){
+    CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl);
+  }
+
   render() {
     var run_info = <View>
       <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14}}>
@@ -582,12 +875,12 @@ class Map extends Component {
           <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>RUNNING HISTORY</Text>
         </View>
       </TouchableOpacity>
-      <View style={{marginTop:12,alignItems:'center',justifyContent:'center',width:width}}>
-        <Text style={{fontSize:12,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>Note</Text>
+      <View style={{alignItems:'center',justifyContent:'center',width:width}}>
+        <TextInput placeholder="Note" style={{width:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})}/>
       </View>
       <View style={{position:'relative',top:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
-        <TouchableOpacity onPress={()=>{Actions.home({type:ActionConst.RESET})}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
     </View>;
     if(this.state.share){
@@ -596,33 +889,36 @@ class Map extends Component {
         <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>FACEBOOK</Text></View></TouchableOpacity>
       </View>
         <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>INSTAGRAM</Text></View></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._shareToInstagram()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>INSTAGRAM</Text></View></TouchableOpacity>
         </View>
         <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SAVE TO CAMERA ROLL</Text></View></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._saveToCameraRoll()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SAVE TO CAMERA ROLL</Text></View></TouchableOpacity>
         </View>
       </View>;
     }
 
     return (
       <View style={{flex:1}}>
-        <View style={styles.container} >
 
-          <MapView
+        <View style={styles.container} >
+          {!this.state.camera_image?<MapView
             ref="map"
             style={styles.map}
             region={this.state.region}
             showsUserLocation={true}
-            cacheEnabled={true}
             onRegionChange={region => this.onRegionChange(region)}
+            customMapStyle={mapStyle}
           >
             <MapView.Polyline
               coordinates={this.state.polylineCoords}
               strokeWidth={5}
               strokeColor="blue"
              />
-          </MapView>
+          </MapView>:<Image source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
 
+          <TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
+            <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
+          </TouchableOpacity>
           <View style={styles.buttonContainer}>
             <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
           </View>
@@ -633,6 +929,7 @@ class Map extends Component {
           <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
         </View>
         {run_info}
+
       </View>
     );
   }

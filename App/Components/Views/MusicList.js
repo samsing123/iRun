@@ -28,22 +28,49 @@ var Global = require('../Global');
 import MusicElement from './MusicElement';
 var Spinner = require('react-native-spinkit');
 var totalMapTime = 0;
+var totalMusicNumber = 0;
+var offset = 10;
+var start = 0;
 
 class MusicList extends Component {
   constructor(props) {
     super(props);
     this.state={
-      refresh:true
+      refresh:true,
+      totalMusic:Global.totalMusic,
+      musicLoaded:Global.musicLoaded,
+      reloading:false,
     };
 
   }
 
   componentDidMount(){
     //this._getFileRecursively('/sdcard/');
+    offset=10;
+    console.log("Music number:"+Global.totalMusicNumber);
     tempArr = [];
     setTimeout(() => {
       this._getFileRecursively('/sdcard/');
-    }, 1000)	;
+    }, 1000);
+
+  }
+
+  _getTotalNumberMusicFile(path){
+    RNFS.readDir(path)
+    .then((files)=>{
+      for (var i = 0, len = files.length; i < len; i++) {
+        if(files[i].isDirectory()){
+          //console.log("This is directory");
+          this._getTotalNumberMusicFile(files[i].path);
+        }
+        if(files[i].isFile()){
+          if(Util._getFileExtension(files[i].name)=='mp3'){
+            //console.log(files[i].path);
+            totalMusicNumber++;
+          }
+        }
+      }
+    }).done();
   }
 
   _getFileRecursively(path){
@@ -59,31 +86,47 @@ class MusicList extends Component {
               //console.log(files[i].path);
               tempArr.push({
                 path:files[i].path,
-                name:files[i].name
+                name:files[i].name,
+                artist:'',
+                title:'',
               });
+              if(tempArr.length==Global.totalMusicNumber){
+                this.setState({
+                  refresh:false,
+                });
+                Global.tempMusicArr = tempArr;
+                console.log('music list:'+Global.tempMusicArr[0].path)
+              }
             }
           }
-        }
-        if(tempArr.length!=0){
-          this.setState({
-            refresh:false
-          });
         }
       }).done();
   }
 
+
+
   _renderMusicList(){
     return tempArr.map(function(music,i){
-      return (
-        <TouchableOpacity onPress={()=>{console.log('123');}}>
-          <MusicElement title={music.title} path={music.path}/>
-        </TouchableOpacity>
-      )
+      if(i>=start&&i<offset){
+        return (
+          <TouchableOpacity onPress={()=>{console.log('123');}} key={i}>
+            <MusicElement title={music.title} path={music.path} index={i}/>
+          </TouchableOpacity>
+        )
+      }
     });
+  }
+
+  _handleBottom(e){
+    if(e.nativeEvent.layoutMeasurement.height+e.nativeEvent.contentOffset.y>=e.nativeEvent.contentSize.height){
+      offset += 10;
+      this.setState({reloading:true});
+    }
   }
 
   render() {
     var content = <View/>;
+
     if(!this.state.refresh){
       content = this._renderMusicList();
     }else{
@@ -93,7 +136,7 @@ class MusicList extends Component {
     }
     return (
       <View>
-        <ScrollView style={{marginTop:Global.navbarHeight,height:height-Global.navbarHeight-10}}>
+        <ScrollView onScroll={(e)=>{this._handleBottom(e)}} style={{marginTop:Global.navbarHeight,height:height-Global.navbarHeight-10}}>
           {content}
         </ScrollView>
       </View>
