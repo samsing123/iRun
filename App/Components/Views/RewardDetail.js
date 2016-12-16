@@ -81,6 +81,7 @@ class RewardDetail extends Component {
       total_point:0,
       isDisabled: false,
       arrow:'<',
+      tnc:'',
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -104,7 +105,7 @@ class RewardDetail extends Component {
     Global._sendGetRequest(data,'api/reward-detail?id='+this.props.id,(v)=>{this._getDetailCallback(v)});
     Global._fetchImage('api/reward-photo-merchant',this.props.id,(v)=>{this._getMerchantCallback(v)})
     Global.currentReward.image = this.props.image;
-
+    Global.currentReward.recipient_name = Global.user_profile.display_name;
   }
   _getMerchantCallback(response){
     Global.currentReward.logo = response;
@@ -125,6 +126,7 @@ class RewardDetail extends Component {
     Global.currentReward.id = response.response.id;
     Global.currentReward.tnc = response.response.tnc;
     Global.currentReward.reward_msg = response.response.reward_msg;
+    Global.currentReward.expiry_date = response.response.end_time;
 
     this.setState({
       htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
@@ -133,6 +135,7 @@ class RewardDetail extends Component {
       inventory:response.response.inventory,
       expiry:response.response.end_time,
       total_point:response.response.point,
+      tnc:response.response.tnc,
     });
   }
   _onNavigationStateChange(navState) {
@@ -214,6 +217,9 @@ class RewardDetail extends Component {
       </View>;
       tag = <View style={{paddingBottom:10}}>
         <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10,paddingTop:30}} ref="title1">{this.state.title}</Text>
+        <View style={{paddingLeft:10}}>
+          <Text style={{fontSize:16}}>{Global.language.expiry_date}   {Util._changeDateFormat(this.state.expiry)}</Text>
+        </View>
         <View style={{flexDirection:'row',paddingLeft:10,paddingTop:10}}>
           <Image style={{height:16,width:16}} source={{uri:this.state.merchantImage}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12}}>{this.state.merchant_name}</Text>
         </View>
@@ -250,18 +256,24 @@ class RewardDetail extends Component {
           renderStickyHeader={() => (
             <View key="sticky-header" style={{flexDirection:'row',paddingTop:20,paddingLeft:50}}>
 
-              <Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>
+              {/*<Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>*/}
             </View>
           )}>
           <View >
 
             <View style={{ width:width,alignItems:'center',justifyContent:'center'}}>
               <View style={{width:width-36}}>
+
                 {tag}
                 <View style={{marginLeft:10,marginRight:10,height:80,borderBottomWidth:1,borderBottomColor:'#F3F3F3',borderTopWidth:1,borderTopColor:'#F3F3F3',flexDirection:'row'}}>
                   <View style={{flex:0.5}}>
                     <Text style={{fontSize:16}}>{Global.language.point}</Text>
-                    <Text style={{fontSize:32}}>{this.state.point}</Text>
+                    <View style={{flexDirection:'row'}}>
+                      <View style={{position:'relative',top:15}}>
+                        <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
+                      </View>
+                      <Text style={{fontSize:32}}>{this.state.point}</Text>
+                    </View>
                   </View>
                   <View style={{flex:0.5}}>
                     <Text style={{fontSize:16}}>{Global.language.quantity}</Text>
@@ -282,21 +294,25 @@ class RewardDetail extends Component {
                     </View>
                   </View>
                 </View>
-                <View style={{paddingLeft:10}}>
-                  <Text style={{fontSize:16}}>{Global.language.expiry_date}   {Util._changeDateFormat(this.state.expiry)}</Text>
-                </View>
+
                 <WebView
                   source={{html:this.state.htmlContent}}
                   style={{width:width-30,height:this.state.webViewHeight}}
                   onNavigationStateChange={this._onNavigationStateChange.bind(this)}
                   injectedJavaScript={jscode}
                 />
+                <View style={{borderTopWidth:1,borderTopColor:'#F3F3F3',marginLeft:10,marginRight:10}}>
+                  <HTMLView
+                    value={this.state.tnc}
+                    stylesheet={{style2}}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </ParallaxScrollView>
-        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>
-         <Text style={{fontSize:20,color:'blue'}}>{this.state.arrow}</Text>
+        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+         <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=>{this.openAlert()}}>

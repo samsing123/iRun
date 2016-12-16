@@ -106,14 +106,15 @@ class Rewards extends Component {
         top=20;
       }
       return(
-      <View key={i}>
+      <TouchableOpacity key={i} onPress={()=>{Actions.redeemhistorysummary({id:redeem.id,reward_id:redeem.reward_id})}}>
         <View style={{marginTop:top,marginLeft:20,marginRight:40,height:70,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
           <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{redeem.date}</Text>
           <Text style={{fontSize:24,color:'rgba(0,0,0,1)'}}>{redeem.title}</Text>
           <View style={{position:'absolute',right:0,bottom:20,flexDirection:'row'}}>
-
-            <Text style={{color:'rgba(227,1,58,1)',fontSize:30}}>
+            <View style={{position:'relative',top:10,paddingRight:10}}>
               <Image style={{width:21,height:21,tintColor:'rgba(227,1,58,1)'}} source={require('../../Images/ic_pts_copy.png')}/>
+            </View>
+            <Text style={{color:'rgba(227,1,58,1)',fontSize:30}}>
               {redeem.point}
             </Text>
           </View>
@@ -122,7 +123,7 @@ class Rewards extends Component {
         <View style={{position:'absolute',right:20,bottom:20,flexDirection:'row'}}>
           <Text style={{color:'#f1f1f1',fontSize:30}}>></Text>
         </View>
-      </View>
+      </TouchableOpacity>
       );
     });
   }
@@ -137,15 +138,16 @@ class Rewards extends Component {
 
       var title = responseJson.response.reward_list[i].title;
       var id = responseJson.response.reward_list[i].id;
+      var point = responseJson.response.reward_list[i].point;
 
-
-      Global._fetchRewardImage('api/reward-photo',id,title,(v,titles,ids)=>{this._getImageCallback(v,titles,ids)});
+      Global._fetchRewardImage('api/reward-photo',id,title,point,(v,titles,ids,point)=>{this._getImageCallback(v,titles,ids,point)});
     }
   }
-  _getImageCallback(response,title,id){
+  _getImageCallback(response,title,id,point){
     var tempReward = {
       title:title,
       id:id,
+      point:point,
       image:response
     };
     rewardArr.push(tempReward);
@@ -438,8 +440,7 @@ class Rewards extends Component {
                   <Image style={{width:18.5,height:18.5}} source={require('../../Images/ic_pts_copy.png')}/>
                 </View>
                 <Text style={{fontSize:20,color:'white',fontWeight:'bold'}}>
-
-                  5000
+                  {news.point}
                 </Text>
               </View>
             </View>
@@ -496,7 +497,8 @@ class Rewards extends Component {
     return (
       <View style={styles.container}>
         {title}
-        <View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
+
+        {this.state.is_run_now?<View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
             <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>{Global.language.avail_point}</Text>
             <TouchableOpacity onPress={()=>{this.openAlert()}}>
@@ -513,7 +515,8 @@ class Rewards extends Component {
               {this.state.availPoint}
             </Text>
           </View>
-        </View>
+        </View>:<View/>}
+
         <View style={{height:height-225,width:width}}>
           <ScrollView componentDidMount={()=>{this.scrollTo({x:0,y:0,animated:true})}} ref={(scrollView)=>{_scrollView = scrollView}}>
             {content}

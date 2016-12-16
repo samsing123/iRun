@@ -28,7 +28,7 @@ import {
 const dismissKeyboard = require('dismissKeyboard');
 var Modal = require('react-native-modalbox');
 var Global = require('../Global');
-class TwoButtonAlert extends Component {
+class FitnessAlert extends Component {
 
   constructor(props) {
       super(props);
@@ -52,24 +52,24 @@ class TwoButtonAlert extends Component {
         msg = <Text style={[this.props.messageStyle,styles.messageStyle]}>{msg}</Text>
     }
     return (
-      <Modal style={[styles.modal,{width:300,height:400,borderRadius:6}]} backdropColor="#316EA7" position={"center"} ref="alert" isDisabled={this.state.isDisabled} swipeToClose={false} backdropPressToClose={false}>
+      <Modal style={[styles.modal,{width:300,height:250,borderRadius:6}]} backdropColor="#316EA7" position={"center"} ref="alert" isDisabled={this.state.isDisabled} swipeToClose={false} backdropPressToClose={false}>
         <View style={{flex:1,width:300,position:'absolute',top:20,alignItems:'center',justifyContent:'center',paddingLeft:10,paddingRight:10}}>
-          <Text style={[this.props.titleStyle,styles.titleStyle]}>{this.props.title}</Text>
-          {msg}
+          <Text style={[this.props.titleStyle,styles.titleStyle]}>FITNESS TRACKER</Text>
+          <Text style={[this.props.messageStyle,styles.messageStyle]}>If you have wearable device, you can connect to <Text style={{color:'#2D88B9',fontWeight:'bold'}}>YOUR FITNESS TRACKER ACCOUNT</Text> in order to get extra rewards.</Text>
         </View>
-        <View style={{width:300,position:'absolute',bottom:150,alignItems:'center',justifyContent:'center',paddingLeft:10,paddingRight:10}}>
-          <Text style={{fontSize:16,color:'black',textAlign:'center',paddingLeft:40,paddingRight:40}}>Please check inbox for the redemption letter</Text>
+        <View style={{flexDirection:'row',position:'relative',top:80}}>
+          <TouchableOpacity onPress={this.props.cancel} style={{alignItems:'center',justifyContent:'center',width:120,marginRight:10}}>
+            <View style={{backgroundColor:'white',height:40,width:120,borderRadius:6,justifyContent:'center',alignItems:'center',borderWidth:1,borderColor:'#1A8BCF'}}>
+              <Text style={{color:'#1A8BCF',fontSize:12}}>CANCEL</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.props.agree} style={{alignItems:'center',justifyContent:'center',width:120}}>
+            <View style={{backgroundColor:'#1A8BCF',height:40,width:120,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
+              <Text style={{color:'white',fontSize:12}}>AGREE</Text>
+            </View>
+          </TouchableOpacity>
+
         </View>
-        <TouchableOpacity onPress={this.props.btn1Function} style={{position:'absolute',bottom:80,alignItems:'center',justifyContent:'center',width:300}}>
-          <View style={{backgroundColor:'#1A8BCF',height:50,width:200,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{color:'white',fontSize:12}}>{this.props.btn1}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.props.btn2Function} style={{position:'absolute',bottom:20,alignItems:'center',justifyContent:'center',width:300}}>
-          <View style={{backgroundColor:'#1A8BCF',height:50,width:200,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{color:'white',fontSize:12}}>{this.props.btn2}</Text>
-          </View>
-        </TouchableOpacity>
       </Modal>
     );
   }
@@ -104,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = TwoButtonAlert;
+module.exports = FitnessAlert;

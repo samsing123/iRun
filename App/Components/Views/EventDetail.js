@@ -65,7 +65,7 @@ class EventDetail extends Component {
       webViewHeight:2000,
       shareLinkContent:{
         contentType: 'link',
-        contentUrl: this.props.url
+        contentUrl: 'http://52.37.115.132/axa/irun-cms/'
       },
       htmlContent:"",
       tag:'',
@@ -97,10 +97,15 @@ class EventDetail extends Component {
   _getDetailCallback(response){
     var date = Util._getEventDetailDate(response.response.start_time.split(' ')[0],response.response.end_time.split(' ')[0]);
     var tagList = Util._getTag(response.response.share_hashtag);
+    var tempContent = {
+      contentType: 'link',
+      contentUrl: response.response.link,
+    };
     this.setState({
       tag:tagList,
       htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
       date:date,
+      shareLinkContent:tempContent,
     });
     count=5;
   }
@@ -167,15 +172,21 @@ class EventDetail extends Component {
                 style={{width:width,height:290}}
               />*/}
               <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
+              <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',bottom:-24,right:16,zIndex:100}}>
+                <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
+              </View>
            </View>
           )}
           renderStickyHeader={() => (
             <View key="sticky-header" style={{flexDirection:'row',paddingTop:20,paddingLeft:50}}>
-              <Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>
+
             </View>
           )}>
           {content}
           <View >
+          <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',top:-32,right:16,zIndex:100}}>
+            <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
+          </View>
             <View style={{ width:width,alignItems:'center',justifyContent:'center'}}>
               <View style={{width:width-36}}>
                 {tag}
@@ -189,8 +200,8 @@ class EventDetail extends Component {
             </View>
           </View>
         </ParallaxScrollView>
-        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>
-         <Text style={{fontSize:20,color:'blue'}}>{this.state.arrow}</Text>
+        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+         <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
 
       </View>

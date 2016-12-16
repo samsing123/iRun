@@ -28,6 +28,7 @@ import GoogleAnalytics from 'react-native-google-analytics-bridge';
 import Swiper from 'react-native-swiper';
 import CheckBox from 'react-native-checkbox';
 import {Header,Button,H1,Input} from 'native-base';
+var DeviceInfo = require('react-native-device-info');
 
 var temp = [];
 var height = Dimensions.get('window').height;
@@ -142,7 +143,7 @@ class FitnessTrackerConnect extends Component {
     temp.push(findNodeHandle(this.refs.eamil));
     temp.push(findNodeHandle(this.refs.password));
     this._interestSelected = this._interestSelected.bind(this);
-    alert(this.props.gender);
+
   }
   /*
   static renderNavigationBar(props){
@@ -322,17 +323,11 @@ class FitnessTrackerConnect extends Component {
   }
   _jwAuth(){
     var data = qs.stringify({
-            client_id:'227XBC',
-            response_type: 'token',
-            scope: 'activity profile',
-            redirect_uri: Global.fitbit_redirect,
-            expires_in: '31536000',
-            state:JSON.stringify({
-              user_id:Global.user_profile.user_id,
-              lang:Global.language.lang
-            }),
+            mobile_number:Global.user_profile.mobile_number,
+            device_id:DeviceInfo.getUniqueID(),
           });
-    Linking.openURL('https://www.fitbit.com/oauth2/authorize?'+data);
+    data = data.replace("&","%26");
+    Linking.openURL('https://jawbone.com/auth/oauth2/auth?response_type=code&client_id=wAkf1kHX_NI&scope=basic_read move_read&redirect_uri=http://52.37.115.132/axa/irun/connect-jawbone?'+data);
   }
 
 

@@ -75,7 +75,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNSpinkitPackage(),
            new MainReactPackage(),
             new PickerPackage(),
-            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
+            new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG),
             new RNSoundPackage(),
             new RNSvgPackage(),
             new RNMediaMetaPackage(),

@@ -37,20 +37,65 @@ import AppEventEmitter from "../../Services/AppEventEmitter";
 import HTMLView from'react-native-htmlview';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
-class RedeemSummary extends Component {
+class RedeemHistorySummary extends Component {
   constructor(props) {
     super(props);
     this.state={
-      refresh:true,
+      loading:true,
       district:'District',
       district_width:80,
       errorMessage:'',
       successMessage:'',
+      title:'',
+      desc:'',
+      date:'',
+      recipient_name:'',
+      recipient_addr:'',
+      recipient_district:'',
+      qty:'',
+      point:'',
+      codes:'',
+      img_data:'',
     };
   }
 
   componentDidMount(){
+    let data = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    };
+    Global._sendPostRequest(data,'api/redeem-detail?id='+this.props.id,(responseJson)=>{this._redeemDetailCallback(responseJson)});
 
+  }
+
+  _imageCallback(img_data){
+    console.log('image:'+img_data);
+    this.setState(
+      {
+        img_data:img_data
+      }
+    );
+  }
+  _redeemDetailCallback(responseJson){
+
+    if(responseJson.status=='success'){
+      this.setState({
+        title:responseJson.response.title,
+        desc:responseJson.response.desc,
+        date:responseJson.response.date,
+        recipient_name:responseJson.response.recipient_name,
+        recipient_addr:responseJson.response.recipient_addr,
+        recipient_district:responseJson.response.recipient_district,
+        qty:responseJson.response.qty,
+        point:responseJson.response.point,
+        codes:responseJson.response.codes,
+        loading:false,
+      });
+      Global._fetchImage('api/reward-photo',responseJson.response.reward_id,(img)=>{this._imageCallback(img)});
+    }
   }
 
   _redeemEletricReward(){
@@ -157,18 +202,28 @@ class RedeemSummary extends Component {
       content = <View>
         <View style={{paddingTop:10,paddingLeft:20}}>
           <Text style={{fontSize:14}}>Recipient Name</Text>
-          <Text style={{fontSize:18}}>{Global.currentReward.recipient_name}</Text>
+          <Text style={{fontSize:18}}>{this.state.recipient_name}</Text>
         </View>
         <View style={{paddingTop:10,paddingLeft:20}}>
           <Text style={{fontSize:14}}>Recipient Postal Address</Text>
-          <Text style={{fontSize:18}}>{Global.currentReward.address+', '+Global.currentReward.district}</Text>
+          <Text style={{fontSize:18}}>{this.state.recipient_addr+', '+this.state.recipient_district}</Text>
         </View>
       </View>;
     }
+
+    if(this.state.loading){
+      return <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
+        <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
+      </View>;
+    }
+
+    var point = this.state.point+'';
+    if(point!=''){
+      point = point.substr(1);
+    }
     return (
+
       <View style={styles.container}>
-
-
          <ParallaxScrollView
           backgroundColor="white"
           contentBackgroundColor="white"
@@ -179,7 +234,7 @@ class RedeemSummary extends Component {
           }}
           renderForeground={() => (
            <View style={{ height: 240,width:width, flex: 1}}>
-              <Image style={{height:240,width:width}} source={{uri:Global.currentReward.image}} />
+              <Image style={{height:240,width:width}} source={{uri:this.state.img_data}} />
            </View>
           )}
           renderStickyHeader={() => (
@@ -189,8 +244,7 @@ class RedeemSummary extends Component {
             </View>
           )}>
           <View style={{paddingTop:20,paddingLeft:20}}>
-            <Text style={{fontSize:24}}>{Global.currentReward.title}</Text>
-            <Text style={{fontSize:16}}>{Global.language.expiry_date}   {Util._changeDateFormat(Global.currentReward.expiry_date)}</Text>
+            <Text style={{fontSize:24}}>{this.state.title}</Text>
             <View style={{flexDirection:'row',paddingTop:10}}>
               <Image style={{height:16,width:16}} source={{uri:Global.currentReward.logo}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12}}>{Global.currentReward.company_name}</Text>
             </View>
@@ -202,7 +256,7 @@ class RedeemSummary extends Component {
                 <View style={{position:'relative',top:5}}>
                   <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
                 </View>
-                <Text style={{fontSize:20}}>{Global.currentReward.point}</Text>
+                <Text style={{fontSize:20}}>{point}</Text>
               </View>
             </View>
             <View style={{flex:0.5}}>
@@ -211,7 +265,7 @@ class RedeemSummary extends Component {
                 <View style={{position:'relative',top:15}}>
                   <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
                 </View>
-                <Text style={{fontSize:32}}>{Global.currentReward.total_point}</Text>
+                <Text style={{fontSize:32}}>{point}</Text>
               </View>
             </View>
           </View>
@@ -227,9 +281,9 @@ class RedeemSummary extends Component {
         <TNCAlert ref="alert" message={Global.currentReward.tnc} callback={()=>this._acceptCallback()}/>
         <TwoButtonAlert message={this.state.successMessage} ref="successAlert" title={Global.language.redeem_successful} btn1={Global.language.back_to_reward} btn2={Global.language.view_redemption_history} btn1Function={()=>{Actions.home({renderLeftButton:Global.createLeftButton,type:ActionConst.RESET,tab:'reward',title:'REWARD'});}} btn2Function={()=>{Actions.home({type:ActionConst.RESET,tab:'history',title:'REWARD'});}}/>
         <OkAlert ref="okAlert" message={this.state.errorMessage}/>
-        <TouchableOpacity onPress={()=>{this._acceptCallback()}} style={{width:width,alignItems:'center',position:'absolute',bottom:20}}>
+        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{width:width,alignItems:'center',position:'absolute',bottom:20}}>
           <View style={{borderRadius:6,backgroundColor:'#198BCE',width:width-140,height:40,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:16,color:'white'}}>{Global.language.confirm}</Text>
+            <Text style={{fontSize:16,color:'white'}}>BACK</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -328,4 +382,4 @@ const styles = StyleSheet.create({
     padding: 10
   },
 });
-module.exports = RedeemSummary;
+module.exports = RedeemHistorySummary;

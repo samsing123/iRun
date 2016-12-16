@@ -393,7 +393,17 @@ class PointHistorys extends Component {
   }
   */
 
+  _checkAddOrReduct(value){
+    console.log('value:'+value);
+    if(value>0){
+      return '#1683C1';
+    }else{
+      return '#DD1D2C';
+    }
+  }
+
   _renderPointHistory(){
+    var self = this;
     return pointHistory.map(function (points,i){
       return <View>
         <View style={{paddingLeft:20,paddingRight:20}}>
@@ -401,7 +411,13 @@ class PointHistorys extends Component {
             <Text>{Util._changeDateFormat(points.date)}</Text>
             <View style={{flexDirection:'row',width:width-60,justifyContent:'space-between'}}>
               <Text style={{fontSize:18}}>{points.name}</Text>
-              <Text style={{fontSize:28,position:'relative',top:-10}}>{points.point}</Text>
+              <View style={{flexDirection:'row'}}>
+                <View style={{paddingRight:10}}>
+                  <Image source={require('../../Images/ic_pts_copy.png')} style={{width:24,height:24,tintColor:self._checkAddOrReduct(points.point)}}/>
+                </View>
+                <Text style={{fontSize:28,position:'relative',top:-10,color:self._checkAddOrReduct(points.point)}}>{points.point}</Text>
+              </View>
+
             </View>
           </View>
         </View>
@@ -459,14 +475,21 @@ class PointHistorys extends Component {
       <View>
       <View style={styles.container}>
         <View style={{width:width,height:150,borderBottomWidth:1,borderBottomColor:'black'}}>
+          <Image source={require('../../Images/bg_setting.png')} style={{position:'absolute',top:0,left:0,width:width,height:150}}/>
           <View style={{width:width,height:120,position:'relative',top:-10,borderRadius:80/2,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{fontSize:12}}>{Global.language.avail_point}</Text>
-            <Text style={{fontSize:40}}>{Global.user_profile.points}</Text>
-            <Text style={{fontSize:12}}>{Global.language.expiry_date}</Text>
+            <View style={{flexDirection:'row'}}>
+              <View style={{position:'relative',top:2}}>
+                <Image style={{width:12,height:12}} source={require('../../Images/ic_pts_copy.png')}/>
+              </View>
+              <Text style={{fontSize:12,color:'white'}}>{Global.language.avail_point}</Text>
+            </View>
+
+            <Text style={{fontSize:40,color:'white',fontWeight:'bold'}}>{Global.user_profile.points}</Text>
+            <Text style={{fontSize:12,color:'white'}}>{Global.language.expiry_date}:{Global.user_profile.points_exp_date}</Text>
           </View>
         </View>
         <View style={{borderWidth:1,borderColor:'#f1f1f1',position:'relative',top:-25,borderRadius:8}}>
-          <ScrollView style={{width:width-20,height:height-150-25-Global.navbarHeight,backgroundColor:'white',borderColor:'#f1f1f1',borderWidth:1}}>
+          <ScrollView style={{width:width-20,height:height-150-25-Global.navbarHeight,backgroundColor:'white',borderRadius:8}}>
             {content}
           </ScrollView>
         </View>

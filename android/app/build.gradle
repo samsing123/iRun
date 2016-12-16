@@ -101,6 +101,14 @@ android {
                                 onesignal_app_id: "f0109b83-0ffc-4f47-ab8c-daa7d349a00b",
                                 onesignal_google_project_number: "1055225877653"]
     }
+    signingConfigs {
+        release {
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+        }
+    }
     splits {
         abi {
             reset()
@@ -110,9 +118,14 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "CODEPUSH_KEY", '"7D-yWdaI-sCJthwiRyg0vd-h2GaUNki9NrJXG"'
+        }
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            buildConfigField "String", "CODEPUSH_KEY", '"7D-yWdaI-sCJthwiRyg0vd-h2GaUNki9NrJXG"'
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release

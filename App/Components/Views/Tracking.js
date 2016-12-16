@@ -32,6 +32,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import RNFetchBlob from 'react-native-fetch-blob';
 var RNFS = require('react-native-fs');
 var Polyline = require('polyline');
+import ImageCropper from 'react-native-image-crop-picker';
 var testingFeed={
   "FeedList":[
     {
@@ -145,6 +146,7 @@ class Tracking extends Component {
       left:'time',
       textInputValue:'',
       lock_icon:'unlock-alt',
+      lock:false,
       is_playing:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
@@ -175,6 +177,7 @@ class Tracking extends Component {
       left:'time',
       textInputValue:'',
       lock_icon:'unlock-alt',
+      lock:false,
       is_playing:false
     });
     fill = 0;
@@ -313,6 +316,17 @@ class Tracking extends Component {
     });
   }
 
+  _openCamera(){
+    ImageCropper.openCamera({
+      width: width,
+      height: height,
+      cropping: true,
+      includeBase64:true
+    }).then(image => {
+
+    });
+  }
+
   componentDidMount(){
     this._reInitial();
     mSensorManager.startAccelerometer(100);
@@ -321,7 +335,9 @@ class Tracking extends Component {
     pathArr = [];
     polylineArr = [];
 
-
+    if(Global.runLock){
+      this._lockScreen();
+    }
 
     /*
     navigator.geolocation.watchPosition(
@@ -347,10 +363,9 @@ class Tracking extends Component {
             */
             cur_lat = location.latitude;
             cur_lng = location.longitude;
-            if(true){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
+            acceleration = location.speed*3.6;
+            if(acceleration<30){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
               //is walking or not
-              acceleration = location.speed*3.6;
-              console.log('speed from loaction update'+acceleration);
               if(previousLats!=0&&previousLngs!=0){
                 this._calDistance(previousLats,previousLngs,location.latitude,location.longitude);
               }
@@ -358,6 +373,8 @@ class Tracking extends Component {
               this._positionUpdate(location.latitude,location.longitude);
               previousLats = location.latitude;
               previousLngs = location.longitude;
+            }else{
+              alert('You are not running');
             }
         }
     );
@@ -413,7 +430,8 @@ class Tracking extends Component {
     var currentState = this.state.opacity_lock;
     this.setState({
       opacity_lock:currentState==0?1:0,
-      lock_icon:currentState==0?'lock':'unlock-alt'
+      lock_icon:currentState==0?'lock':'unlock-alt',
+      lock:currentState==0?true:false,
     });
   }
   _loadingProgress(){
@@ -728,10 +746,10 @@ class Tracking extends Component {
       return (
         <View style={{width:width,height:height,position:'absolute',top:0,left:0,opacity:this.state.opacity,backgroundColor:'white'}}>
           <View style={{flexDirection:'row',width:width,alignItems:'center',justifyContent:'space-around',height:82,position:'absolute',bottom:111}}>
-            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><View style={{width:48,height:48,backgroundColor:'black'}}></View></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._endRun()}}><View style={{width:82,height:82,backgroundColor:'black'}}></View></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._resumeRun()}}><View style={{width:82,height:82,backgroundColor:'black'}}></View></TouchableOpacity>
-            <View style={{width:48,height:48,backgroundColor:'black'}}></View>
+            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_location.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._endRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_stop.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._resumeRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_play.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._openCamera()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_cam.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
           </View>
         </View>
       )
@@ -747,12 +765,17 @@ class Tracking extends Component {
     }
   }
   _getIconFromValue(value){
-    var case1 = value.indexOf(':');
-    var case2 = value.indexOf('"');
-    if(case1!=-1){
+    var case1 = null;
+    var case2 = null;
+    if(value!=''){
+      case1 = value.indexOf(':');
+      case2 = value.indexOf('"');
+    }
+
+    if(case1!=-1&&case1){
       return 'time';
     }else{
-      if(case2!=-1){
+      if(case2!=-1&&case2){
         return 'speed';
       }else{
         return 'distance';
@@ -777,14 +800,20 @@ class Tracking extends Component {
     var left_icon = null;
     var right_icon = null;
     switch(this._getIconFromValue(left_value)){
-      case 'time':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
-      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
-      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
+      case 'time':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_duration.png')}></Image>;
+      break;
+      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}></Image>;
+      break;
+      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_distance.png')}></Image>;
+      break;
     }
     switch(this._getIconFromValue(right_value)){
-      case 'time':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_duration.png')}/>;break;
-      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}/>;break;
-      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:30,height:30,tintColor:'white'}} source={require('../../Images/ic_distance.png')}/>;break;
+      case 'time':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_duration.png')}></Image>;
+      break;
+      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}></Image>;
+      break;
+      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_distance.png')}></Image>;
+      break;
     }
     return (
 
@@ -823,7 +852,7 @@ class Tracking extends Component {
               </TouchableOpacity>
           </View>
           <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:30}}>
-            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={{uri:'https://cdn2.iconfinder.com/data/icons/perfect-flat-icons-2/512/Pause_button_play_stop_blue.png'}}/></TouchableOpacity>
+            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={require('../../Images/btn_runpause.png')}/></TouchableOpacity>
             {/*this._loadingProgress()*/}
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>
@@ -836,14 +865,17 @@ class Tracking extends Component {
               <TouchableOpacity onPress={()=>{this._goToPre()}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/></TouchableOpacity>
               {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._setupMusic()}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
               <TouchableOpacity onPress={()=>{this._goToNext()}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)" style={{paddingLeft:50}}/></TouchableOpacity>
-              <Icon name="music" size={40} color="rgba(255,255,255,1)" onPress={()=>{Actions.musiclist({musicArr:tempArr})}} style={{position:'absolute',right:20,bottom:9}}/>
+              <TouchableOpacity onPress={()=>{Actions.musiclist({musicArr:tempArr})}} style={{position:'absolute',right:20,bottom:9}}>
+                <Image source={require('../../Images/btn_music.png')} style={{width:40,height:40}}/>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
         {this._lock()}
         <View style={{position:'absolute',right:18,top:18,flexDirection:'row'}}>
           <TouchableOpacity onPress={()=>{this._lockScreen()}}>
-            <Icon name={this.state.lock_icon} size={46} color="rgba(20,139,205,1)"/>
+            {!this.state.lock?<Image source={require('../../Images/btn_lock.png')} style={{width:46,height:46}}/>:<Image source={require('../../Images/btn_unlock.png')} style={{width:46,height:46}}/>}
+
           </TouchableOpacity>
         </View>
         {this._overlay()}

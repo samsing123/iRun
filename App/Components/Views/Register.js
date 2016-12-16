@@ -32,7 +32,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
-var privacyText = "By creating an account, you agree to AXA's";
+var privacyText = "Do not agree with the use and provision of my personal\ndata for direct marketing purposes as set out above in";
+var privacyText2 = "the Personal Information Collection Statement (see \"Use and\nprovision of personaldata in driect marketing\") and do not wish\nto receive any promotional and direct marketing materials.";
 var temp = [];
 const FBSDK = require('react-native-fbsdk');
 var DeviceInfo = require('react-native-device-info');
@@ -89,6 +90,7 @@ class Register extends Component {
       checked:false,
       email:'',
       password:'',
+      confirm_password:'',
       display_name:'',
       mobile_no:'',
       birthday:'Birthday(mm/dd)',
@@ -134,7 +136,6 @@ class Register extends Component {
   }
   */
   _vaildateFormSubmit(){
-    Actions.welcome();
 
     if(Global._vaildateInputBlank(this.state.email,'email')
     ||Global._vaildateInputFormat(this.state.email,'email','email',100)){
@@ -142,6 +143,10 @@ class Register extends Component {
     }
     if(Global._vaildateInputBlank(this.state.password,'password')
     ||Global._vaildateInputFormat(this.state.password,'password','num+alpha+spec',12,6)){
+      return;
+    }
+    if(this.state.password!=this.state.confirm_password){
+      alert('password and confirm password is not match');
       return;
     }
     if(Global._vaildateInputBlank(this.state.display_name,'display name')
@@ -181,6 +186,7 @@ class Register extends Component {
         'Content-Type': 'application/json',
       }
     };
+
     Global._sendPostRequest(data,'api/register',(v)=>this._registerCallback(v));
   }
   _registerCallback(responseJson){
@@ -212,12 +218,12 @@ class Register extends Component {
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
       <InputScrollView style={styles.container} inputs={temp}>
         <Image source={require('../../Images/bg_onboarding.png')} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
-        <View style={{paddingTop:height*0.1,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+        <View style={{paddingTop:height*0.02,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>REGISTER</H1>
           <Text style={{color:'white'}}>Register with your email address</Text>
           <Text style={{color:'white'}}>before starting.</Text>
         </View>
-        <View style={{paddingTop:height*0.05,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+        <View style={{paddingTop:height*0.03,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
             <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='email' onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
@@ -225,10 +231,13 @@ class Register extends Component {
             <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Password" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({password:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
+            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="ConfirmPassword" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({confirm_password:text})}></TextInput>
+          </View>
+          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
             <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+            <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10,backgroundColor:'rgba(0,0,0,0)'}}>
             <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
@@ -241,16 +250,20 @@ class Register extends Component {
                 onChange={(checked) => this.setState({checked:checked})}
               />
               <View style={{flexDirection:'column',marginLeft:5}}>
-                <View style={{flexDirection:'row'}}>
-                  <Text style={{color:'white',fontSize:12}}>{privacyText}</Text>
-                </View>
-                <View style={{flexDirection:'row'}}>
-                  <TouchableOpacity><Text style={{color:'white',fontSize:12,textDecorationLine:'underline'}}>privacy Policy</Text></TouchableOpacity><Text style={{color:'white',fontSize:11}}>and </Text><TouchableOpacity><Text style={{color:'white',fontSize:12,textDecorationLine:'underline'}}>Terms of use.</Text></TouchableOpacity>
+                <View style={{flexDirection:'row',width:width-40}}>
+                  <Text style={{color:'white',fontSize:10}}>
+                    {privacyText}
+                  </Text>
                 </View>
               </View>
             </View>
+            <View style={{flexDirection:'row',width:width-40,position:'relative',top:-5}}>
+              <Text style={{color:'white',fontSize:10}}>
+                {privacyText2}
+              </Text>
+            </View>
           </View>
-          <View style={{paddingTop:44}}>
+          <View style={{paddingTop:24}}>
             <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
           </View>
           <View style={{paddingTop:5,flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>

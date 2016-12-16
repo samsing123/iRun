@@ -661,7 +661,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     backgroundColor: '#EFEFEF',
-    paddingTop:navbarHeight
+    paddingTop:navbarHeight,
+    borderTopWidth:3,
+    borderTopColor:'#B3C9D4',
   },
   scrollContainer:{
     justifyContent: 'center',

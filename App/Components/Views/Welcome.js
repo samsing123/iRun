@@ -62,7 +62,7 @@ class Welcome extends Component {
       display_name:'',
       mobile_no:'',
       birthday:'',
-      imagePath:this.props.photo==null?'':this.props.photo,
+      imagePath:Global.fb_icon,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -134,21 +134,21 @@ class Welcome extends Component {
     if(this.state.imagePath!=''){
       photo = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:88,height:88,borderRadius:88/2}} source={{uri:this.state.imagePath}}></Image></TouchableOpacity>
     }else{
-      photo = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:88,height:88,borderRadius:88/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}></Image><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_profile_setting.png')}></Image></TouchableOpacity>
+      photo = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:88,height:88,borderRadius:88/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}></Image><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>
     }
     return (
       <View style={styles.container} inputs={temp}>
         <Image source={require('../../Images/bg_onboarding.png')} style={{width:width,height:height,position:'absolute',top:0,left:0}}/>
-        <View style={{paddingTop:206,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+        <View style={{paddingTop:176,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           {photo}
-          <H1 style={{color:"white",fontWeight:'bold'}}>WELCOME ABOARD</H1>
+          <H1 style={{color:"white",fontWeight:'bold'}}>WELCOME ABOARD,</H1>
           <H1 style={{color:"white",fontWeight:'bold'}}>{Global.display_name}</H1>
           <Text style={{color:'white',paddingTop:29}}>To enhance your experience</Text>
           <Text style={{color:'white'}}>with iRun for Love. We need to</Text>
           <Text style={{color:'white'}}>get to know you a little bit better.</Text>
         </View>
         <View style={{position:'absolute',bottom:23,left:0,flexDirection:'row',width:width,alignItems:'center',justifyContent:'center'}}>
-          <Button onPress={()=>{Actions.home({type:ActionConst.RESET})}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12,fontWeight:'bold'}}>NOT NOW</Text></Button>
+          <Button onPress={()=>{Actions.home({type:ActionConst.RESET,fitnesstracker:true})}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12,fontWeight:'bold'}}>NOT NOW</Text></Button>
           <Button onPress={()=>{Actions.personalinformation()}}style={{backgroundColor:'white',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4,marginLeft:11}} transparent={true}><Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>GET STARTED</Text></Button>
         </View>
       </View>

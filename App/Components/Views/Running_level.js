@@ -188,13 +188,13 @@ class Running_level extends Component {
   _levelSelect(num){
     var level = '';
     switch(num){
-      case 0:level='level1';break;
-      case 1:level='level2';break;
-      case 2:level='level3';break;
-      case 3:level='level4';break;
-      case 4:level='level5';break;
-      case 5:level='level6';break;
-      case 6:level='level7';break;
+      case 0:level='Light';break;
+      case 1:level='Light';break;
+      case 2:level='Medium';break;
+      case 3:level='Medium';break;
+      case 4:level='Medium';break;
+      case 5:level='Heavy';break;
+      case 6:level='Heavy';break;
     }
     this.setState({
       value:num,
@@ -205,13 +205,13 @@ class Running_level extends Component {
   _levelScroll(num){
     var level = '';
     switch(num){
-      case 0:level='level1';break;
-      case 1:level='level2';break;
-      case 2:level='level3';break;
-      case 3:level='level4';break;
-      case 4:level='level5';break;
-      case 5:level='level6';break;
-      case 6:level='level7';break;
+      case 0:level='Light';break;
+      case 1:level='Light';break;
+      case 2:level='Medium';break;
+      case 3:level='Medium';break;
+      case 4:level='Medium';break;
+      case 5:level='Heavy';break;
+      case 6:level='Heavy';break;
     }
     this.setState({
       value:num,
@@ -253,7 +253,7 @@ class Running_level extends Component {
           onValueChange={(value) => this._levelScroll(value)}/>
         </View>
         <View style={{position:'absolute',bottom:26,paddingLeft:28,flexDirection:'row'}}>
-          <TouchableOpacity><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.back}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
           <TouchableOpacity onPress={()=>{

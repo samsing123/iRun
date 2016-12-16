@@ -325,12 +325,15 @@ class RunHistory extends Component {
         return(
           <View key={i}>
           {monthBar}
-          <TouchableOpacity onPress={()=>{Actions.rundetail({id:run.id})}} >
+          <TouchableOpacity onPress={()=>{Actions.rundetail({id:run.id,title:Util._getRunHistoryDateFormat(run.start_time)})}} >
             <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
               <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(run.start_time)}</Text>
               <Text style={{fontSize:24,color:'#087DC4'}}>{run.title}</Text>
               <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                <Icon name="heart-o" size={24} color="#087DC4" style={{position:'relative',top:5}}/><Text style={{color:'#087DC4',fontSize:24}}>{run.point_earned}</Text>
+                <View style={{position:'relative',top:5}}>
+                  <Image source={require('../../Images/ic_pts_copy.png')} style={{width:24,height:24,tintColor:'#087DC4'}}/>
+                </View>
+                <Text style={{color:'#087DC4',fontSize:24}}>{run.point_earned}</Text>
               </View>
               <View style={{position:'absolute',right:10,top:45}}>
                 <Image source={require('../../Images/btn_next.png')} style={{width:12,height:12,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/>
@@ -502,6 +505,8 @@ const styles = StyleSheet.create({
 onValueChange={(value) => this.setState({trueSwitchIsOn: value})}
 style={{marginBottom: 10}}
 value={this.state.trueSwitchIsOn} />
+
+<Image source={require('../../Images/ic_pts_copy.png')} style={{width:24,height:24}} />
 */
 
 module.exports = RunHistory;

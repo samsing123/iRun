@@ -140,7 +140,6 @@ class Interest extends Component {
     temp.push(findNodeHandle(this.refs.eamil));
     temp.push(findNodeHandle(this.refs.password));
     this._interestSelected = this._interestSelected.bind(this);
-    alert(this.props.gender);
   }
   /*
   static renderNavigationBar(props){
@@ -183,7 +182,9 @@ class Interest extends Component {
   }
   _updateProfile(responseJson){
     if(responseJson.status=='success'){
-      Actions.home({type:ActionConst.RESET});
+      Actions.home({type:ActionConst.RESET,fitnesstracker:true});
+    }else{
+      console.log(responseJson);
     }
   }
 
@@ -310,43 +311,43 @@ class Interest extends Component {
     var self = this;
     return (
       <View style={styles.container}>
-        <View style={{paddingTop:height*0.1,width:width,alignItems:'center'}}>
+        <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
           <H1 style={{color:"grey",fontWeight:'bold'}}>WHAT ARE YOU</H1>
           <H1 style={{color:"grey",fontWeight:'bold'}}>INTERESTED IN</H1>
           <Text style={{color:'rgba(74,74,74,1)',fontSize:18,paddingTop:14}}>You can pick up multiple options</Text>
         </View>
-        <View style={{width:width,height:350,paddingLeft:29,paddingRight:29,paddingTop:24,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{this._interestSelected(1)}}>
-            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width-58}}>
+        <View style={{width:width,height:350,paddingTop:24,alignItems:'center',justifyContent:'center'}}>
+          <TouchableOpacity onPress={()=>{this._interestSelected(1)}} style={{marginTop:3}}>
+            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t1}></View>
               <Text style={styles.selected}>LIFESTYLE</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this._interestSelected(2)}}>
-            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width-58}}>
+          <TouchableOpacity onPress={()=>{this._interestSelected(2)}} style={{marginTop:3}}>
+            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
 
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t2}></View>
               <Text style={styles.selected}>FOOD</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this._interestSelected(3)}}>
-            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width-58}}>
+          <TouchableOpacity onPress={()=>{this._interestSelected(3)}} style={{marginTop:3}}>
+            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t3}></View>
               <Text style={styles.selected}>TRAVEL</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this._interestSelected(4)}}>
-            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width-58}}>
+          <TouchableOpacity onPress={()=>{this._interestSelected(4)}} style={{marginTop:3}}>
+            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t4}></View>
               <Text style={styles.selected}>FAMILY</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this._interestSelected(5)}}>
-            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width-58}}>
+          <TouchableOpacity onPress={()=>{this._interestSelected(5)}} style={{marginTop:3}}>
+            <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t5}></View>
               <Text style={styles.selected}>HEALTH</Text>
@@ -410,7 +411,7 @@ const styles = StyleSheet.create({
   },
   non_selectedBack:{
     height:70,
-    width:width-58,
+    width:width,
     position:'absolute',
     top:0,
     left:0,
@@ -418,7 +419,7 @@ const styles = StyleSheet.create({
   },
   interestImage:{
     height:70,
-    width:width-58,
+    width:width,
     position:'absolute',
     top:0,
     left:0

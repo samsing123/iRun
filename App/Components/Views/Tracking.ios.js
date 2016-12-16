@@ -695,10 +695,10 @@ class Tracking extends Component {
       return (
         <View style={{width:width,height:height,position:'absolute',top:0,left:0,opacity:this.state.opacity,backgroundColor:'white'}}>
           <View style={{flexDirection:'row',width:width,alignItems:'center',justifyContent:'space-around',height:82,position:'absolute',bottom:111}}>
-            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><View style={{width:48,height:48,backgroundColor:'black'}}></View></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._endRun()}}><View style={{width:82,height:82,backgroundColor:'black'}}></View></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._resumeRun()}}><View style={{width:82,height:82,backgroundColor:'black'}}></View></TouchableOpacity>
-            <View style={{width:48,height:48,backgroundColor:'black'}}></View>
+            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_location.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._endRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_stop.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._resumeRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_play.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._resumeRun()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_cam.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
           </View>
         </View>
       )
@@ -715,8 +715,12 @@ class Tracking extends Component {
   }
 
   _getIconFromValue(value){
-    var case1 = value.indexOf(':');
-    var case2 = value.indexOf('"');
+    var case1 = 0;
+    var case2 = 0;
+    if(value!=''){
+      case1 = value.indexOf(':');
+      case2 = value.indexOf('"');
+    }
     if(case1!=-1){
       return 'time';
     }else{
@@ -799,7 +803,7 @@ class Tracking extends Component {
               </TouchableOpacity>
           </View>
           <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:30}}>
-            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={{uri:'https://cdn2.iconfinder.com/data/icons/perfect-flat-icons-2/512/Pause_button_play_stop_blue.png'}}/></TouchableOpacity>
+            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={require('../../Images/btn_runpause.png')}/></TouchableOpacity>
             {/*this._loadingProgress()*/}
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>

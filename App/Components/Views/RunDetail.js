@@ -594,11 +594,14 @@ class RunDetail extends Component {
           </View>
         </View>
         <View style={{backgroundColor:'rgba(22,141,208,1)',flexDirection:'row',height:53,width:width,alignItems:'center',justifyContent:'space-around'}}>
-          <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.time}</Text></View>
-          <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.speed}</Text></View>
-          <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.cal}</Text></View>
+          <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.time}</Text></View>
+          <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.speed}</Text></View>
+          <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.cal}</Text></View>
         </View>
-        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14}}>
+        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14,flexDirection:'row'}}>
+          <View style={{position:'relative'}}>
+            <Image source={require('../../Images/ic_pts_copy.png')} style={{width:25,height:25,tintColor:'#0F89CC'}}/>
+          </View>
           <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
         </View>
         <View style={{marginTop:12,paddingTop:20,paddingBottom:20,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'#ebebeb',borderTopWidth:1,borderBottomColor:'#ebebeb',borderBottomWidth:1}}>

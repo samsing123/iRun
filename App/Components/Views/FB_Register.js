@@ -41,6 +41,8 @@ const fs = RNFetchBlob.fs;
 import Picker from 'react-native-picker';
 let imagePath = null;
 var DeviceInfo = require('react-native-device-info');
+var privacyText = "Do not agree with the use and provision of my personal\ndata for direct marketing purposes as set out above in";
+var privacyText2 = "the Personal Information Collection Statement (see \"Use and\nprovision of personaldata in driect marketing\") and do not wish\nto receive any promotional and direct marketing materials.";
 const {
   LoginManager,
   AccessToken,
@@ -154,7 +156,7 @@ class FB_Register extends Component {
         } else {
           const source = {uri: response.uri, isStatic: true};
         }
-
+        Global.fb_icon = 'data:image/png;base64,'+response.data;
         this.setState(
           {
             imagePath:'data:image/png;base64,'+response.data
@@ -180,9 +182,11 @@ class FB_Register extends Component {
      })
      .then((base64Data) => {
          // here's base64 encoded image
+         Global.fb_icon = 'data:image/png;base64,'+base64Data;
          this.setState(
            {
-             imagePath:'data:image/png;base64,'+base64Data
+             imagePath:'data:image/png;base64,'+base64Data,
+
            }
          );
          // remove the file from storage
@@ -201,6 +205,11 @@ class FB_Register extends Component {
     }
     if(Global._vaildateSelectBlank(this.state.birthday,'birthday')){
       return;
+    }
+    if(this.state.email!=''){
+      if(Global._vaildateInputFormat(this.state.email,'email','email',100)){
+        return;
+      }
     }
     this._sendFBRegister();
 
@@ -248,13 +257,20 @@ class FB_Register extends Component {
     var self = this;
     var photoImage;
     if(this.state.imagePath!=''){
-      photoImage = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:100,height:100,borderRadius:100/2}} source={{uri:this.state.imagePath}} /></TouchableOpacity>
+      photoImage = <View>
+        <View style={{width:100,height:100}}>
+          <Image style={{width:100,height:100,borderRadius:100/2}} source={{uri:this.state.imagePath}} />
+          <TouchableOpacity style={{position:'absolute',bottom:0,right:0}} onPress={()=>{this._imagePick()}}>
+            <Image style={{width:24,height:24}} source={require('../../Images/btn_share_camera.png')}/>
+          </TouchableOpacity>
+        </View>
+      </View>
     }
     return (
       <View>
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
       <InputScrollView style={styles.container} inputs={temp}>
-        <View style={{paddingTop:height*0.1,width:width,alignItems:'center'}}>
+        <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>ALMOST THERE</H1>
           <View style={{paddingTop:20}}>
             {photoImage}
@@ -264,14 +280,17 @@ class FB_Register extends Component {
           </View>
         </View>
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:24}}>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+          <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
+            <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+          <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
+            <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
           </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
+          <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
+            <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:14}}>{this.state.birthday}</Text></TouchableOpacity>
+          </View>
+          <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
+            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
           <View style={{width:width-64,marginTop:16}}>
             <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>
@@ -281,16 +300,20 @@ class FB_Register extends Component {
                 onChange={(checked) => this.setState({checked:checked})}
               />
               <View style={{flexDirection:'column',marginLeft:5}}>
-                <View style={{flexDirection:'row'}}>
-                  <Text style={{color:'white',fontSize:12}}>{privacyText}</Text>
-                </View>
-                <View style={{flexDirection:'row'}}>
-                  <TouchableOpacity><Text style={{color:'white',fontSize:12,textDecorationLine:'underline'}}>privacy Policy</Text></TouchableOpacity><Text style={{color:'white',fontSize:11}}>and </Text><TouchableOpacity><Text style={{color:'white',fontSize:12,textDecorationLine:'underline'}}>Terms of use.</Text></TouchableOpacity>
+                <View style={{flexDirection:'row',width:width-40}}>
+                  <Text style={{color:'white',fontSize:10}}>
+                    {privacyText}
+                  </Text>
                 </View>
               </View>
             </View>
+            <View style={{flexDirection:'row',width:width-40,position:'relative',top:-5}}>
+              <Text style={{color:'white',fontSize:10}}>
+                {privacyText2}
+              </Text>
+            </View>
           </View>
-          <View style={{paddingTop:44}}>
+          <View style={{paddingTop:5}}>
             <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
           </View>
           <View style={{paddingTop:5,flexDirection:'row'}}>

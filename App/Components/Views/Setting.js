@@ -46,7 +46,7 @@ var SwitchAlt = require('react-native-material-switch');
 import Accordion from 'react-native-collapsible/Accordion';
 var profileEdit = false;
 let ageArr = ['below 15','15-20','20-25','25-30','30-35','35-40','40-45','45-50','50-55','55-60','60 or above'];
-let running_level = ['None','Very Light','Light','Medium','Heavy','Heavy','Every day'];
+let running_level = ['1 day per week','2 days per week','3 days per week','4 days per week','5 days per week','6 days per week','7 days per week'];
 import * as Animatable from 'react-native-animatable';
 var ImagePicker = require('react-native-image-picker');
 import ImageCropper from 'react-native-image-crop-picker';
@@ -138,6 +138,7 @@ class Setting extends Component {
       age_range:Global.user_profile.age_range,
       exercise:Global.user_profile.exercise,
       imagePath:Global.user_icon,
+
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -164,7 +165,7 @@ class Setting extends Component {
 
   _imagePick(){
     ImagePicker.showImagePicker(options, (response) => {
-      this._sendFormData(response.uri);
+
       if (response.didCancel) {
         console.log('User cancelled image picker');
       }
@@ -184,7 +185,7 @@ class Setting extends Component {
         } else {
           const source = {uri: response.uri, isStatic: true};
         }
-
+        this._sendFormData(response.uri);
         this.setState(
           {
             imagePath:'data:image/png;base64,'+response.data
@@ -295,36 +296,7 @@ class Setting extends Component {
     //Actions.numbercount();
   }
 
-  _showDistancePicker() {
-      Picker.init({
-          pickerData: createDistance(),
-          selectedValue: ['1 km'],
-          pickerConfirmBtnText:'Done',
-          pickerCancelBtnText:'Cancel',
-          pickerBg:[255,255,255,1],
-          pickerToolBarBg:[255,255,255,1],
-          pickerTitleText:'Distance',
-          onPickerConfirm: pickedValue => {
-              this.setState({
-                distance:pickedValue[0],
-                duration:'Duration',
-                opacity:0
-              });
-          },
-          onPickerCancel: pickedValue => {
-              this.setState({
-                opacity:0
-              });
-          },
-          onPickerSelect: pickedValue => {
 
-          }
-      });
-      Picker.show();
-      this.setState({
-        opacity:0.5
-      });
-  }
   _showGenderPicker() {
       Picker.init({
           pickerData: ['Male','Female'],
@@ -415,15 +387,16 @@ class Setting extends Component {
   _showFeedbackPicker() {
       Picker.init({
           pickerData: ['1km','2km','3km','4km','5km','6km','7km','8km','9km','10km'],
-          selectedValue: ['1km'],
+          selectedValue: [Global.runFeedBackFrequency],
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
           pickerToolBarBg:[255,255,255,1],
           pickerTitleText:'Feedback Frequency',
           onPickerConfirm: pickedValue => {
+              Global.runFeedBackFrequency = pickedValue[0];
+              AsyncStorage.setItem('runFeedBackFrequency',pickedValue[0]);
               this.setState({
-                height:pickedValue[0],
                 opacity:0
               });
           },
@@ -753,6 +726,11 @@ class Setting extends Component {
     Actions.refresh({title:'SETTING',onBack:()=>{Actions.pop()}});
   }
 
+  _changePushNotification(state){
+    Global.pushNotification = state;
+    AsyncStorage.setItem('pushNotification',state+'');
+  }
+
   render() {
     var self = this;
     BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -792,7 +770,7 @@ class Setting extends Component {
       </View>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
         <Text style={{fontSize:14}}>{Global.language.push_notification}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+        <SwitchAlt active={Global.pushNotification} style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{this._changePushNotification(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
       </View>
       <TouchableOpacity onPress={()=>{Actions.fitnesstracker()}}>
         <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
@@ -800,15 +778,21 @@ class Setting extends Component {
         </View>
       </TouchableOpacity>
       <View style={{backgroundColor:'#F5F5F5',height:20,width:width}}></View>
-      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-        <Text style={{fontSize:14}}>{Global.language.privacy_policy}</Text><Text style={{fontSize:16}}>></Text>
-      </View>
-      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-        <Text style={{fontSize:14}}>{Global.language.term_of_use}</Text><Text style={{fontSize:16}}>></Text>
-      </View>
-      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-        <Text style={{fontSize:14}}>{Global.language.contact_us}</Text><Text style={{fontSize:16}}>></Text>
-      </View>
+      <TouchableOpacity onPress={()=>{Actions.tnc({content:Global.global_setting.content.privacy,title:'Privacy Policy'});}}>
+        <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+          <Text style={{fontSize:14}}>{Global.language.privacy_policy}</Text><Text style={{fontSize:16}}>></Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{Actions.tnc({content:Global.global_setting.content.terms,title:'Terms of use'});}}>
+        <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+          <Text style={{fontSize:14}}>{Global.language.term_of_use}</Text><Text style={{fontSize:16}}>></Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{Actions.tnc({content:Global.contactUsTemp,title:'Contact Us'});}}>
+        <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+          <Text style={{fontSize:14}}>{Global.language.contact_us}</Text><Text style={{fontSize:16}}>></Text>
+        </View>
+      </TouchableOpacity>
     </Animatable.View>;
     const runSetting = <Animatable.View animation="fadeInRight" duration={500}>
       <View style={{backgroundColor:'#F5F5F5',height:40,width:width,paddingLeft:20,justifyContent:'center'}}>
@@ -816,31 +800,33 @@ class Setting extends Component {
       </View>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
         <Text style={{fontSize:14}}>{Global.language.lock_when_run_begins}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{Global.isLockWhenStart = state;}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+        <SwitchAlt active={Global.runLock} style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{Global.runLock = state;AsyncStorage.setItem('runLock',state+'')}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
       </View>
       <View style={{backgroundColor:'#F5F5F5',height:40,width:width,paddingLeft:20,justifyContent:'center'}}>
         <Text style={{fontSize:14,color:'#C2C2C2'}}>{Global.language.audio_feedback}</Text>
       </View>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
         <Text style={{fontSize:14}}>{Global.language.voice_feedback}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+        <SwitchAlt active={Global.runVoFeedBack} style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{Global.runVoFeedBack=state;AsyncStorage.setItem('runVoFeedBack',state+'');}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
       </View>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
         <Text style={{fontSize:14}}>{Global.language.time}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+        <SwitchAlt active={Global.runVoTime} style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{Global.runVoTime=state;AsyncStorage.setItem('runVoTime',state+'');}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
       </View>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
         <Text style={{fontSize:14}}>{Global.language.distance}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+        <SwitchAlt active={Global.runVoDistance} style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{Global.runVoDistance=state;AsyncStorage.setItem('runVoDistance',state+'');}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
       </View>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
         <Text style={{fontSize:14}}>{Global.language.speed}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
+        <SwitchAlt active={Global.runVoSpeed} style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{Global.runVoSpeed=state;AsyncStorage.setItem('runVoSpeed',state+'');}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
       </View>
-      <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-        <Text style={{fontSize:14}}>{Global.language.feedback_frequency}</Text>
-        <SwitchAlt style={{borderWidth:1,borderColor:'#ff0000'}} onChangeState={(state)=>{console.log(state)}} switchWidth={30} switchHeight={15} buttonRadius={9} inactiveButtonColor="white" activeButtonColor="white" inactiveBackgroundColor="#f1f1f1" activeBackgroundColor="#198CCE" />
-      </View>
+      <TouchableOpacity onPress={()=>{this._showFeedbackPicker()}}>
+        <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
+          <Text style={{fontSize:14}}>{Global.language.feedback_frequency}</Text>
+          <Text>{Global.runFeedBackFrequency}</Text>
+        </View>
+      </TouchableOpacity>
     </Animatable.View>;
     const noSettingContent = <View/>;
     var settingContents = settingContent;
@@ -865,7 +851,7 @@ class Setting extends Component {
 
             </Animated.View>;
             var profileImage = <View/>;
-            if(this.state.imagePath=='data:image/jpeg;base64,'){
+            if(this.state.imagePath=='data:image/jpeg;base64,'||this.state.imagePath==''){
               profileImage = <Image style={{width:80,height:80,borderRadius:80/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}/>;
             }else{
               profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;

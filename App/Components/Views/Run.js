@@ -36,7 +36,7 @@ var weather = '';
 var RNFS = require('react-native-fs');
 function createDistance(){
   let distance = [];
-  for(let i=1;i<=30;i++){
+  for(let i=1;i<=100;i++){
     distance.push(i+' km');
   }
   return distance;
@@ -181,11 +181,17 @@ class Run extends Component {
     if(responseJson.status=='success'){
       Global.current_run_id = responseJson.response.run_id;
       Global.current_run_token = responseJson.response.run_token;
-      Actions.numbercount();
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          Actions.numbercount();
+        },
+        (error) => alert('Please open the gps function before Running.')
+      );
+
     }else{
       Global.current_run_id = responseJson.response.run_id;
       Global.current_run_token = responseJson.response.run_token;
-      Actions.numbercount();
+      //Actions.numbercount();
       alert(responseJson.response.error);
     }
     //Actions.numbercount();
@@ -328,9 +334,8 @@ class Run extends Component {
       <View style={{width:width-80,height:0,backgroundColor:'rgba(216,216,216,1)',marginTop:12}} />
       <TouchableOpacity onPress={()=>{this._showDistancePicker()}}>
         <View style={{width:width-80,marginTop:12,justifyContent:'space-between',alignItems:'flex-start',backgroundColor:'rgba(0,0,0,0)',flexDirection:'row'}}>
-          <View>
-
-            <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}><Image style={{height:24,width:24,tintColor:'white'}} source={require('../../Images/ic_distance.png')} resizeMode={Image.resizeMode.contain}/><Text style={{paddingLeft:21}}> </Text>{this.state.distance}</Text>
+          <View style={{flexDirection:'row'}}>
+            <Image style={{height:24,width:24,tintColor:'white',position:'relative',top:5}} source={require('../../Images/ic_distance.png')} resizeMode={Image.resizeMode.contain}/><Text style={{fontSize:24,fontWeight:'bold',color:'white'}}><Text style={{paddingLeft:21}}> </Text>{this.state.distance}</Text>
           </View>
           <View>
             <Text style={{color:'white',fontSize:24}}>></Text>
@@ -340,8 +345,14 @@ class Run extends Component {
       <View style={{width:width-80,height:1,backgroundColor:'rgba(216,216,216,1)',marginTop:12}} />
       <TouchableOpacity onPress={()=>{this._showDurationPicker()}}>
         <View style={{width:width-80,marginTop:12,justifyContent:'space-between',alignItems:'flex-start',backgroundColor:'rgba(0,0,0,0)',flexDirection:'row'}}>
-          <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}><Image style={{height:24,width:24,tintColor:'white'}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{paddingLeft:21}}> </Text>{this.state.duration}</Text>
+          <View style={{flexDirection:'row'}}>
+            <Image style={{height:24,width:24,tintColor:'white',position:'relative',top:5}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}></Image>
+            <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}><Text style={{paddingLeft:21}}> </Text>{this.state.duration}</Text>
+
+          </View>
+          <View>
           <Text style={{color:'white',fontSize:24}}>></Text>
+          </View>
         </View>
       </TouchableOpacity>
       <View style={{width:width-80,height:1,backgroundColor:'rgba(216,216,216,1)',marginTop:12}} />

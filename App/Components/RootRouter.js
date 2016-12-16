@@ -48,6 +48,8 @@ import appintro from './Views/AppIntro';
 import fitnesstrackerconnect from './Views/FitnessTrackerConnect';
 import animationtest from './Views/AnimationTest';
 import personalrecord from './Views/PersonalRecord';
+import tnc from './Views/TNC';
+import redeemhistorysummary from './Views/RedeemHistorySummary';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -57,6 +59,8 @@ var TC =  require('./Language/Language_TC');
 var AvailiblePointAlert = require('./Controls/AvailiblePointAlert');
 
 var is_login = false;
+var is_first = false;
+var is_facebook = false;
 var Global = require('./Global');
 var Util = require('./Util');
 const script = '<script>document.title = document.getElementById("wrapper").offsetHeight+20</script>';
@@ -230,29 +234,117 @@ export default class RootRouter extends Component {
     async _loadInitialState(){
          try{
             var value=await AsyncStorage.getItem('is_login');
+            var is_firsttime = await AsyncStorage.getItem('is_firsttime');
+            var is_facebook_v = await AsyncStorage.getItem('is_facebook');
             var email = await AsyncStorage.getItem('email');
             var password = await AsyncStorage.getItem('password');
             var language = await AsyncStorage.getItem('language');
             var isLockWhenStart = await AsyncStorage.getItem('isLockWhenStart');
+            var pushNotification = await AsyncStorage.getItem('pushNotification');
+            var runLock = await AsyncStorage.getItem('runLock');
+            var runVoFeedBack = await AsyncStorage.getItem('runVoFeedBack');
+            var runVoTime = await AsyncStorage.getItem('runVoTime');
+            var runVoDistance = await AsyncStorage.getItem('runVoDistance');
+            var runVoSpeed = await AsyncStorage.getItem('runVoSpeed');
+            var runFeedBackFrequency = await AsyncStorage.getItem('runFeedBackFrequency');
             Global.isLockWhenStart = isLockWhenStart;
             Global.email = email;
             Global.password = password;
-            if(language=='ENG'){
-              Global.language = ENG;
+            if(runFeedBackFrequency){
+              Global.runFeedBackFrequency = runFeedBackFrequency;
             }else{
-              Global.language = TC;
+              Global.runFeedBackFrequency = '1km';
             }
-            if(value!=null){
-              if(value=="true"){
-                is_login = true;
+            if(runVoSpeed){
+              if(runVoSpeed=='true'){
+                Global.runVoSpeed = true;
               }else{
-                is_login = false;
+                Global.runVoSpeed = false;
               }
-
-              console.log('is_login:'+is_login);
             }else{
+              Global.runVoSpeed = false;
+            }
+            if(runVoDistance){
+              if(runVoDistance=='true'){
+                Global.runVoDistance = true;
+              }else{
+                Global.runVoDistance = false;
+              }
+            }else{
+              Global.runVoDistance = false;
+            }
+            if(runVoTime){
+              if(runVoTime=='true'){
+                Global.runVoTime = true;
+              }else{
+                Global.runVoTime = false;
+              }
+            }else{
+              Global.runVoTime = false;
+            }
+            if(runVoFeedBack){
+              if(runVoFeedBack=='true'){
+                Global.runVoFeedBack = true;
+              }else{
+                Global.runVoFeedBack = false;
+              }
+            }else{
+              Global.runVoFeedBack = false;
+            }
+            if(runLock){
+              if(runLock=='true'){
+                Global.runLock = true;
+              }else{
+                Global.runLock = false;
+              }
+            }else{
+              Global.runLock = false;
+            }
+            if(pushNotification){
+              if(pushNotification=='true'){
+                Global.pushNotification = true;
+              }else{
+                Global.pushNotification = false;
+              }
+            }else{
+              Global.pushNotification = true;
+            }
+            if(language){
+              if(language=='ENG'){
+                Global.language = ENG;
+              }
+              if(language=='TC'){
+                Global.language = TC;
+              }
+            }else{
+              Global.language = ENG;
+            }
 
-              console.log('error!!');
+
+            if(is_facebook_v!=null){
+              if(is_facebook=="true"){
+                is_facebook = true;
+              }else{
+                is_facebook = false;
+              }
+            }
+            console.log('login value:'+value);
+            if(is_firsttime==null){
+              is_first=true;
+              AsyncStorage.setItem('is_firsttime','false');
+            }else{
+              if(value!=null){
+                if(value=="true"){
+                  is_login = true;
+                }else{
+                  is_login = false;
+                }
+
+                console.log('is_login:'+is_login);
+              }else{
+
+                console.log('error!!');
+              }
             }
          }catch(error){
 
@@ -277,7 +369,6 @@ export default class RootRouter extends Component {
     }
     /*'CircleFlip', 'Bounce', 'Wave', 'WanderingCubes', 'Pulse', 'ChasingDots', 'ThreeBounce', 'Circle', '9CubeGrid', 'WordPress', 'FadingCircle', 'FadingCircleAlt', 'Arc', 'ArcAlt'*/
     render() {
-        console.log('tumblr Loading:'+this.state.loading+'event loading:'+this.state.eventLoading);
         if(this.state.loading||this.state.eventLoading){
           return (<View style={{alignItems:'center',justifyContent:'center',flex:1}}>
             {/*<Spinner isVisible={true} size={80} type='Circle' color='white'/>*/}
@@ -296,12 +387,15 @@ export default class RootRouter extends Component {
             }
         });
 
-        this.setState({
-          shouldUpdate:false
-        });
+        // this.setState({
+        //   shouldUpdate:false
+        // });
+        // this maybe casuse the blank page in getting the error from the api
+        // this cause the initial page will not refresh when the loading is run once
+
         const scenes = Actions.create(
             <Scene key="scene">
-                <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={false}/>
+                <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>
                 <Scene key="home" component={Home} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}/>
                 <Scene renderRightButton={createRightButton} key="frontpage" component={FrontPage} title="FrontPage" hideNavBar={true} initial={!is_login}/>
                 <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={true}/>
@@ -342,6 +436,8 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="fitnesstrackerconnect" component={fitnesstrackerconnect} title="Connet Fitness Tracker" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="animationtest" component={animationtest} title="Bar Animation Test" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="personalrecord" component={personalrecord} title="PERSONAL RECORD" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="tnc" component={tnc} title="Terms and Condition" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="redeemhistorysummary" component={redeemhistorysummary} title="Redeem History Detail" hideNavBar={false}/>
             </Scene>
         );
         return(

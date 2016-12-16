@@ -52,7 +52,7 @@ var testingFeed={
   ]
 };
 var count = 0;
-class InboxMessage extends Component {
+class TNC extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -84,6 +84,7 @@ class InboxMessage extends Component {
   }
   */
   componentDidMount(){
+    console.log('terms:'+Global.global_setting.content.terms);
     this._printDetail();
     var data={
       method:'POST',
@@ -209,15 +210,10 @@ class InboxMessage extends Component {
    }
     return (
       <View style={styles.container}>
-        <StatusBar
-           backgroundColor="rgba(0,0,0,0)"
-           barStyle="light-content"
-           translucent={true}
-         />
-         {messageView}
-         <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
-          <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
-         </TouchableOpacity>
+        <HTMLView
+          value={this.props.content}
+          stylesheet={{style2}}
+        />
       </View>
     );
   }
@@ -232,9 +228,12 @@ var style2 = StyleSheet.create({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
+    paddingTop:Global.navbarHeight,
+    paddingLeft:20,
+    paddingRight:20
   },
   scrollContainer:{
     justifyContent: 'center',
@@ -324,4 +323,4 @@ value={this.state.trueSwitchIsOn} />
 </View>
 */
 
-module.exports = InboxMessage;
+module.exports = TNC;

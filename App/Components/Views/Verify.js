@@ -18,7 +18,9 @@ import {
   TouchableOpacity,
   ScrollView,
   findNodeHandle,
-  Switch
+  Switch,
+  Platform,
+  AsyncStorage
 } from 'react-native';
 import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -29,13 +31,15 @@ import {Header,Button,H1,Input,Content} from 'native-base';
 import KeyboardHandler from '../Controls/KeyboardHandler';
 import InputScrollView from '../Controls/InputScrollView';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import OneSignal from 'react-native-onesignal'; // Import package from node modules
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 var privacyText = "By creating an account, you agree to AXA's";
 var temp = [];
 var DeviceInfo = require('react-native-device-info');
 const FBSDK = require('react-native-fbsdk');
+var code = '';
+var selected_index = 0;
 const {
   LoginManager,
   AccessToken,
@@ -55,10 +59,11 @@ class Verify extends Component {
       mobile_no:'',
       birthday:'',
       code:'',
-      num1:'0',
-      num2:'0',
-      num3:'0',
-      num4:'0',
+      num1:null,
+      num2:null,
+      num3:null,
+      num4:null,
+      selected_index:0,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -71,6 +76,7 @@ class Verify extends Component {
     temp.push(findNodeHandle(this.refs.mobile_no));
     temp.push(findNodeHandle(this.refs.birthday));
     this.tempData = Global.registerData;
+    selected_index = 0;
   }
   /*
   static renderNavigationBar(props){
@@ -79,17 +85,29 @@ class Verify extends Component {
   */
 
   codeInput(text){
-    this.setState({
-      num1:text[0]==null?0:text[0],
-      num2:text[1]==null?0:text[1],
-      num3:text[2]==null?0:text[2],
-      num4:text[3]==null?0:text[3],
-      code:text
-    });
+
+    switch(selected_index){
+      case 0:this.setState({num1:text});break;
+      case 1:this.setState({num2:text});break;
+      case 2:this.setState({num3:text});break;
+      case 3:this.setState({num4:text});break;
+    }
+    selected_index++;
+
+    // this.setState({
+    //   num1:text[0]==null?0:text[0],
+    //   num2:text[1]==null?0:text[1],
+    //   num3:text[2]==null?0:text[2],
+    //   num4:text[3]==null?0:text[3],
+    //   code:text
+    // });
+    this.refs.inputHolder.clear();
   }
 
   submitCheck(){
-    if(this.state.code.length<4){
+
+    code = this.state.num1+this.state.num2+this.state.num3+this.state.num4;
+    if(code.length<4){
       this.refs.inputHolder.blur();
       Alert.alert(
             'Please input the correct code',
@@ -98,11 +116,23 @@ class Verify extends Component {
               {text: 'OK', onPress: () => this.refs.inputHolder.focus()},
             ]
           );
-
       return;
     }
     this._submitVerifyCode();
     //TODO:send code to server to verify
+  }
+
+  _resendButton(){
+    if(this.props.isFacebook){
+      delete Global.fbRegisterData.code;
+    }else{
+      delete Global.registerData.code;
+    }
+    if(this.props.isFacebook){
+      this._resendSMSCodeForFB();
+    }else{
+      this._resendSMSCode();
+    }
   }
 
   _resendSMSCode(){
@@ -117,10 +147,37 @@ class Verify extends Component {
     Global._sendPostRequest(data,'api/register',this._resendCallback);
   }
 
+  _resendSMSCodeForFB(){
+    let data = {
+      method:'POST',
+      body: JSON.stringify(Global.fbRegisterData),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    };
+    Global._sendPostRequest(data,'api/register-fb',(responseJson)=>{this._fbResendCallback(responseJson)});
+  }
+
+  _fbResendCallback(responseJson){
+    if(responseJson.status=="success"){
+      alert('The SMS code has been resent. Please check your SMS inbox.');
+    }else{
+      alert(responseJson.error);
+    }
+  }
+
+
+
+  _changingTheSelectedOne(){
+
+  }
+
   _submitVerifyCode(){
 
     if(this.props.isFacebook){
-      Global.fbRegisterData.code = this.state.code;
+      Global.fbRegisterData.code = code;
+      console.log('the code is:'+code);
       let data = {
         method:'POST',
         body: JSON.stringify(Global.fbRegisterData),
@@ -129,9 +186,9 @@ class Verify extends Component {
           'Content-Type': 'application/json'
         }
       };
-      Global._sendPostRequest(data,'api/register-fb',this._callback);
+      Global._sendPostRequest(data,'api/register-fb',(responseJson)=>{this._callback(responseJson)});
     }else{
-      Global.registerData.code = this.state.code;
+      Global.registerData.code = code;
       let data = {
         method:'POST',
         body: JSON.stringify(Global.registerData),
@@ -140,20 +197,183 @@ class Verify extends Component {
           'Content-Type': 'application/json'
         }
       };
-      Global._sendPostRequest(data,'api/register',this._callback);
+
+      Global._sendPostRequest(data,'api/register',(responseJson)=>{this._callback(responseJson)});
     }
   }
   _callback(responseJson){
     console.log(responseJson);
     if(responseJson.status=='success'){
-      this._saveLoginInformation();
-      Actions.welcome();
+      if(this.props.isFacebook){
+        this._sendFacebookLoginRequest();
+        this._saveFBLoginInformation();
+      }else{
+        this._sendLoginRequest();
+        this._saveLoginInformation();
+      }
+    }else{
+      alert('The code is incorrect. Please fill in a correct code.');
     }
   }
+
   _resendCallback(responseJson){
+    console.log('responseJson:'+responseJson);
     if(responseJson.status=='success'){
-      alert('The SMS is resend please check!');
+      alert('The SMS is resent please check!');
+    }else{
+      alert('Please Check the network');
+      //alert(responseJson.error);
     }
+  }
+
+
+  _sendFacebookLoginRequest(){
+    var self = this;
+    var data={
+      method:'POST',
+      body:JSON.stringify({
+        auth_token:Global.fbRegisterData.auth_token,
+        device_id:DeviceInfo.getUniqueID(),
+        lang:Global.language.lang,
+        device_token:'',
+      }),
+      headers:{
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/login-fb',(responseJson)=>{self._requestCallback(responseJson)});
+    /*
+    OneSignal.configure({
+        onIdsAvailable: function(device) {
+            Global.onesignal_devicetoken = device.userId;
+            var data={
+              method:'POST',
+              body:JSON.stringify({
+                auth_token:Global.fbRegisterData.auth_token,
+                device_id:DeviceInfo.getUniqueID(),
+                lang:Global.language.lang,
+                device_token:Global.onesignal_devicetoken,
+              }),
+              headers:{
+                'Content-Type': 'application/json',
+              }
+            };
+            Global._sendPostRequest(data,'api/login-fb',(responseJson)=>{self._requestCallback(responseJson)});
+        },
+      onNotificationOpened: function(message, data, isActive) {
+
+          // Do whatever you want with the objects here
+          // _navigator.to('main.post', data.title, { // If applicable
+          //  article: {
+          //    title: data.title,
+          //    link: data.url,
+          //    action: data.actionSelected
+          //  }
+          // });
+      }
+    });
+    */
+  }
+  _sendLoginRequest(){
+    var lang = Global.language.lang;
+    var self = this;
+    OneSignal.configure({
+        onIdsAvailable: function(device) {
+            Global.onesignal_devicetoken = device.userId;
+            let data = {
+              method: 'POST',
+              body: JSON.stringify({
+                email: Global.registerData.email,
+                password: Global.registerData.password,
+                device_id: DeviceInfo.getUniqueID(),
+                lang:lang,
+                device_token:Global.onesignal_devicetoken,
+              }),
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            };
+            Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+        },
+      onNotificationOpened: function(message, data, isActive) {
+
+          // Do whatever you want with the objects here
+          // _navigator.to('main.post', data.title, { // If applicable
+          //  article: {
+          //    title: data.title,
+          //    link: data.url,
+          //    action: data.actionSelected
+          //  }
+          // });
+      }
+    });
+
+    //Global.onesignal_devicetoken = device.userId;
+    /*
+    let data = {
+      method: 'POST',
+      body: JSON.stringify({
+        email: Global.registerData.email,
+        password: Global.registerData.password,
+        device_id: DeviceInfo.getUniqueID(),
+        lang:lang,
+        device_token:'',
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+    */
+    /*
+    OneSignal.configure({
+        onIdsAvailable: function(device) {
+            Global.onesignal_devicetoken = device.userId;
+            let data = {
+              method: 'POST',
+              body: JSON.stringify({
+                email: Global.registerData.email,
+                password: Global.registerData.password,
+                device_id: DeviceInfo.getUniqueID(),
+                lang:lang,
+                device_token:Global.onesignal_devicetoken,
+              }),
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            };
+            Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+        },
+      onNotificationOpened: function(message, data, isActive) {
+
+          // Do whatever you want with the objects here
+          // _navigator.to('main.post', data.title, { // If applicable
+          //  article: {
+          //    title: data.title,
+          //    link: data.url,
+          //    action: data.actionSelected
+          //  }
+          // });
+      }
+    });
+    */
+
+  }
+  _requestCallback(responseJson){
+    if(responseJson.status=='success'){
+      Actions.welcome();
+    }else{
+      alert(responseJson.response.error);
+    }
+    //Actions.home();
+  }
+  async _saveFBLoginInformation(){
+      try{
+         await AsyncStorage.setItem('is_login','true');
+         //Actions.home({type:ActionConst.RESET});
+      }catch(error){
+         console.log(error);
+      }
   }
   async _saveLoginInformation(){
       try{
@@ -191,11 +411,12 @@ class Verify extends Component {
 
   _submitForgotPassword(){
 
+    code = this.state.num1+this.state.num2+this.state.num3+this.state.num4;
     let data = {
       method:'POST',
       body: JSON.stringify({
         mobile_number:this.props.mobile_no,
-        code:this.state.code,
+        code:code,
       }),
       headers: {
         'Accept': 'application/json',
@@ -208,6 +429,8 @@ class Verify extends Component {
     console.log(responseJson);
     if(responseJson.status=='success'){
       Actions.resetpassword({verify_token:responseJson.response.verify_token,mobile_number:this.props.mobile_no});
+    }else{
+      alert(responseJson.response.error);
     }
   }
 
@@ -231,7 +454,7 @@ class Verify extends Component {
           <Button onPress={()=>{this.submitCheck()}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>VERIFY</Text></Button>
         </View>
         <View style={{backgroundColor:'rgba(0,0,0,0)',paddingTop:10,flexDirection:'row',alignItems:'center',justifyContent:'center',width:width}}>
-          <TouchableOpacity onPress={()=>{this._resendSMSCode()}}><Text style={{color:'#fff',fontSize:12,textDecorationLine:'underline'}}>RESEND THE CODE</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._resendButton()}}><Text style={{color:'#fff',fontSize:12,textDecorationLine:'underline'}}>RESEND THE CODE</Text></TouchableOpacity>
         </View>
       </View>;
     }
@@ -248,18 +471,18 @@ class Verify extends Component {
           <TextInput ref='inputHolder' autoFocus={true} style={{width:0,height:0,opacity:0}} keyboardType="numeric" onChangeText={(text) => this.codeInput(text)} onSubmitEditing={()=>this.submitCheck()}></TextInput>
         </View>
         <View style={{paddingTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center',width:width,backgroundColor:'rgba(0,0,0,0)'}}>
-          <View style={{borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num1}</Text>
-          </View>
-          <View style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num2}</Text>
-          </View>
-          <View style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num3}</Text>
-          </View>
-          <View style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num4}</Text>
-          </View>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=0;}} style={{borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,alignItems:'center',justifyContent:'center'}}>
+            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num1?this.state.num1:0}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=1;}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
+            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num2?this.state.num2:0}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=2;}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
+            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num3?this.state.num3:0}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=3;}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
+            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num4?this.state.num4:0}</Text>
+          </TouchableOpacity>
         </View>
         {verifyButton}
       </InputScrollView>

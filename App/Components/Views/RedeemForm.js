@@ -30,6 +30,7 @@ import MusicElement from './MusicElement';
 var Spinner = require('react-native-spinkit');
 var totalMapTime = 0;
 import Picker from 'react-native-picker';
+import InputScrollView from '../Controls/InputScrollView';
 
 
 class RedeemForm extends Component {
@@ -39,6 +40,9 @@ class RedeemForm extends Component {
       refresh:true,
       district:Global.language.district,
       district_width:80,
+      recipient_name:Global.user_profile.display_name,
+      address1:'',
+      address2:'',
     };
   }
 
@@ -86,6 +90,15 @@ class RedeemForm extends Component {
   }
 
   _checkSummary(){
+    if(this.state.address1!=''){
+      Global.currentReward.address = this.state.address1;
+    }
+    if(this.state.address2!=''){
+      Global.currentReward.address = this.state.address2;
+    }
+    if(this.state.address1!=''&&this.state.address2!=''){
+      Global.currentReward.address = this.state.address1+','+this.state.address2;
+    }
     if(Global._vaildateInputBlank(Global.currentReward.address,'Recipient Postal Address')){
       return;
     }
@@ -99,22 +112,22 @@ class RedeemForm extends Component {
     return (
       <View style={{flex:1}}>
       {Global.status_bar}
-      <ScrollView style={{flex:1}}>
+      <InputScrollView style={{width:width,height:height}}>
         <View style={{paddingTop:navbarHeight+30,alignItems:'center',justifyContent:'center'}}>
           <Text style={{color:'black',fontWeight:'bold',fontSize:20}}>{Global.language.shipping_information}</Text>
         </View>
         <View style={{paddingTop:40,alignItems:'flex-start',justifyContent:'center',paddingLeft:40,paddingRight:40}}>
           <Text>{Global.language.reci_name}</Text>
           <View style={{width:width-80,height:40,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
-            <Text style={{fontSize:16}}>{Global.user_profile.display_name}</Text>
+            <TextInput style={{fontSize:16}} value={this.state.recipient_name} underlineColorAndroid='rgba(0,0,0,0)' onChangeText={(text) => {Global.currentReward.recipient_name = text;this.setState({recipient_name:text})}}></TextInput>
           </View>
         </View>
         <View style={{paddingTop:20,alignItems:'flex-start',justifyContent:'center',paddingLeft:40,paddingRight:40}}>
           <View style={{width:width-80,height:40,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
-            <TextInput placeholderTextColor="black" placeholder={Global.language.reci_address} style={{marginRight:10,flex:1,fontSize:16,color:'black'}} underlineColorAndroid='rgba(0,0,0,0)' ref="r_name" onChangeText={(text) => {Global.currentReward.address = text;}}></TextInput>
+            <TextInput placeholderTextColor="black" placeholder={Global.language.reci_address} style={{marginRight:10,flex:1,fontSize:16,color:'black'}} underlineColorAndroid='rgba(0,0,0,0)' ref="r_name" onChangeText={(text) => {this.setState({address1:text})}}></TextInput>
           </View>
           <View style={{width:width-80,height:40,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
-            <TextInput placeholderTextColor="black" placeholder="" style={{marginRight:10,flex:1,fontSize:16,color:'black'}} underlineColorAndroid='rgba(0,0,0,0)' ref="r_name" onChangeText={(text) => this.setState({email:text})}></TextInput>
+            <TextInput placeholderTextColor="black" placeholder="" style={{marginRight:10,flex:1,fontSize:16,color:'black'}} underlineColorAndroid='rgba(0,0,0,0)' ref="r_name" onChangeText={(text) => this.setState({address2:text})}></TextInput>
           </View>
         </View>
         <TouchableOpacity onPress={()=>{this._showDistrictPicker()}}>
@@ -124,12 +137,12 @@ class RedeemForm extends Component {
             </View>
           </View>
         </TouchableOpacity>
-      </ScrollView>
-      <TouchableOpacity style={{width:width,alignItems:'center',marginBottom:20}} onPress={()=>{this._checkSummary()}}>
-        <View style={{borderRadius:6,backgroundColor:'white',borderWidth:1,borderColor:'#198BCE',width:width-140,height:40,alignItems:'center',justifyContent:'center'}}>
-          <Text style={{fontSize:16,color:'#198BCE'}}>{Global.language.next}</Text>
-        </View>
-      </TouchableOpacity>
+        <TouchableOpacity style={{width:width,alignItems:'center',paddingTop:160}} onPress={()=>{this._checkSummary()}}>
+          <View style={{borderRadius:6,backgroundColor:'white',borderWidth:1,borderColor:'#198BCE',width:width-140,height:40,alignItems:'center',justifyContent:'center'}}>
+            <Text style={{fontSize:16,color:'#198BCE'}}>{Global.language.next}</Text>
+          </View>
+        </TouchableOpacity>
+      </InputScrollView>
 
       </View>
     );

@@ -249,7 +249,7 @@ class Events extends Component {
     return Global.eventArr.map(function(news, i){
       var image;
       if(news.image!=''){
-        image = <Image source={{uri:news.image}} style={{height:230,width:width}} shouldComponentUpdate={()=>{return false;}} />
+        image = <Image source={{uri:news.image}} style={{height:230,width:width-10,borderRadius:6}} shouldComponentUpdate={()=>{return false;}} />
       }else{
         image = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
           <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
@@ -261,10 +261,12 @@ class Events extends Component {
           title:news.title,
           image:news.image}
         )}} key={i}>
-          {image}
-          <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
-            <Text style={{fontSize:14,color:'white',padding:8}}>{news.date}</Text>
-            <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{news.title}</Text>
+          <View style={{borderRadius:6,paddingTop:10,width:width-10}}>
+            {image}
+            <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width-10,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
+              <Text style={{fontSize:14,color:'white',padding:8}}>{news.date}</Text>
+              <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{news.title}</Text>
+            </View>
           </View>
         </TouchableOpacity>
       )

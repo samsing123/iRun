@@ -20,7 +20,8 @@ import {
   ScrollView,
   findNodeHandle,
   StatusBar,
-  Switch
+  Switch,
+  Platform
 } from 'react-native';
 
 import {Actions,ActionConst} from "react-native-router-flux";
@@ -49,6 +50,7 @@ const {
 var DeviceInfo = require('react-native-device-info');
 var auth_token = '';
 var device_id = DeviceInfo.getUniqueID();
+import OneSignal from 'react-native-onesignal'; // Import package from node modules
 function _responseInfoCallback(error: ?Object, result: ?Object) {
 
   if (error) {
@@ -59,26 +61,71 @@ function _responseInfoCallback(error: ?Object, result: ?Object) {
   }
 }
 function _sendFBLoginRequest(){
-  var data={
-    method:'POST',
-    body:JSON.stringify({
-      auth_token:auth_token,
-      device_id:DeviceInfo.getUniqueID(),
-      lang:Global.language.lang,
-    }),
-    headers:{
-      'Content-Type': 'application/json',
-    }
-  };
-  Global._sendPostRequest(data,'api/login-fb',_callback);
+  if(Platform.OS=='ios'){
+    var data={
+      method:'POST',
+      body:JSON.stringify({
+        auth_token:auth_token,
+        device_id:DeviceInfo.getUniqueID(),
+        lang:Global.language.lang,
+        device_token:'',
+      }),
+      headers:{
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/login-fb',_callback);
+  }else{
+    OneSignal.configure({
+        onIdsAvailable: function(device) {
+            Global.onesignal_devicetoken = device.userId;
+            var data={
+              method:'POST',
+              body:JSON.stringify({
+                auth_token:auth_token,
+                device_id:DeviceInfo.getUniqueID(),
+                lang:Global.language.lang,
+                device_token:Global.onesignal_devicetoken,
+              }),
+              headers:{
+                'Content-Type': 'application/json',
+              }
+            };
+            Global._sendPostRequest(data,'api/login-fb',_callback);
+        },
+      onNotificationOpened: function(message, data, isActive) {
+
+          // Do whatever you want with the objects here
+          // _navigator.to('main.post', data.title, { // If applicable
+          //  article: {
+          //    title: data.title,
+          //    link: data.url,
+          //    action: data.actionSelected
+          //  }
+          // });
+      }
+    });
+  }
 }
 function _callback(responseJson){
   if(responseJson.status=='success'){
-    Actions.home();
+    _saveFbLoginInformation();
+    Actions.home({type:ActionConst.RESET});
   }else{
     alert(responseJson.response.error);
   }
 }
+async function _saveFbLoginInformation(){
+    try{
+       await AsyncStorage.setItem('is_login','true');
+       await AsyncStorage.setItem('is_facebook','true');
+       console.log('login finish');
+       //Actions.home({type:ActionConst.RESET});
+    }catch(error){
+       console.log(error);
+    }
+}
+
 
 class Login extends Component {
   constructor(props){
@@ -124,19 +171,56 @@ class Login extends Component {
   }
   _sendLoginRequest(){
     var lang = Global.language.lang;
-    let data = {
-      method: 'POST',
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-        device_id: DeviceInfo.getUniqueID(),
-        lang:lang,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    };
-    Global._sendPostRequest(data,'api/login',(responseJson)=>{this._requestCallback(responseJson)});
+    var self = this;
+    if(Platform.OS=='ios'){
+      let data = {
+        method: 'POST',
+        body: JSON.stringify({
+          email: self.state.email,
+          password: self.state.password,
+          device_id: DeviceInfo.getUniqueID(),
+          lang:lang,
+          device_token:'',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+    }else{
+      OneSignal.configure({
+          onIdsAvailable: function(device) {
+              Global.onesignal_devicetoken = device.userId;
+              let data = {
+                method: 'POST',
+                body: JSON.stringify({
+                  email: self.state.email,
+                  password: self.state.password,
+                  device_id: DeviceInfo.getUniqueID(),
+                  lang:lang,
+                  device_token:Global.onesignal_devicetoken,
+                }),
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              };
+              Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+          },
+        onNotificationOpened: function(message, data, isActive) {
+
+            // Do whatever you want with the objects here
+            // _navigator.to('main.post', data.title, { // If applicable
+            //  article: {
+            //    title: data.title,
+            //    link: data.url,
+            //    action: data.actionSelected
+            //  }
+            // });
+        }
+      });
+    }
+
+
   }
   async _saveLoginInformation(){
       try{
@@ -149,6 +233,18 @@ class Login extends Component {
          console.log(error);
       }
   }
+
+  _fbLoginCallback(responseJson){
+    if(responseJson.status=='success'){
+      console.log('facebook login success!!');
+      this._saveFbLoginInformation();
+      Actions.home({type:ActionConst.RESET});
+    }else{
+      alert(responseJson.response.error);
+    }
+    //Actions.home();
+  }
+
   _requestCallback(responseJson){
     if(responseJson.status=='success'){
       this._saveLoginInformation();
@@ -181,6 +277,7 @@ class Login extends Component {
           AccessToken.getCurrentAccessToken()
           .then(({accessToken}) => {
             //alert(accessToken);  // this token looks normal
+            console.log('access token:'+accessToken);
             auth_token = accessToken;
             const infoRequest = new GraphRequest(
               '/me',
@@ -236,9 +333,10 @@ class Login extends Component {
           </View>
 
         </View>
+
       </InputScrollView>
-      <TouchableOpacity onPress={()=>{Actions.register({type:ActionConst.REPLACE})}}>
-        <View style={{position:'absolute',bottom:0,backgroundColor:'blue',width:width,height:40,alignItems:'center',justifyContent:'center'}}>
+      <TouchableOpacity style={{position:'absolute',bottom:0}} onPress={()=>{Actions.register({type:ActionConst.REPLACE})}}>
+        <View style={{backgroundColor:'#148BCD',width:width,height:40,alignItems:'center',justifyContent:'center'}}>
           <Text style={{color:'white'}}>Dont have an Account? Register</Text>
         </View>
       </TouchableOpacity>
@@ -251,7 +349,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0)',
-    height:height-54,
+
   },
   welcome: {
     fontSize: 20,

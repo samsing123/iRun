@@ -387,6 +387,7 @@ class Map extends Component {
       polylineCoords:this.props.path,
       camera_image:false,
     });
+
     //this.getMapImage();
     //this._takeSnapshot();
     /*
@@ -656,7 +657,7 @@ class Map extends Component {
           url: "http://facebook.github.io/react-native/",
           message:'This is a message!!',
           subject: "Share Link", //  for email,
-          filePath:imageUri
+          filePath:this.igUri
         };
 
     Share.shareSingle(Object.assign(shareOptions, {
@@ -666,6 +667,7 @@ class Map extends Component {
 
   _getSnapShot(){
     console.log('get snap shot!!');
+
     const snapshot = this.refs.map.takeSnapshot_android({
       width:width,
       height:(height/2)-Global.navbarHeight,
@@ -677,6 +679,14 @@ class Map extends Component {
       //this._sendEndRunRequest(uri);
       imageUri = uri;
       console.log('image URI: '+imageUri);
+      this.state.img_data = imageUri;
+
+      this.setState({
+        img_data:imageUri,
+        camera_image:true,
+      });
+
+      setTimeout(() => {this._getMapImageWithInfo()}, 2000);
       var commonParameter = {
         hashtag:'hihi'
       };
@@ -833,10 +843,39 @@ class Map extends Component {
     });
   }
 
+  _getMapImageWithInfo(){
+    RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
+      format: "jpg",
+      quality: 0.8,
+    })
+    .then(
+      uri => {
+        imageUri = uri;
+
+        this.sharePhoto = {
+          imageUrl: imageUri,// <diff_path_for_ios>
+          userGenerated: false,
+          caption: 'hello'
+        };
+        this.shareLinkContent = {
+          contentType: 'photo',
+          photos: [this.sharePhoto],
+        };
+        this.shareLinkContents = {
+          contentType: 'link',
+          contentUrl: "https://facebook.com",
+          contentDescription: 'Wow, check out this great site!',
+        };
+        CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl,"photo").then((uri)=>{this.igUri = uri;});
+      },
+      error => console.log("Oops, snapshot failed", error)
+    );
+  }
+
   _openCamera(){
     ImageCropper.openCamera({
-      width: width,
-      height: (height/2)-Global.navbarHeight,
+      width: width*2,
+      height: (height/2)-Global.navbarHeight*2,
       cropping: true,
       includeBase64:true
     }).then(image => {
@@ -862,23 +901,34 @@ class Map extends Component {
   }
 
   _saveToCameraRoll(){
-    CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl);
+    CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl,"photo").then((uri)=>{console.log('new photo image:'+uri);});
+    alert('Photo saved.');
+  }
+  _sCallback(){
+    console.log('image stored successfully');
+  }
+  _fCallback(){
+    console.log('there are some error on ');
   }
 
   render() {
     var run_info = <View>
-      <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14}}>
-        <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
+      <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:4,flexDirection:'row'}}>
+        <View style={{position:'relative'}}>
+          <Image source={require('../../Images/ic_pts_copy.png')} style={{width:25,height:25,tintColor:'#0F89CC'}}/>
+        </View>
+        <Text style={{color:'rgba(20,139,205,1)',fontSize:30,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
       </View>
       <TouchableOpacity onPress={()=>{Actions.runhistory()}}>
         <View style={{marginTop:12,height:48,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'rgba(103,103,103,0.5)',borderTopWidth:1,borderBottomColor:'rgba(103,103,103,0.5)',borderBottomWidth:1}}>
-          <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>RUNNING HISTORY</Text>
+          <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{"RUNNING HISTORY>"}</Text>
         </View>
       </TouchableOpacity>
-      <View style={{alignItems:'center',justifyContent:'center',width:width}}>
-        <TextInput placeholder="Note" style={{width:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})}/>
+      <View style={{alignItems:'center',justifyContent:'center',width:width,flexDirection:'row',borderBottomWidth:1,borderColor:'#f3f3f3'}}>
+        {this.state.note==''?<TouchableOpacity onPress={()=>{this.refs.noteInput.focus()}} style={{flexDirection:'row',height:30}}><Image style={{width:12,height:12}} source={require('../../Images/ic_edit.png')}/><Text>Node</Text></TouchableOpacity>:<View/>}
+        <TextInput ref="noteInput" placeholder="Note" value={this.state.note==''?null:this.state.note} style={{width:this.state.note==''?0:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})}/>
       </View>
-      <View style={{position:'relative',top:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+      <View style={{position:'relative',top:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
@@ -899,35 +949,39 @@ class Map extends Component {
 
     return (
       <View style={{flex:1}}>
+        <View ref="mapInfoImage" style={{backgroundColor:'white'}}>
+          <View style={styles.container}>
+            {!this.state.camera_image?<MapView
+              ref="map"
+              style={styles.map}
+              region={this.state.region}
+              showsUserLocation={true}
+              onRegionChange={region => this.onRegionChange(region)}
+              customMapStyle={mapStyle}
+              cacheEnabled = {true}
+            >
+              <MapView.Polyline
+                coordinates={this.state.polylineCoords}
+                strokeWidth={5}
+                strokeColor="blue"
+               />
+            </MapView>:<Image  source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
 
-        <View style={styles.container} >
-          {!this.state.camera_image?<MapView
-            ref="map"
-            style={styles.map}
-            region={this.state.region}
-            showsUserLocation={true}
-            onRegionChange={region => this.onRegionChange(region)}
-            customMapStyle={mapStyle}
-          >
-            <MapView.Polyline
-              coordinates={this.state.polylineCoords}
-              strokeWidth={5}
-              strokeColor="blue"
-             />
-          </MapView>:<Image source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
-
-          <TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
-            <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
-          </TouchableOpacity>
-          <View style={styles.buttonContainer}>
-            <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
+            {this.state.share?<TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
+              <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
+            </TouchableOpacity>:<View/>}
+            <View style={styles.buttonContainer}>
+              <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
+            </View>
+          </View>
+          <View ref="mapInfoImage2" style={{backgroundColor:'rgba(22,141,208,1)',flexDirection:'row',height:53,width:width,alignItems:'center',justifyContent:'space-around'}}>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.time_formatted}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.speed}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
           </View>
         </View>
-        <View style={{backgroundColor:'rgba(22,141,208,1)',flexDirection:'row',height:53,width:width,alignItems:'center',justifyContent:'space-around'}}>
-          <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.time_formatted}</Text></View>
-          <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.speed}</Text></View>
-          <View style={{alignItems:'center',justifyContent:'center'}}><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
-        </View>
+
+
         {run_info}
 
       </View>

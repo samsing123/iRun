@@ -40,6 +40,7 @@ class MusicList extends Component {
       totalMusic:Global.totalMusic,
       musicLoaded:Global.musicLoaded,
       reloading:false,
+      noMusic:false,
     };
 
   }
@@ -49,9 +50,17 @@ class MusicList extends Component {
     offset=10;
     console.log("Music number:"+Global.totalMusicNumber);
     tempArr = [];
-    setTimeout(() => {
-      this._getFileRecursively('/sdcard/');
-    }, 1000);
+    if(Global.totalMusicNumber==0){
+      this.setState({
+        noMusic:true,
+        refresh:false,
+      });
+    }else{
+      setTimeout(() => {
+        this._getFileRecursively('/sdcard/');
+      }, 1000);
+    }
+
 
   }
 
@@ -82,7 +91,7 @@ class MusicList extends Component {
             this._getFileRecursively(files[i].path);
           }
           if(files[i].isFile()){
-            if(Util._getFileExtension(files[i].name)=='mp3'){
+            if(Util._getFileExtension(files[i].name)=='mp3'||Util._getFileExtension(files[i].name)=='m4a'){
               //console.log(files[i].path);
               tempArr.push({
                 path:files[i].path,
@@ -128,7 +137,12 @@ class MusicList extends Component {
     var content = <View/>;
 
     if(!this.state.refresh){
-      content = this._renderMusicList();
+      if(this.state.noMusic){
+        content = <View><Text>No music found in this device(only support mp3)</Text></View>;
+      }else{
+        content = this._renderMusicList();
+      }
+
     }else{
       content = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
         <Spinner isVisible={true} size={80} type='Circle' color='grey'/>

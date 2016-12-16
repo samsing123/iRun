@@ -40,6 +40,7 @@ import AppEventEmitter from "../../Services/AppEventEmitter";
 var Util = require('../Util');
 var OkAlert = require('../Controls/OkAlert');
 var AvailiblePointAlert = require('../Controls/AvailiblePointAlert');
+var FitnessAlert = require('../Controls/FitnessAlert')
 import RNFetchBlob from 'react-native-fetch-blob';
 
 import OneSignal from 'react-native-onesignal'; // Import package from node modules
@@ -73,6 +74,7 @@ class Intro extends Component {
       t4c:'#9C9C9C',
       t5c:'#9C9C9C',
       is_have_new:false,
+      aqi:0,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -89,7 +91,7 @@ class Intro extends Component {
           this._getTotalNumberMusicFile(files[i].path);
         }
         if(files[i].isFile()){
-          if(Util._getFileExtension(files[i].name)=='mp3'){
+          if(Util._getFileExtension(files[i].name)=='mp3'||Util._getFileExtension(files[i].name)=='m4a'){
             //console.log(files[i].path);
             Global.totalMusicNumber++;
           }
@@ -170,36 +172,54 @@ class Intro extends Component {
     this.refs.alert.open();
   }
   _autoLogin(){
-    OneSignal.configure({
-        onIdsAvailable: function(device) {
-            Global.onesignal_devicetoken = device.userId;
-            let data = {
-              method: 'POST',
-              body: JSON.stringify({
-                email : Global.email,
-                password : Global.password,
-                device_id : DeviceInfo.getUniqueID(),
-                lang : Global.language.lang,
-                //device_token:Global.onesignal_devicetoken,
-              }),
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            };
-            Global._sendPostRequest(data,'api/login',(v)=>{console.log(v)});
-        },
-      onNotificationOpened: function(message, data, isActive) {
+    if(Platform.OS=='ios'){
+      let data = {
+        method: 'POST',
+        body: JSON.stringify({
+          email : Global.email,
+          password : Global.password,
+          device_id : DeviceInfo.getUniqueID(),
+          lang : Global.language.lang,
+          device_token:'',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      Global._sendPostRequest(data,'api/login',(v)=>{console.log(v)});
+    }else{
+      OneSignal.configure({
+          onIdsAvailable: function(device) {
+              Global.onesignal_devicetoken = device.userId;
+              let data = {
+                method: 'POST',
+                body: JSON.stringify({
+                  email : Global.email,
+                  password : Global.password,
+                  device_id : DeviceInfo.getUniqueID(),
+                  lang : Global.language.lang,
+                  device_token:Global.onesignal_devicetoken,
+                }),
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              };
+              Global._sendPostRequest(data,'api/login',(v)=>{console.log(v)});
+          },
+        onNotificationOpened: function(message, data, isActive) {
 
-          // Do whatever you want with the objects here
-          // _navigator.to('main.post', data.title, { // If applicable
-          //  article: {
-          //    title: data.title,
-          //    link: data.url,
-          //    action: data.actionSelected
-          //  }
-          // });
-      }
-    });
+            // Do whatever you want with the objects here
+            // _navigator.to('main.post', data.title, { // If applicable
+            //  article: {
+            //    title: data.title,
+            //    link: data.url,
+            //    action: data.actionSelected
+            //  }
+            // });
+        }
+      });
+    }
+
 
   }
 
@@ -222,11 +242,20 @@ class Intro extends Component {
   _loginCallback(responseJson){
     console.log(responseJson);
   }
+
+  _fitnessTrackerAgree(){
+    this.refs.fitnesstrackerAlert.close();
+    Actions.fitnesstracker();
+  }
+
+  _fitnessTrackerCancel(){
+    this.refs.fitnesstrackerAlert.close();
+  }
+
   componentDidMount(){
     if(this.props.isReset){
       this.props.isReset = false;
       Actions.home({type:'reset',title:'HOME1'});
-      console.log('route refreshed!!');
     }
     this._autoLoginIOS();
     AppEventEmitter.addListener('image fetch finish', this._eventTrigger());
@@ -235,6 +264,10 @@ class Intro extends Component {
     if(Platform.OS!='ios'){
       this._getTotalNumberMusicFile('/sdcard/');
     }
+    if(this.props.fitnesstracker){
+      this.refs.fitnesstrackerAlert.open();
+    }
+
 
     //this._getProfile();
     // navigator.geolocation.getCurrentPosition(
@@ -257,106 +290,119 @@ class Intro extends Component {
     .then((response) => response.text())
     .then((responseText) => {
       aqi = responseText.substring(responseText.lastIndexOf('notSurrogate">')+14,responseText.lastIndexOf('notSurrogate">')+15);
-    })
-    .catch((error) => {
-      console.warn(error);
-    });
-    fetch('http://rss.weather.gov.hk/rss/CurrentWeather.xml')
-    .then((response) => response.text())
-    .then((responseText) => {
-      var temperatures=responseText.substring(responseText.lastIndexOf("Air temperature : ")+18,responseText.lastIndexOf(" degrees Celsius"));
-      var uv = responseText.substring(responseText.lastIndexOf("King's Park : ")+14,responseText.lastIndexOf("King's Park : ")+16);
-      if(uv.indexOf('<')){
-        uv=uv.substring(0,1);
-      }
-      if(uv=='='){
-        uv=0;
-      }
-      var tumblrList = <View>
-        {this._renderTumblrList()}
-      </View>;
-      var eventList = <View>
-      {this._renderEventList()}
-      </View>;
-      var last_run;
-      if(Global.run_history.length==0){
-          last_run = <View style={{paddingBottom:10}}/>;
-      }else{
-        last_run = <View style={{width:width,flexDirection:'row'}}>
-          <View style={{paddingLeft:15,flexDirection:'column'}}>
-            <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
-            <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
-              <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>{Global.run_history[0].distance}</Text>
-              <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}>km</Text>
-            </View>
-            <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}>{Util._dateLastRunFormat2(Global.run_history[0].start_time.split(' ')[0])}</Text>
-          </View>
-        </View>;
-      }
-      var Home = <View style={{height:height-130}}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} pagingEnabled={true}>
-        <View>
-          <Image source={require('../../Images/bg_home.png')} style={{height:height*0.5,width:width}}/>
+      this.setState({aqi:aqi});
+      fetch('http://rss.weather.gov.hk/rss/CurrentWeather.xml')
+      .then((response) => response.text())
+      .then((responseText) => {
+        var temperatures=responseText.substring(responseText.lastIndexOf("Air temperature : ")+18,responseText.lastIndexOf(" degrees Celsius"));
+        var uv = responseText.substring(responseText.lastIndexOf("King's Park : ")+14,responseText.lastIndexOf("King's Park : ")+16);
+        var weatherImage = responseText.substring(responseText.lastIndexOf('<img src="')+10,responseText.lastIndexOf('" style="vertical-align: middle;">'));
 
-          <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
-            <Image source={require('../../Images/rain.png')} style={{width:130,height:130}} resizeMode={Image.resizeMode.contain}/>
-          </View>
-          <View style={{position:'absolute',left:width*0.52,top:height*0.01,backgroundColor:'rgba(0,0,0,0)'}}>
-            <Text style={{fontSize:100,color:"white"}}>{temperatures}°</Text>
-            <View style={{flexDirection:'row',position:'relative',top:-20}}>
-              <Image source={require('../../Images/ic_uv.png')} style={{width:20,height:20,marginTop:5}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{uv} UV</Text>
-              <Image source={require('../../Images/ic_api.png')} style={{width:20,height:20,marginTop:5,marginLeft:10}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{aqi} AQI</Text>
+        //<img src="http://rss.weather.gov.hk/img/pic50.png" style="vertical-align: middle;">
+        if(uv.indexOf('<')){
+          uv=uv.substring(0,1);
+        }
+        if(uv=='='){
+          uv=0;
+        }
+        var tumblrList = <View>
+          {this._renderTumblrList()}
+        </View>;
+        var eventList = <View>
+        {this._renderEventList()}
+        </View>;
+        var last_run;
+        if(Global.run_history.length==0){
+            last_run = <View style={{width:width,flexDirection:'row'}}>
+              <View style={{paddingLeft:15,flexDirection:'column'}}>
+                <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
+                <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
+                  <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>No Data</Text>
+                  <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}></Text>
+                </View>
+                <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}></Text>
+              </View>
+            </View>;
+        }else{
+          last_run = <View style={{width:width,flexDirection:'row'}}>
+            <View style={{paddingLeft:15,flexDirection:'column'}}>
+              <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
+              <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
+                <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>{Global.run_history[0].distance}</Text>
+                <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}>km</Text>
+              </View>
+              <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}>{Util._dateLastRunFormat2(Global.run_history[0].start_time.split(' ')[0])}</Text>
+            </View>
+          </View>;
+        }
+        var Home = <View style={{height:height-130}}>
+        <ScrollView contentContainerStyle={styles.scrollContainer} pagingEnabled={true}>
+          <View>
+            <Image source={require('../../Images/bg_home.png')} style={{height:height*0.5,width:width}}/>
+            <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
+              <Image source={{uri:weatherImage}} style={{width:130,height:130}} resizeMode={Image.resizeMode.contain}/>
+            </View>
+            <View style={{position:'absolute',left:width*0.52,top:height*0.01,backgroundColor:'rgba(0,0,0,0)'}}>
+              <Text style={{fontSize:100,color:"white"}}>{temperatures}°</Text>
+              <View style={{flexDirection:'row',position:'relative',top:-20}}>
+                <Image source={require('../../Images/ic_uv.png')} style={{width:20,height:20,marginTop:5}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{uv} UV</Text>
+                <Image source={require('../../Images/ic_api.png')} style={{width:20,height:20,marginTop:5,marginLeft:10}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{this.state.aqi} AQI</Text>
+              </View>
+            </View>
+            <View style={{position:'absolute',bottom:0,left:0,backgroundColor:'rgba(0,0,0,0)',height:100}}>
+              <Text style={styles.t1}>EITHER YOU RUN</Text>
+              <Text style={styles.t2}>THE DAY OR</Text>
+              <Text style={styles.t3}>THE DAY RUN YOU</Text>
             </View>
           </View>
-          <View style={{position:'absolute',bottom:0,left:0,backgroundColor:'rgba(0,0,0,0)',height:100}}>
-            <Text style={styles.t1}>EITHER YOU RUN</Text>
-            <Text style={styles.t2}>THE DAY OR</Text>
-            <Text style={styles.t3}>THE DAY RUN YOU</Text>
-          </View>
+          {last_run}
+          {eventList}
+          {tumblrList}
+        </ScrollView>
+        </View>;
+        /* detail for last run
+        <View style={{flexDirection:'row',paddingLeft:18,position:'relative',top:-3}}>
+            <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+              <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
+              <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Util._secondToMinuteDisplay(Global.run_history[0].duration,'time')}</Text>
+            </View>
+            <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
+              <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
+              <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].pace_str}</Text>
+            </View>
+            <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
+              <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
+              <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].calories}</Text>
+            </View>
         </View>
-        {last_run}
-        {eventList}
-        {tumblrList}
-      </ScrollView>
-      </View>;
-      /* detail for last run
-      <View style={{flexDirection:'row',paddingLeft:18,position:'relative',top:-3}}>
-          <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-            <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
-            <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Util._secondToMinuteDisplay(Global.run_history[0].duration,'time')}</Text>
-          </View>
-          <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
-            <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
-            <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].pace_str}</Text>
-          </View>
-          <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
-            <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
-            <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].calories}</Text>
-          </View>
-      </View>
-      */
-      var Runs = <Run />;
-      var Event = <Events />;
-      var Reward = <Rewards />;
-      var More = <Mores />;
-      var currentPage = Home;
-      switch(this.props.tab){
-        case 'reward':currentPage = Reward;this._tabChange('reward');break;
-        case 'history':Reward = <Rewards tab='history'/>;currentPage = Reward;this._tabChange('reward');break;
-      }
-      this.setState({
-        home:Home,
-        page:currentPage,
-        run:Runs,
-        events:Event,
-        rewards:Reward,
-        more:More,
-        temperature:temperatures,
+        */
+        var Runs = <Run />;
+        var Event = <Events />;
+        var Reward = <Rewards />;
+        var More = <Mores />;
+        var currentPage = Home;
+        switch(this.props.tab){
+          case 'reward':currentPage = Reward;this._tabChange('reward');break;
+          case 'history':Reward = <Rewards tab='history'/>;currentPage = Reward;this._tabChange('reward');break;
+        }
+        this.setState({
+          home:Home,
+          page:currentPage,
+          run:Runs,
+          events:Event,
+          rewards:Reward,
+          more:More,
+          temperature:temperatures,
+        });
+      })
+      .catch((error) => {
+        console.warn(error);
       });
     })
     .catch((error) => {
       console.warn(error);
     });
+
   }
 
   _getProfile(){
@@ -367,10 +413,13 @@ class Intro extends Component {
       }
     };
     Global._sendPostRequest(data,'api/profile',(responseJson)=>{this._requestCallback(responseJson)});
+    Global._sendPostRequest(data,'api/global-settings',(responseJson)=>{this._settingCallback(responseJson)});
+  }
+  _settingCallback(responseJson){
+    console.log(responseJson);
+    Global.global_setting = responseJson.response;
   }
   _requestCallback(responseJson){
-    console.log('response 123');
-    console.log(responseJson);
     Global.user_profile = responseJson.response;
     let data = {
       method: 'GET',
@@ -463,6 +512,7 @@ class Intro extends Component {
             <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t5c}}>{Global.language.more}</Text></View>
         </Tabs>
         <AvailiblePointAlert ref="alert"/>
+        <FitnessAlert ref="fitnesstrackerAlert" agree={()=>{this._fitnessTrackerAgree()}} cancel={()=>{this._fitnessTrackerCancel()}}/>
       </View>
     );
   }

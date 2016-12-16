@@ -208,10 +208,6 @@ class FrontPage extends Component {
          if(this.language==null){
            var lang = 'en-US';
            Global.language = ENG;
-           if(DeviceInfo.getDeviceLocale()=='zh-HK'||DeviceInfo.getDeviceLocale()=='zh-TW'){
-             lang = 'zh-HK';
-             Global.language = TC;
-           }
          }
          //Actions.home({type:ActionConst.RESET});
       }catch(error){
@@ -222,14 +218,14 @@ class FrontPage extends Component {
     var self = this;
     return (
       <View style={styles.container}>
-        <Image style={styles.slide1} source={require('../../Images/img_reg.png')} resizeMode={Image.resizeMode.contain}>
+        <Image style={styles.slide1} source={require('../../Images/img_reg.png')} resizeMode={Image.resizeMode.cover}>
         </Image>
         <View style={{position:'absolute',top:116,justifyContent:'center',alignItems:'center',width:width}}>
           <TouchableOpacity onPress={()=>{Actions.home({type:ActionConst.RESET})}}>
             <Image source={{uri:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/AXA_Logo.svg/599px-AXA_Logo.svg.png'}} style={{width:75,height:75}}/>
           </TouchableOpacity>
           <Image source={require('../../Images/img_applogo.png')} style={{width:125,height:75,marginTop:20}} resizeMode={Image.resizeMode.contain}/>
-          <View style={{paddingTop:155}}>
+          <View style={{paddingTop:130}}>
             <Button onPress={()=>{this.openTNCAlert('fb')}} style={{backgroundColor:'#395797',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER WITH FACEBOOK</Text></Button>
           </View>
           <View style={{paddingTop:14}}>
@@ -241,6 +237,12 @@ class FrontPage extends Component {
         </View>
         <TNCAlert message='TNC' ref='alert1' callback={()=>{this.openPRIVACYAlert()}} title='TERMS OF USE'/>
         <TNCAlert message='PRIVACY' ref='alert2' callback={()=>{this.goToNext()}} title='PRIVACY POLICY'/>
+
+        <View style={{position:'absolute',bottom:0,right:0}}>
+          <TouchableOpacity onPress={()=>{Actions.welcome()}}>
+            <Text style={{color:'white',backgroundColor:'rgba(0,0,0,0)'}}>{Global.version}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

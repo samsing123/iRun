@@ -195,7 +195,7 @@ class ForgotPassword extends Component {
   }
   //vaildation (input,title,format,maxLength,minLength)
   _vaildateFormSubmit(){
-    
+
     if(Global._vaildateInputBlank(this.state.mobile,'mobile')
     ||Global._vaildateInputFormat(this.state.mobile,'mobile','mobile',8)){
       return;
@@ -275,7 +275,7 @@ class ForgotPassword extends Component {
             <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
           </View>
           <View style={{paddingTop:146}}>
-            <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>CONFIRM</Text></Button>
+            <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>NEXT</Text></Button>
           </View>
         </View>
         <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>

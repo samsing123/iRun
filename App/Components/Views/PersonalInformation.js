@@ -178,10 +178,10 @@ class PersonalInformation extends Component {
     }
   }
   renderGenderView(){
-    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:60}}>
+    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:40}}>
       <View>
         <Text style={styles.selected}>GENDER</Text>
-        <Triangle style={{position:'relative',top:16,left:20}} width={15} height={10} color={'#ffffff'} direction={'up'}/>
+        <Triangle style={{position:'relative',top:8,left:20}} width={7.5} height={5} color={'#ffffff'} direction={'up'}/>
       </View>
       <TouchableOpacity onPress={()=>{this.changeRenderView(2)}}>
         <Text style={styles.non_selected}>AGE RANGE</Text>
@@ -195,13 +195,13 @@ class PersonalInformation extends Component {
     </View>
   }
   renderAgeView(){
-    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:60}}>
+    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:40}}>
       <TouchableOpacity onPress={()=>{this.changeRenderView(1)}}>
         <Text style={styles.non_selected}>GENDER</Text>
       </TouchableOpacity>
       <View>
         <Text style={styles.selected}>AGE RANGE</Text>
-        <Triangle style={{position:'relative',top:16,left:25}} width={15} height={10} color={'#ffffff'} direction={'up'}/>
+        <Triangle style={{position:'relative',top:8,left:40}} width={7.5} height={5} color={'#ffffff'} direction={'up'}/>
       </View>
       <TouchableOpacity onPress={()=>{this.changeRenderView(3)}}>
         <Text style={styles.non_selected}>HEIGHT</Text>
@@ -212,7 +212,7 @@ class PersonalInformation extends Component {
     </View>
   }
   renderWidthView(){
-    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:60}}>
+    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:40}}>
       <TouchableOpacity onPress={()=>{this.changeRenderView(1)}}>
         <Text style={styles.non_selected}>GENDER</Text>
       </TouchableOpacity>
@@ -221,7 +221,7 @@ class PersonalInformation extends Component {
       </TouchableOpacity>
       <View>
         <Text style={styles.selected}>HEIGHT</Text>
-        <Triangle style={{position:'relative',top:16,left:13}} width={15} height={10} color={'#ffffff'} direction={'up'}/>
+        <Triangle style={{position:'relative',top:8,left:20}} width={7.5} height={5} color={'#ffffff'} direction={'up'}/>
       </View>
       <TouchableOpacity onPress={()=>{this.changeRenderView(4)}}>
         <Text style={styles.non_selected}>WEIGHT</Text>
@@ -229,7 +229,7 @@ class PersonalInformation extends Component {
     </View>
   }
   renderHeightView(){
-    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:60}}>
+    return <View style={{flexDirection:'row',width:width,backgroundColor:'#2CA0F5',justifyContent:'space-around',alignItems:'center',height:40}}>
       <TouchableOpacity onPress={()=>{this.changeRenderView(1)}}>
         <Text style={styles.non_selected}>GENDER</Text>
       </TouchableOpacity>
@@ -241,7 +241,7 @@ class PersonalInformation extends Component {
       </TouchableOpacity>
       <View>
         <Text style={styles.selected}>WEIGHT</Text>
-        <Triangle style={{position:'relative',top:16,left:15}} width={15} height={10} color={'#ffffff'} direction={'up'}/>
+        <Triangle style={{position:'relative',top:8,left:25}} width={7.5} height={5} color={'#ffffff'} direction={'up'}/>
       </View>
     </View>
   }
@@ -339,16 +339,22 @@ class PersonalInformation extends Component {
   */
   render() {
     var self = this;
+    var genderImage = null;
+    if(this.state.gender=='M'){
+      genderImage = <Image source={require('../../Images/run-man.png')} style={{width:100,height:150}}></Image>
+    }else{
+      genderImage = <Image source={require('../../Images/run_female.png')} style={{width:100,height:150}}></Image>
+    }
     return (
       <View style={styles.container}>
-        <View style={{paddingTop:height*0.1,width:width,alignItems:'center'}}>
+        <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
           <H1 style={{color:"#9A9A9A",fontWeight:'bold'}}>PERSONAL</H1>
           <H1 style={{color:"#9A9A9A",fontWeight:'bold'}}>INFORMATION</H1>
           <Text style={{color:"#686868",paddingTop:10}}>For accurate run results, tell us a bit</Text>
-          <Text style={{color:"#686868",paddingTop:10}}>about yourself.</Text>
+          <Text style={{color:"#686868"}}>about yourself.</Text>
         </View>
-        <View style={{paddingTop:height*0.1}}>
-          <Image source={require('../../Images/run-man.png')} style={{width:100,height:150}}></Image>
+        <View style={{paddingTop:height*0.08}}>
+          {genderImage}
         </View>
         {self.renderView(this.state.pageNumber)}
         {self.renderContent(this.state.pageNumber)}

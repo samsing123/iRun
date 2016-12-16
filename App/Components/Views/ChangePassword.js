@@ -89,6 +89,7 @@ class ChangePassword extends Component {
       checked:false,
       old_password:'',
       new_password:'',
+      new_password_confirm:'',
       arrow:'<',
       alertMessage:'',
     }
@@ -167,6 +168,10 @@ class ChangePassword extends Component {
     ||Global._vaildateInputFormat(this.state.new_password,'new password','num+alpha+spec',12,6)){
       return;
     }
+    if(this.state.new_password!=this.state.new_password_confirm){
+      alert('Confirm Password and password not match.');
+      return;
+    }
     this._sendChangePasswordRequest();
   }
   loginWithFacebook(){
@@ -216,12 +221,15 @@ class ChangePassword extends Component {
           <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
             <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="New Password" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({new_password:text})}></TextInput>
           </View>
+          <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
+            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Confirm New Password" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({new_password_confirm:text})}></TextInput>
+          </View>
           <View style={{paddingTop:146}}>
             <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>CONFIRM</Text></Button>
           </View>
         </View>
         <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>
-         <Text style={{fontSize:20,color:'blue'}}>{this.state.arrow}</Text>
+          <Image source={require('../../Images/btn_back.png')} style={{width:20,height:20}}/>
         </TouchableOpacity>
       </InputScrollView>
     );

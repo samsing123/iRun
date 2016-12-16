@@ -41,6 +41,7 @@ class AvailiblePointAlert extends Component {
     this.refs.alert.open();
     this.setState({
       avail_point:Global.avail_point,
+      expiry_date:Global.user_profile.points_exp_date,
     });
   }
   close(){
@@ -60,7 +61,7 @@ class AvailiblePointAlert extends Component {
         </View>
         <View style={{flexDirection:'row',width:300,position:'absolute',top:40}}>
           <View style={{width:300,position:'absolute',top:20,alignItems:'flex-start',justifyContent:'center',paddingLeft:20,paddingRight:10}}>
-            <Text style={{fontSize:16}}>31/12/2017</Text>
+            <Text style={{fontSize:16}}>{this.state.expiry_date}</Text>
           </View>
           <View style={{width:300,position:'absolute',top:20,alignItems:'flex-end',justifyContent:'center',paddingLeft:30,paddingRight:20}}>
             <Text style={{fontSize:16}}>{this.state.avail_point}</Text>

@@ -147,17 +147,19 @@ class FeedDetail extends Component {
            <View style={{ height: 290,width:width, flex: 1}}>
 
               <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
-
+              <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',bottom:-24,right:16,zIndex:100}}>
+                <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
+              </View>
            </View>
           )}
           renderStickyHeader={() => (
             <View key="sticky-header" style={{flexDirection:'row',paddingTop:20,paddingLeft:50}}>
 
-              <Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>
+              {/*<Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>*/}
             </View>
           )}>
           {content}
-          <View style={{zIndex:99}}>
+          <View style={{zIndex:101}}>
             {facebookBtn}
             <View style={{ width:width,alignItems:'center',justifyContent:'center'}}>
               <View style={{width:width-36}}>
@@ -176,8 +178,8 @@ class FeedDetail extends Component {
             </View>
           </View>
         </ParallaxScrollView>
-        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>
-         <Text style={{fontSize:20,color:'blue'}}>{this.state.arrow}</Text>
+        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+         <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
       </View>
     );

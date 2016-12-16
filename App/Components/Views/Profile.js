@@ -110,6 +110,10 @@ var run_stat_arr = [Global.language.total_duration,Global.language.avg_speed,Glo
 class Profile extends Component {
   constructor(props){
     super(props);
+    var step = 0;
+    if(Global.user_profile.run_stat_life){
+      step = Global.user_profile.run_stat_life.steps;
+    }
     this.state={
       trueSwitchIsOn: false,
       t1:"LET'S GO",
@@ -130,7 +134,7 @@ class Profile extends Component {
       run_stat:[],
       isLoading:true,
       isHaveStep:false,
-      step_count:Global.user_profile.run_stat_life.steps,
+      step_count:step,
       imagePath:Global.user_icon,
       isSevenDay:true,
       display_title:Global.language.total_distance,
@@ -213,11 +217,11 @@ class Profile extends Component {
           case 6:sampleData.bar.data[i][0].name='S';break;
         }
         switch(type){
-          case 'Total Distance':sampleData.bar.data[i][0].v = data.plots[i].distance;break;
-          case 'Total Duration':sampleData.bar.data[i][0].v = data.plots[i].duration;break;
-          case 'Avg. Speed':sampleData.bar.data[i][0].v = data.plots[i].pace;break;
-          case 'Total Calories':sampleData.bar.data[i][0].v = data.plots[i].calories;break;
-          case 'Total Steps':sampleData.bar.data[i][0].v = data.plots[i].steps;break;
+          case 'Total Distance':sampleData.bar.data[i][0].v = data.plots[i].distance?data.plots[i].distance:0;break;
+          case 'Total Duration':sampleData.bar.data[i][0].v = data.plots[i].duration?data.plots[i].duration:0;break;
+          case 'Avg. Speed':sampleData.bar.data[i][0].v = data.plots[i].pace?data.plots[i].pace:0;break;
+          case 'Total Calories':sampleData.bar.data[i][0].v = data.plots[i].calories?data.plots[i].calories:0;break;
+          case 'Total Steps':sampleData.bar.data[i][0].v = data.plots[i].steps?data.plots[i].steps:0;break;
         }
       }
   }
@@ -777,7 +781,7 @@ class Profile extends Component {
       {run_stat_arr[3]}
     </View>;
     var profileImage = <View/>;
-    if(this.state.imagePath=='data:image/jpeg;base64,'){
+    if(this.state.imagePath=='data:image/jpeg;base64,'||this.state.imagePath==''){
       profileImage = <Image style={{width:80,height:80,borderRadius:80/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}/>;
     }else{
       profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;
@@ -787,15 +791,16 @@ class Profile extends Component {
       <ScrollView>
       <View style={styles.container}>
         <Image source={require('../../Images/bg_setting.png')} style={{width:width,height:150,justifyContent:'center',alignItems:'center',borderBottomWidth:1}}>
-          <TouchableOpacity onPress={()=>{this._imagePick()}}>
+          <TouchableOpacity onPress={()=>{Actions.setting()}}>
             <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
               {profileImage}
-              <Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_profile_setting.png')}></Image>
-
+                <View style={{position:'absolute',right:0,bottom:0}}>
+                  <Image style={{width:20,height:20}} source={require('../../Images/btn_profile_setting.png')}></Image>
+                </View>
             </View>
           </TouchableOpacity>
           <View style={{backgroundColor:'rgba(0,0,0,0)'}}>
-            <Text style={{fontSize:17,fontWeight:'bold',color:'black'}}>{Global.user_profile.display_name}</Text>
+            <Text style={{fontSize:17,fontWeight:'bold',color:'white'}}>{Global.user_profile.display_name}</Text>
           </View>
         </Image>
 
@@ -834,33 +839,7 @@ class Profile extends Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
-        {this.state.isSevenDay?<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
-          <View style={{alignSelf:'center',marginTop:10}}>
-            <Text>{this.state.display_title}</Text>
-            <View style={{alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
-            </View>
-          </View>
-          <View style={{position:'absolute',top:50,left:30}}>
-            <Bar data={sampleData.bar.data} options={sampleData.bar.options} accessorKey='v' style={{marginLeft:20}}/>
-          </View>
-        </View>:null}
-        {this.state.isSevenDay?null:<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
-          <View style={{alignSelf:'center',marginTop:10}}>
-            <Text>{this.state.display_title}</Text>
-            <View style={{alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
-            </View>
-          </View>
-          <View style={{position:'absolute',top:50}}>
-            <SmoothLine
-              data={sampleData.smoothLine.data}
-              options={sampleData.smoothLine.options}
-              dateRange={this.dateRangeArr}
-              xKey='index'
-              yKey={this.state.show_graph} />
-          </View>
-        </View>}
+
         <View style={{width:width-16,height:100,justifyContent:'center',position:'relative'}}>
           {/*<Text style={{fontSize:17,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{Global.language.run_stat}</Text>*/}
           {run_stat_content}
@@ -1028,6 +1007,37 @@ value={this.state.trueSwitchIsOn} />
     <Text style={{fontSize:10,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_cal}</Text>
   </View>
 </View>
+
+
+
+for static Graph TODO:Part
+{this.state.isSevenDay?<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
+  <View style={{alignSelf:'center',marginTop:10}}>
+    <Text>{this.state.display_title}</Text>
+    <View style={{alignItems:'center',justifyContent:'center'}}>
+      <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
+    </View>
+  </View>
+  <View style={{position:'absolute',top:50,left:30}}>
+    {Global.user_profile.run_stat_life?<Bar data={sampleData.bar.data} options={sampleData.bar.options} accessorKey='v' style={{marginLeft:20}}/>:<Text>No Run Data</Text>}
+  </View>
+</View>:null}
+{this.state.isSevenDay?null:<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
+  <View style={{alignSelf:'center',marginTop:10}}>
+    <Text>{this.state.display_title}</Text>
+    <View style={{alignItems:'center',justifyContent:'center'}}>
+      <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
+    </View>
+  </View>
+  <View style={{position:'absolute',top:50}}>
+    <SmoothLine
+      data={sampleData.smoothLine.data}
+      options={sampleData.smoothLine.options}
+      dateRange={this.dateRangeArr}
+      xKey='index'
+      yKey={this.state.show_graph} />
+  </View>
+</View>}
 */
 
 module.exports = Profile;
