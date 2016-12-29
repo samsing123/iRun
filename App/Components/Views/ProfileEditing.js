@@ -53,14 +53,14 @@ import ImageCropper from 'react-native-image-crop-picker';
 
 function createHeight(){
   let heightArr = [];
-  for(let i=150;i<=250;i++){
+  for(let i=100;i<=250;i++){
     heightArr.push(i+' cm');
   }
   return heightArr;
 }
 function createWeight(){
   let weightArr = [];
-  for(let i=30;i<=200;i++){
+  for(let i=10;i<=200;i++){
     weightArr.push(i+' kg');
   }
   return weightArr;
@@ -100,12 +100,14 @@ const SECTIONS = [
 ];
 var options = {
   title: 'Select Your User Icon',
+  maxWidth:100,
+  maxHeight:100,
   storageOptions: {
     skipBackup: true,
     path: 'images'
   }
 };
-class Setting extends Component {
+class ProfileEditing extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -132,13 +134,13 @@ class Setting extends Component {
       language_chi_text:styles.language_text_non_selected,
       isEditting:false,
       isRunSetting:this.props.isRunSetting?true:false,
-      height:Global.user_profile.height,
-      weight:Global.user_profile.weight,
+      height:Global.user_profile.height+' cm',
+      weight:Global.user_profile.weight+' kg',
       gender:Global.user_profile.gender,
       age_range:Global.user_profile.age_range,
       exercise:Global.user_profile.exercise,
       imagePath:Global.user_icon,
-
+      loading:true,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -213,6 +215,33 @@ class Setting extends Component {
         language_chi_text:styles.language_text_non_selected,
       });
     }
+    let data = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    Global._sendPostRequest(data,'api/profile',(responseJson)=>{this._requestCallback(responseJson)});
+    Actions.refresh({onBack:()=>{this._submitPersonalUpdate();Actions.pop()}});
+  }
+  _requestCallback(responseJson){
+    Global.user_profile = responseJson.response;
+    let data = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    var temp = Global.user_profile.exercise>1?' days per week':' day per week';
+    this.setState({
+      loading:false,
+      height:Global.user_profile.height+' cm',
+      weight:Global.user_profile.weight+' kg',
+      gender:Global.user_profile.gender,
+      age_range:Global.user_profile.age_range,
+      exercise:Global.user_profile.exercise+temp,
+    });
+    //Actions.home();
   }
   _testRunRequest(){
     Actions.numbercount();
@@ -451,7 +480,7 @@ class Setting extends Component {
           pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
           pickerToolBarBg:[255,255,255,1],
-          pickerTitleText:'Running Level',
+          pickerTitleText:'Frequency',
           onPickerConfirm: pickedValue => {
               this.setState({
                 exercise:pickedValue[0],
@@ -532,6 +561,25 @@ class Setting extends Component {
         isEditting:false
       });
     }
+  }
+
+  _submitPersonalUpdate(){
+    let data = {
+      method: 'POST',
+      body: JSON.stringify({
+        age_range : this.state.age_range,
+        gender : this.state.gender,
+        height : this.state.height.split(' ')[0],
+        weight : this.state.weight.split(' ')[0],
+        exercise : 1,
+        interest : [],
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    console.log(data);
+    Global._saveUserProfile(data);
   }
 
   _editPersonalCallback(responseJson){
@@ -679,11 +727,13 @@ class Setting extends Component {
             </View>
           </View>
         </View>
+        {Global.is_facebook?<View/>:
         <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
             <Text>{Global.language.change_password}</Text><Text>></Text>
           </View>
         </TouchableOpacity>
+        }
         <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
           <Text>{Global.language.your_interest}</Text><Text>></Text>
         </View>
@@ -829,16 +879,7 @@ class Setting extends Component {
       </TouchableOpacity>
     </Animatable.View>;
     const noSettingContent = <View/>;
-    var settingContents = settingContent;
-    if(!this.state.isEditting){
-      if(this.state.isRunSetting){
-        settingContents = runSetting;
-      }else{
-        settingContents = settingContent;
-      }
-    }else{
-      settingContents = noSettingContent;
-    }
+    var settingContents = noSettingContent;
     var value = new Animated.Value(0);
     var running_setting_view = <Animated.View
                 style={[styles.demo, {
@@ -860,19 +901,75 @@ class Setting extends Component {
       <ScrollView animation="fadeIn">
 
         <View style={styles.container}>
-          <Image style={{width:width,height:this.state.isEditting?height:120,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_setting.png')}>
+          <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:height+152,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_profile.png')}>
               <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
                 {profileImage}
-                {this.state.isEditting?<TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>:<View/>}
+                <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>
               </View>
+              <View style={{flex:1}}>
+              <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
+                  <View>
+                    <Text style={styles.textColor}>{Global.language.display_name}</Text>
+                    <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}}>
+                      <Text style={styles.textColor}>{Global.user_profile.display_name}</Text>
+                    </View>
+                  </View>
+                  <View style={{flexDirection:'row',paddingTop:10}}>
+                    <View style={{flex:0.7}}>
+                      <Text style={styles.textColor}>{Global.language.email}</Text>
+                      <View style={{width:width-160,height:20,justifyContent:'center'}}>
+                        <Text style={styles.textColor}>{Global.email}</Text>
+                      </View>
+                    </View>
+                    <View style={{flex:0.3}}>
+                      <Text style={styles.textColor}>{Global.language.birthday}</Text>
+                      <View style={{width:width-80,height:20,justifyContent:'center'}}>
+                        <Text style={styles.textColor}>{Global.user_profile.birthday}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={styles.textColor}>{Global.language.change_password}</Text><Text style={styles.textColor}>></Text>
+                    </View>
+                  </TouchableOpacity>
+                  <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                    <Text style={styles.textColor}>{Global.language.your_interest}</Text><Text style={styles.textColor}>></Text>
+                  </View>
+                  <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={styles.textColor}>{Global.language.gender}</Text><Text style={styles.textColor}>{this.state.gender} ></Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{this._showAgePicker()}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={styles.textColor}>{Global.language.age_range}</Text><Text style={styles.textColor}>{this.state.age_range} ></Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{this._showHeightPicker()}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={styles.textColor}>{Global.language.height}</Text><Text style={styles.textColor}>{this.state.height} ></Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{this._showWeightPicker()}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={styles.textColor}>{Global.language.weight}</Text><Text style={styles.textColor}>{this.state.weight} ></Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{this._showRlevelPicker()}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={styles.textColor}>{Global.language.running_frequency}</Text><Text style={styles.textColor}>{this.state.exercise} ></Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={()=>{this._logout();}}>
+                  <View style={{marginTop:20,width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
+                    <Text style={{fontSize:14,color:'white'}}>{Global.language.logout}</Text>
+                  </View>
+                </TouchableOpacity>
+                </View>
           </Image>
         </View>
-        <TouchableOpacity onPress={()=>{Actions.profileediting()}} style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
-          <Text style={{fontSize:14,color:'white'}}>{Global.language.edit_profile}</Text>
-        </TouchableOpacity>
-
-        {settingContents}
-        {this._overlay()}
       </ScrollView>
     );
   }
@@ -1001,6 +1098,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  textColor:{
+    color:'#ffffff',
+    backgroundColor:'rgba(0,0,0,0)',
+  },
+  textBGColor:{
+
+  },
 });
 
 /*
@@ -1010,4 +1114,4 @@ style={{marginBottom: 10}}
 value={this.state.trueSwitchIsOn} />
 */
 
-module.exports = Setting;
+module.exports = ProfileEditing;

@@ -101,6 +101,7 @@ var ENG = {
     NT:'New Territories',
     cancel:'CANCEL',
     no_record:'NO RECORD',
+    running_frequency:'Running Frequency',
 };
 
 module.exports = ENG;

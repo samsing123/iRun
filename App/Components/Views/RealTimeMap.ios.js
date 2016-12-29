@@ -589,6 +589,7 @@ class RealTimeMap extends Component {
             style={styles.map}
             region={this.state.region}
             showsUserLocation={true}
+            followsUserLocation={true}
             onRegionChange={region => this.onRegionChange(region)}
           >
             <MapView.Polyline

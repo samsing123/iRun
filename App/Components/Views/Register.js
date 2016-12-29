@@ -45,14 +45,34 @@ const {
 } = FBSDK;
 var Global = require('../Global');
 import Picker from 'react-native-picker';
+let pickerData = [
+  ['01','02','03','04','05','06','07','08','09','10','11','12'],
+  ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
+];
+function createDateData2(){
+    let date = [];
+    for(let i=1950;i<2050;i++){
+        let month = [];
+        for(let j = 1;j<13;j++){
+
+            month.push(j);
+        }
+        let _date = {};
+        _date[i+'年'] = month;
+        date.push(_date);
+    }
+    return date;
+};
 function createDateData(){
     let month = [];
     for(let j = 1;j<13;j++){
         let day = [];
         if(j === 2){
-            for(let k=1;k<29;k++){
+            for(let k=1;k<30;k++){
                 if(k<10){
                   k='0'+k;
+                }else{
+                  k = k+'';
                 }
                 day.push(k);
             }
@@ -61,6 +81,8 @@ function createDateData(){
             for(let k=1;k<32;k++){
                 if(k<10){
                   k='0'+k;
+                }else{
+                  k = k+'';
                 }
                 day.push(k);
             }
@@ -69,12 +91,16 @@ function createDateData(){
             for(let k=1;k<31;k++){
                 if(k<10){
                   k='0'+k;
+                }else{
+                  k = k+'';
                 }
                 day.push(k);
             }
         }
         if(j<10){
           j='0'+j;
+        }else{
+          j=j+'';
         }
         let _month = {};
         _month[j] = day;
@@ -94,6 +120,7 @@ class Register extends Component {
       display_name:'',
       mobile_no:'',
       birthday:'Birthday(mm/dd)',
+      birthday_data:['01','01'],
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -102,13 +129,14 @@ class Register extends Component {
 
   _showDatePicker() {
       Picker.init({
-          pickerData: createDateData(),
-          selectedValue: ['1', '1'],
+          pickerData: pickerData,
+          selectedValue: this.state.birthday_data,
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
           pickerToolBarBg:[255,255,255,1],
           pickerTitleText:'Birthday',
+          pickerTitleStyle:{flex:3},
           onPickerConfirm: pickedValue => {
               this.setState({
                 birthday:pickedValue[0]+'/'+pickedValue[1]
@@ -172,6 +200,7 @@ class Register extends Component {
       birthday: this.state.birthday,
       device_id: DeviceInfo.getUniqueID()
     };
+    Global.tempMobileNumber = this.state.mobile_no;
     let data = {
       method: 'POST',
       body: JSON.stringify({
@@ -216,7 +245,7 @@ class Register extends Component {
     return (
       <View>
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
-      <InputScrollView style={styles.container} inputs={temp}>
+      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
         <Image source={require('../../Images/bg_onboarding.png')} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
         <View style={{paddingTop:height*0.02,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>REGISTER</H1>

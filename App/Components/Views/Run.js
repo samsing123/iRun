@@ -318,7 +318,7 @@ class Run extends Component {
           </TouchableOpacity>
         </View>
         <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{Actions.musiclist({list:tempArr})}}>
+          <TouchableOpacity onPress={()=>{Actions.musiclist()}}>
             <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_music.png')} resizeMode={Image.resizeMode.contain}></Image>
           </TouchableOpacity>
         </View>

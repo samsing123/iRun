@@ -101,6 +101,7 @@ var TC = {
     NT:'新界',
     cancel:'取消',
     no_record:'沒有記錄',
+    running_frequency:'跑步頻率',
 };
 
 module.exports = TC;

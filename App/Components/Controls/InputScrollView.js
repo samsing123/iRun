@@ -32,7 +32,7 @@ class InputScrollView extends Component {
 
   render() {
     return (
-      <ScrollView keyboardShouldPersistTaps={true} keyboardDismissMode='on-drag' style={this.props.style}>
+      <ScrollView keyboardShouldPersistTaps={true} keyboardDismissMode='on-drag' style={this.props.style} scrollEnabled={this.props.scrollEnabled}>
         <View onStartShouldSetResponderCapture={this.handleCapture}>
           {this.props.children}
         </View>

@@ -8,7 +8,7 @@ var tumblrLink = 'https://api.tumblr.com/v2/blog/livelifehk.tumblr.com/posts?api
 import RNFetchBlob from 'react-native-fetch-blob';
 import React from 'react';
 import Actions from 'react-native-router-flux';
-import {Platform,StatusBar,TouchableOpacity,Image,Dimensions} from 'react-native';
+import {Platform,StatusBar,TouchableOpacity,Image,Dimensions,AsyncStorage} from 'react-native';
 import AppEventEmitter from "../Services/AppEventEmitter";
 function createLeftButton() {
       return (
@@ -191,6 +191,57 @@ function _fetchEventImage(url,id,title,date,callback){
   })
   .then((response)=>{callback(response.text()._65,title,id,date)});
 }
+
+function _saveUserProfile(data){
+  fetch(serverHost+'api/personal-info',data)
+    .then((responsex) => {console.log(responsex)})
+    .catch((error) => {
+      alert(error);
+    });
+}
+function _sendFormData(imagePath){
+  let formData = new FormData();
+  formData.append('icon', {uri: imagePath, type: 'image/jpeg', name: 'image.jpg'});
+  let option = {};
+  option.body = formData;
+  option.method = 'POST';
+  //https://www.posttestserver.com
+  //Global.serverHost+"api/personal-icon"
+  fetch(Global.serverHost+"api/personal-icon", option)
+  .then((response) => response.json())
+  .then((responseJson)=>{
+    console.log('image submitted!!');
+    console.log(responseJson);
+    if(responseJson.status=='success'){
+
+    }
+  });
+}
+function _sendRunImageData(id,imageUri){
+  let formData = new FormData();
+  formData.append('photo', {uri: imageUri, type: 'image/jpeg', name: 'image.jpg'});
+  formData.append('id', id);
+  let options = {};
+  options.body = formData;
+  options.method = 'POST';
+
+  fetch(Global.serverHost+"api/run-photo", options)
+  .then((response) => response.json())
+  .then((responseJson)=>{
+
+  });
+}
+
+
+async function _saveMobileNumber(number){
+    try{
+       await AsyncStorage.setItem('mobile_no',number);
+       console.log('mobile number saved:'+number);
+       //Actions.home({type:ActionConst.RESET});
+    }catch(error){
+       console.log(error);
+    }
+}
 var status_bar = null;
  var no_status_bar = <StatusBar
     backgroundColor="rgba(0,0,0,0)"
@@ -288,6 +339,18 @@ var Global = {
     runVoDistance:false,
     runVoSpeed:false,
     runFeedBackFrequency:'1 km',
+    tempMobileNumber:'',
+    is_facebook:false,
+    iosPlayList:[],
+    selectedPlaylist:null,
+    currentPlayingIndex:0,
+    user_token:'',
+    _saveUserProfile:_saveUserProfile,
+    tempIconUri:'',
+    tempIconBase64:'',
+    _sendFormData:_sendFormData,
+    _saveMobileNumber:_saveMobileNumber,
+    _sendRunImageData:_sendRunImageData,
     contactUsTemp:'<p>Email:customer.services@axa.com.hk</p>',
     mobilePermission:'{"category.categories.index":true,"category.categories.create":true,"category.categories.store":true,"category.categories.edit":true,"category.categories.update":true,"category.categories.destroy":true,"dashboard.grid.save":false,"dashboard.grid.reset":false,"dashboard.index":false,"greetingcardimage.greetingcardimages.index":true,"greetingcardimage.greetingcardimages.create":true,"greetingcardimage.greetingcardimages.store":true,"greetingcardimage.greetingcardimages.edit":true,"greetingcardimage.greetingcardimages.update":true,"greetingcardimage.greetingcardimages.destroy":true,"greetingcardimage.greetingcardimages.uploadImage":true,"greetingcardintegrated.greetingcardintegrateds.index":true,"greetingcardintegrated.greetingcardintegrateds.create":true,"greetingcardintegrated.greetingcardintegrateds.store":true,"greetingcardintegrated.greetingcardintegrateds.edit":true,"greetingcardintegrated.greetingcardintegrateds.update":true,"greetingcardintegrated.greetingcardintegrateds.destroy'+
 '":true,"greetingcardintegrated.greetingcardintegrateds.uploadGreetingCard":true,"greetingcardvideo.greetingcardvideos.index":true,"greetingcardvideo.greetingcardvideos.create":true,"greetingcardvideo.greetingcardvideos.store":true,"greetingcardvideo.greetingcardvideos.edit":true,"greetingcardvideo.greetingcardvideos.update":true,"greetingcardvideo.greetingcardvideos.destroy":true,"greetingcardvideo.greetingcardvideos.uploadVideo":true,"greetingtext.greetingtexts.index":true,"greetingtext.greetingtexts.create":true,"greetingtext.greetingtexts.store":true,"greetingtext.greetingtexts.edit":true,"greetingtext.greetingtexts.update":true,"greetingtext.greetingtexts.destroy":true,"media.media.index":true,"media.media.create":true,"media.media.store":true,"media.media.edit":true,"media.media.update":true,"media.media.destroy":true,"media.media.getCategoryList":true,"media.media-grid.index":true,"media.media-grid.ckIndex":true,"menu.menus.index":false,"menu.menus.create":false,"menu.menus.sto'+

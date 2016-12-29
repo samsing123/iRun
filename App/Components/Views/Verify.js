@@ -159,7 +159,10 @@ class Verify extends Component {
     Global._sendPostRequest(data,'api/register-fb',(responseJson)=>{this._fbResendCallback(responseJson)});
   }
 
+
+
   _fbResendCallback(responseJson){
+
     if(responseJson.status=="success"){
       alert('The SMS code has been resent. Please check your SMS inbox.');
     }else{
@@ -177,6 +180,7 @@ class Verify extends Component {
 
     if(this.props.isFacebook){
       Global.fbRegisterData.code = code;
+      this.mobile_no = Global.fbRegisterData.mobile_number;
       console.log('the code is:'+code);
       let data = {
         method:'POST',
@@ -205,6 +209,7 @@ class Verify extends Component {
     console.log(responseJson);
     if(responseJson.status=='success'){
       if(this.props.isFacebook){
+        this.user_token = responseJson.response.user_token;
         this._sendFacebookLoginRequest();
         this._saveFBLoginInformation();
       }else{
@@ -232,16 +237,18 @@ class Verify extends Component {
     var data={
       method:'POST',
       body:JSON.stringify({
-        auth_token:Global.fbRegisterData.auth_token,
+        auth_token:this.user_token,
         device_id:DeviceInfo.getUniqueID(),
         lang:Global.language.lang,
+        mobile_number:this.mobile_no,
         device_token:'',
       }),
       headers:{
         'Content-Type': 'application/json',
       }
     };
-    Global._sendPostRequest(data,'api/login-fb',(responseJson)=>{self._requestCallback(responseJson)});
+    console.log('data body:'+this.mobile_no);
+    Global._sendPostRequest(data,'api/login-fb-auto',(responseJson)=>{self._requestCallback(responseJson)});
     /*
     OneSignal.configure({
         onIdsAvailable: function(device) {
@@ -277,36 +284,54 @@ class Verify extends Component {
   _sendLoginRequest(){
     var lang = Global.language.lang;
     var self = this;
-    OneSignal.configure({
-        onIdsAvailable: function(device) {
-            Global.onesignal_devicetoken = device.userId;
-            let data = {
-              method: 'POST',
-              body: JSON.stringify({
-                email: Global.registerData.email,
-                password: Global.registerData.password,
-                device_id: DeviceInfo.getUniqueID(),
-                lang:lang,
-                device_token:Global.onesignal_devicetoken,
-              }),
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            };
-            Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
-        },
-      onNotificationOpened: function(message, data, isActive) {
+    if(Platform.OS=='ios'){
+      let data = {
+        method: 'POST',
+        body: JSON.stringify({
+          email: Global.registerData.email,
+          password: Global.registerData.password,
+          device_id: DeviceInfo.getUniqueID(),
+          lang:lang,
+          device_token:'xx',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+    }else{
+      OneSignal.configure({
+          onIdsAvailable: function(device) {
+              Global.onesignal_devicetoken = device.userId;
+              let data = {
+                method: 'POST',
+                body: JSON.stringify({
+                  email: Global.registerData.email,
+                  password: Global.registerData.password,
+                  device_id: DeviceInfo.getUniqueID(),
+                  lang:lang,
+                  device_token:Global.onesignal_devicetoken,
+                }),
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              };
+              Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
+          },
+        onNotificationOpened: function(message, data, isActive) {
 
-          // Do whatever you want with the objects here
-          // _navigator.to('main.post', data.title, { // If applicable
-          //  article: {
-          //    title: data.title,
-          //    link: data.url,
-          //    action: data.actionSelected
-          //  }
-          // });
-      }
-    });
+            // Do whatever you want with the objects here
+            // _navigator.to('main.post', data.title, { // If applicable
+            //  article: {
+            //    title: data.title,
+            //    link: data.url,
+            //    action: data.actionSelected
+            //  }
+            // });
+        }
+      });
+    }
+
 
     //Global.onesignal_devicetoken = device.userId;
     /*
@@ -360,16 +385,29 @@ class Verify extends Component {
 
   }
   _requestCallback(responseJson){
+    console.log(responseJson);
     if(responseJson.status=='success'){
-      Actions.welcome();
+      if(this.props.isFacebook){
+        this._saveUserToken(responseJson.response.user_token);
+        Actions.welcome();
+      }else{
+        Actions.welcome();
+      }
+
     }else{
       alert(responseJson.response.error);
     }
     //Actions.home();
   }
+  async _saveUserToken(user_token){
+    await AsyncStorage.setItem('user_token',user_token);
+  }
   async _saveFBLoginInformation(){
       try{
          await AsyncStorage.setItem('is_login','true');
+         await AsyncStorage.setItem('is_facebook','true');
+         await AsyncStorage.setItem('user_token',this.user_token);
+         await AsyncStorage.setItem('mobile_no',this.mobile_no);
          //Actions.home({type:ActionConst.RESET});
       }catch(error){
          console.log(error);
@@ -461,7 +499,7 @@ class Verify extends Component {
     return (
       <View>
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
-      <InputScrollView style={styles.container} inputs={temp}>
+      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
         <Image source={require('../../Images/bg_onboarding.png')} style={{width:width,height:height,position:'absolute',top:0,left:0}}/>
         <View style={{paddingTop:height*0.1,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>VERIFICATION</H1>

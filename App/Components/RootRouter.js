@@ -50,6 +50,7 @@ import animationtest from './Views/AnimationTest';
 import personalrecord from './Views/PersonalRecord';
 import tnc from './Views/TNC';
 import redeemhistorysummary from './Views/RedeemHistorySummary';
+import profileediting from './Views/ProfileEditing';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -61,6 +62,7 @@ var AvailiblePointAlert = require('./Controls/AvailiblePointAlert');
 var is_login = false;
 var is_first = false;
 var is_facebook = false;
+var is_frontpage = false;
 var Global = require('./Global');
 var Util = require('./Util');
 const script = '<script>document.title = document.getElementById("wrapper").offsetHeight+20</script>';
@@ -122,6 +124,21 @@ export default class RootRouter extends Component {
         //Global._fetchImage('api/event-photo',id,(v)=>{this._getImageCallback(v,title,id,date,is_last)});
       }
     }
+    _getImageCallback(response,title,id,date,is_last){
+      var tempEvent = {
+        title:title,
+        id:id,
+        date:date,
+        image:response,
+      };
+      eventArr.push(tempEvent);
+      Global.eventArr = eventArr;
+      if(is_last){
+        this.setState({
+          eventLoading:false,
+        });
+      }
+    }
 
     _getInboxListInFirstTime(){
       let data = {
@@ -164,21 +181,7 @@ export default class RootRouter extends Component {
       }
     }
 
-    _getImageCallback(response,title,id,date,is_last){
-      var tempEvent = {
-        title:title,
-        id:id,
-        date:date,
-        image:response,
-      };
-      eventArr.push(tempEvent);
-      Global.eventArr = eventArr;
-      if(is_last){
-        this.setState({
-          eventLoading:false,
-        });
-      }
-    }
+
     _getTumblrContent(){
       Global._getTumblr((v)=>this._callback(v));
     }
@@ -247,6 +250,18 @@ export default class RootRouter extends Component {
             var runVoDistance = await AsyncStorage.getItem('runVoDistance');
             var runVoSpeed = await AsyncStorage.getItem('runVoSpeed');
             var runFeedBackFrequency = await AsyncStorage.getItem('runFeedBackFrequency');
+            var mobile_number = await AsyncStorage.getItem('mobile_no');
+            var user_token = await AsyncStorage.getItem('user_token');
+            console.log('user token:'+user_token);
+            console.log('mobile number:'+mobile_number);
+
+            if(user_token){
+              Global.user_token = user_token;
+            }
+            if(mobile_number){
+              Global.mobile_no = mobile_number;
+            }
+
             Global.isLockWhenStart = isLockWhenStart;
             Global.email = email;
             Global.password = password;
@@ -322,30 +337,36 @@ export default class RootRouter extends Component {
 
 
             if(is_facebook_v!=null){
-              if(is_facebook=="true"){
-                is_facebook = true;
+              if(is_facebook_v=="true"){
+                Global.is_facebook = true;
               }else{
-                is_facebook = false;
+                Global.is_facebook = false;
               }
             }
+            console.log('is_facebook:'+Global.is_facebook);
             console.log('login value:'+value);
-            if(is_firsttime==null){
-              is_first=true;
-              AsyncStorage.setItem('is_firsttime','false');
-            }else{
-              if(value!=null){
+            if(is_firsttime){
+              console.log('is here1');
+              console.log(value);
+              if(value){
                 if(value=="true"){
                   is_login = true;
+                  is_frontpage = false;
                 }else{
                   is_login = false;
+                  is_frontpage = true;
                 }
-
                 console.log('is_login:'+is_login);
               }else{
-
-                console.log('error!!');
+                is_frontpage = true;
               }
+            }else{
+              console.log('is here2');
+              is_first=true;
+              is_frontpage = false;
+              AsyncStorage.setItem('is_firsttime','false');
             }
+
          }catch(error){
 
               console.log(error);
@@ -397,7 +418,7 @@ export default class RootRouter extends Component {
             <Scene key="scene">
                 <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>
                 <Scene key="home" component={Home} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}/>
-                <Scene renderRightButton={createRightButton} key="frontpage" component={FrontPage} title="FrontPage" hideNavBar={true} initial={!is_login}/>
+                <Scene renderRightButton={createRightButton} key="frontpage" component={FrontPage} title="FrontPage" hideNavBar={true} initial={is_frontpage}/>
                 <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="personalinformation"  component={PersonalInformation} title="personalinformation" hideNavBar={true}/>
@@ -438,6 +459,8 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="personalrecord" component={personalrecord} title="PERSONAL RECORD" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="tnc" component={tnc} title="Terms and Condition" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="redeemhistorysummary" component={redeemhistorysummary} title="Redeem History Detail" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="profileediting" component={profileediting} title="PROFILE" hideNavBar={false}/>
+
             </Scene>
         );
         return(

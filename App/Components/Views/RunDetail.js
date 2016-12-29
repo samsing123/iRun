@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   DeviceEventEmitter,
   AsyncStorage,
+  CameraRoll,
   Image
 } from 'react-native';
 var Tabs = require('react-native-tabs');
@@ -41,7 +42,8 @@ var haversine = require('haversine');
 var Global = require('../Global');
 var Util = require('../Util');
 var imageUri = '';
-import FileUploader from 'react-native-file-uploader'
+import FileUploader from 'react-native-file-uploader';
+var RNFS = require('react-native-fs');
 var coordinateEX= {
   latitude: LATITUDE,
   longitude: LONGITUDE,
@@ -111,6 +113,7 @@ class RunDetail extends Component {
       point:0,
       isLoading:true,
       note:'',
+      share:false,
     };
     this.pathArr = [];
     startTimestamp = new Date().valueOf();
@@ -160,6 +163,23 @@ class RunDetail extends Component {
       note:response.response.note,
     });
     Global._fetchImage('api/run-photo',this.props.id,(v)=>{this._getImageCallback(v)});
+
+    var DownloadFileOptions = {
+        fromUrl: response.response.share_photo,          // URL to download file from
+        toFile: RNFS.DocumentDirectoryPath+'temp.jpg'        // Local filesystem path to save the file to
+    }
+    var result = RNFS.downloadFile(DownloadFileOptions);
+
+    result.promise.then(function (val) {
+        console.log('Success Result:' + JSON.stringify(val));
+        var localFilePath = 'file://' + tempImagePath;
+        console.log(RNFS.DocumentDirectoryPath+'temp.jpg');
+    }, function (val) {
+        console.log('Error Result:' + JSON.stringify(val));
+    }
+    ).catch(function (error) {
+        console.error(error.message);
+    });
   }
 
   _getImageCallback(response){
@@ -172,6 +192,9 @@ class RunDetail extends Component {
   componentDidMount(){
     //this._sendEndRunRequest();
     this._getRunDetail();
+
+
+
     //this.getMapImage();
     //this._takeSnapshot();
     /*
@@ -574,10 +597,92 @@ class RunDetail extends Component {
     }
     //Actions.numbercount();
   }
+  _shareToFacebook(){
+    return ShareDialog.show(this.shareLinkContent);
+    /*
+    ShareDialog.canShow(this.shareLinkContent).then(
+      function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(this.shareLinkContent);
+        }
+      }
+    ).then(
+      function(result) {
+        if (result.isCancelled) {
+          alert('Share cancelled');
+        } else {
+          alert('Share success with postId: '
+            + result.postId);
+        }
+      },
+      function(error) {
+        alert('Share fail with error: ' + error);
+      }
+    );
+    */
+  }
+
+  _shareToInstagram(){
+    // var url = 'instagram://camera';
+    // Linking.canOpenURL(url).then(supported => {
+    //   if (!supported) {
+    //     console.log('Can\'t handle url: ' + url);
+    //   } else {
+    //     return Linking.openURL(url);
+    //   }
+    // }).catch(err => console.error('An error occurred', err));
+    shareOptions = {
+          title: "Share image to facebook",
+          url: "http://facebook.github.io/react-native/",
+          message:'This is a message!!',
+          subject: "Share Link", //  for email,
+          filePath:this.igUri
+        };
+
+    Share.shareSingle(Object.assign(shareOptions, {
+      "social": "instagram"
+    })).catch(err => console.error('An error occurred', err));
+  }
+
+  _saveToCameraRoll(){
+    CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl,"photo").then((uri)=>{console.log('new photo image:'+uri);});
+    alert('Photo saved.');
+  }
+
   render() {
     if(this.state.isLoading){
       return <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
         <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
+      </View>;
+    }
+    run_info = <View/>;
+    if(this.state.share){
+      run_info = <View>
+      <View style={{marginTop:40,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+        <TouchableOpacity onPress={()=>{this._shareToFacebook()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>FACEBOOK</Text></View></TouchableOpacity>
+      </View>
+        <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+          <TouchableOpacity onPress={()=>{this._shareToInstagram()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>INSTAGRAM</Text></View></TouchableOpacity>
+        </View>
+        <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+          <TouchableOpacity onPress={()=>{this._saveToCameraRoll()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:240,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SAVE TO CAMERA ROLL</Text></View></TouchableOpacity>
+        </View>
+      </View>;
+    }else{
+      run_info = <View>
+        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14,flexDirection:'row'}}>
+          <View style={{position:'relative'}}>
+            <Image source={require('../../Images/ic_pts_copy.png')} style={{width:25,height:25,tintColor:'#0F89CC'}}/>
+          </View>
+          <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
+        </View>
+        <View style={{marginTop:12,paddingTop:20,paddingBottom:20,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'#ebebeb',borderTopWidth:1,borderBottomColor:'#ebebeb',borderBottomWidth:1}}>
+          <Text style={{fontSize:14,fontWeight:'bold',textAlign:'center'}}>NOTES</Text>
+          <Text style={{fontSize:12,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{this.state.note}</Text>
+        </View>
+        <View style={{paddingTop:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+          <TouchableOpacity onPress={()=>{this.setState({share:true})}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:300,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
+        </View>
       </View>;
     }
     return (
@@ -598,20 +703,8 @@ class RunDetail extends Component {
           <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.speed}</Text></View>
           <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.state.cal}</Text></View>
         </View>
-        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14,flexDirection:'row'}}>
-          <View style={{position:'relative'}}>
-            <Image source={require('../../Images/ic_pts_copy.png')} style={{width:25,height:25,tintColor:'#0F89CC'}}/>
-          </View>
-          <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
-        </View>
-        <View style={{marginTop:12,paddingTop:20,paddingBottom:20,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'#ebebeb',borderTopWidth:1,borderBottomColor:'#ebebeb',borderBottomWidth:1}}>
-          <Text style={{fontSize:14,fontWeight:'bold',textAlign:'center'}}>NOTES</Text>
-          <Text style={{fontSize:12,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{this.state.note}</Text>
-        </View>
-        <View style={{position:'absolute',bottom:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+        {run_info}
 
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:300,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
-        </View>
       </View>
     );
   }

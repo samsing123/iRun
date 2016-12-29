@@ -415,7 +415,7 @@ class PointHistorys extends Component {
                 <View style={{paddingRight:10}}>
                   <Image source={require('../../Images/ic_pts_copy.png')} style={{width:24,height:24,tintColor:self._checkAddOrReduct(points.point)}}/>
                 </View>
-                <Text style={{fontSize:28,position:'relative',top:-10,color:self._checkAddOrReduct(points.point)}}>{points.point}</Text>
+                <Text style={{fontSize:28,position:'relative',top:-5,color:self._checkAddOrReduct(points.point)}}>{points.point}</Text>
               </View>
 
             </View>
@@ -481,11 +481,11 @@ class PointHistorys extends Component {
               <View style={{position:'relative',top:2}}>
                 <Image style={{width:12,height:12}} source={require('../../Images/ic_pts_copy.png')}/>
               </View>
-              <Text style={{fontSize:12,color:'white'}}>{Global.language.avail_point}</Text>
+              <Text style={{fontSize:12,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>{Global.language.avail_point}</Text>
             </View>
 
-            <Text style={{fontSize:40,color:'white',fontWeight:'bold'}}>{Global.user_profile.points}</Text>
-            <Text style={{fontSize:12,color:'white'}}>{Global.language.expiry_date}:{Global.user_profile.points_exp_date}</Text>
+            <Text style={{fontSize:40,color:'white',fontWeight:'bold',backgroundColor:'rgba(0,0,0,0)'}}>{Global.user_profile.points}</Text>
+            <Text style={{fontSize:12,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>{Global.language.expiry_date}:{Global.user_profile.points_exp_date}</Text>
           </View>
         </View>
         <View style={{borderWidth:1,borderColor:'#f1f1f1',position:'relative',top:-25,borderRadius:8}}>

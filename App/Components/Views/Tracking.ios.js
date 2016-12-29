@@ -33,6 +33,8 @@ import RNFetchBlob from 'react-native-fetch-blob';
 var RNFS = require('react-native-fs');
 var Polyline = require('polyline');
 var Global = require('../Global');
+import iTunes from 'react-native-itunes';
+import AppEventEmitter from "../../Services/AppEventEmitter";
 var testingFeed={
   "FeedList":[
     {
@@ -56,7 +58,6 @@ var subscription;
 var timer;
 //var mSensorManager = require('NativeModules').SensorManager;
 var {
-    Accelerometer,
     Gyroscope,
     Magnetometer
 } = require('NativeModules');
@@ -84,6 +85,8 @@ var accelerometer;
 import MapView from 'react-native-maps';
 var Util = require('../Util');
 import ModalPicker from 'react-native-modal-picker';
+var musicDuration = 0;
+var musicTimer;
 let index = 0;
 var pathArr;
 var polylineArr;
@@ -123,6 +126,7 @@ const data = [
 ];
 var tempArr = [];
 var Sound = require('react-native-sound');
+var ImagePicker = require('react-native-image-picker');
 class Tracking extends Component {
   constructor(props){
     super(props);
@@ -134,6 +138,7 @@ class Tracking extends Component {
       speed:"00'00\"",
       opacity:0,
       opacity_lock:0,
+      lock:false,
       showProgress:false,
       fill:0,
       distance:0,
@@ -148,6 +153,9 @@ class Tracking extends Component {
       left:'time',
       textInputValue:'',
       lock_icon:'unlock-alt',
+      music_title:'No Music',
+      singer:'',
+      is_playing:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -168,6 +176,7 @@ class Tracking extends Component {
         perKmDistance = 0;
         kmStartTimeStamp = new Date().valueOf();
       }
+
     }, 1000);
   }
 
@@ -185,6 +194,7 @@ class Tracking extends Component {
       speed:"00'00\"",
       opacity:0,
       opacity_lock:0,
+      lock:false,
       showProgress:false,
       fill:0,
       distance:0,
@@ -199,6 +209,7 @@ class Tracking extends Component {
       left:'time',
       textInputValue:'',
       lock_icon:'unlock-alt',
+      playing:false,
     });
     Global.pathArr=[];
     fill = 0;
@@ -226,14 +237,16 @@ class Tracking extends Component {
     left_value = "00:00";
     cur_lat = 0;
     cur_lng = 0;
+    musicDuration = 0;
   }
   componentWillUnmount(){
     clearInterval(timer);
+    clearInterval(musicTimer);
     if(subscription!=null){
       subscription.remove();
       subscription=null;
     }
-    Accelerometer.stopAccelerometerUpdates();
+    iTunes.pause();
   }
 
   resetListener(){
@@ -253,8 +266,8 @@ class Tracking extends Component {
             */
             cur_lat = location.latitude;
             cur_lng = location.longitude;
-            acceleration = location.speed*3.6;
-            if(acceleration<30){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
+            acceleration = location.speed;
+            if(acceleration<30&&acceleration>0){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
               //is walking or not
               if(previousLats!=0&&previousLngs!=0){
                 this._calDistance(previousLats,previousLngs,location.latitude,location.longitude);
@@ -264,19 +277,78 @@ class Tracking extends Component {
               previousLats = location.latitude;
               previousLngs = location.longitude;
             }else{
-              alert('You are not running');
+
             }
         }
     );
   }
 
+  startMusicTimer(){
+    musicTimer = setInterval(()=>{
+      musicDuration++;
+      console.log('music time:'+musicDuration);
+      if(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
+        if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
+          Global.currentPlayingIndex = -1; // reset the playing pointer to first track
+        }
+        this._goToNext();
+        musicDuration=0;
+      }
+    },1000);
+  }
+  _pauseMusicTimer(){
+    clearInterval(musicTimer);
+  }
+  _resumeMusicTimer(){
+    this.startMusicTimer();
+  }
+
+  _changeMusic(){
+    iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[0])
+    .then(res => {
+
+      console.log('is playing');
+      musicDuration = 0;
+      this.startMusicTimer();
+    })
+    .catch(err => {
+      alert('err');
+    });
+
+    this.setState({
+      music_title:Global.iosPlayList[Global.selectedPlaylist].tracks[0].title,
+      singer:Global.iosPlayList[Global.selectedPlaylist].tracks[0].albumArtist,
+      is_playing:true,
+    });
+  }
+
   componentDidMount(){
     this._reInitial();
+
     //mSensorManager.startAccelerometer(100);
     Location.startUpdatingLocation();
-
+    AppEventEmitter.addListener('changeMusic', ()=>{this._changeMusic()});
     pathArr = [];
     polylineArr = [];
+    if(Global.runLock){
+      this._lockScreen();
+    }
+
+    if(Global.iosPlayList.length!=0){
+      this.startMusicTimer();
+      iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[0])
+      .then(res => {
+        console.log('is playing');
+        this.setState({
+          music_title:Global.iosPlayList[Global.selectedPlaylist].tracks[0].title,
+          singer:Global.iosPlayList[Global.selectedPlaylist].tracks[0].albumArtist,
+          is_playing:true,
+        });
+      })
+      .catch(err => {
+        alert('err');
+      });
+    }
     /*
     navigator.geolocation.watchPosition(
       (position) => {
@@ -301,9 +373,10 @@ class Tracking extends Component {
             */
             cur_lat = location.latitude;
             cur_lng = location.longitude;
-            if(true){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
+            acceleration = location.speed;
+            if(acceleration>30&&acceleration<0){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
               //is walking or not
-              acceleration = location.speed*3.6;
+
               if(previousLats!=0&&previousLngs!=0){
                 this._calDistance(previousLats,previousLngs,location.latitude,location.longitude);
               }
@@ -314,14 +387,14 @@ class Tracking extends Component {
             }
         }
     );
-    Accelerometer.setAccelerometerUpdateInterval(0.1); // in seconds
+    //Accelerometer.setAccelerometerUpdateInterval(0.1); // in seconds
     /*
     DeviceEventEmitter.addListener('AccelerationData', function (data) {
       acceleration = Math.sqrt(Math.pow(data.acceleration.x,2) + Math.pow(data.acceleration.y,2) + Math.pow(data.acceleration.z,2));
       console.log('acceleration: '+acceleration);
     });
     */
-    Accelerometer.startAccelerometerUpdates(); // you'll start getting AccelerationData events above
+    //Accelerometer.startAccelerometerUpdates(); // you'll start getting AccelerationData events above
 
     startTimestamp = new Date().valueOf();
     timer = setInterval( () => {
@@ -364,7 +437,8 @@ class Tracking extends Component {
     var currentState = this.state.opacity_lock;
     this.setState({
       opacity_lock:currentState==0?1:0,
-      lock_icon:currentState==0?'lock':'unlock-alt'
+      lock_icon:currentState==0?'lock':'unlock-alt',
+      lock:currentState==0?true:false,
     });
   }
   _loadingProgress(){
@@ -698,7 +772,7 @@ class Tracking extends Component {
             <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_location.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
             <TouchableOpacity onPress={()=>{this._endRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_stop.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
             <TouchableOpacity onPress={()=>{this._resumeRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_play.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._resumeRun()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_cam.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._openCamera()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_cam.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
           </View>
         </View>
       )
@@ -730,6 +804,74 @@ class Tracking extends Component {
         return 'distance';
       }
     }
+  }
+
+  _pauseMusic(){
+    iTunes.pause();
+    this._pauseMusicTimer();
+    this.setState({
+      is_playing:false
+    });
+  }
+  _playMusic(){
+    console.log('ios play l'+Global.iosPlayList.length);
+    if(Global.iosPlayList.length==0){
+      alert('No Music Selected');
+      return;
+    }
+    this.startMusicTimer();
+    iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex])
+    .then(res => {
+      console.log('is playing');
+      this.setState({
+        music_title:Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].title,
+        singer:Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].albumArtist,
+        is_playing:true,
+      });
+    })
+    .catch(err => {
+      alert('No Music Selected');
+    });
+  }
+
+  _goToPre(){
+    if(Global.iosPlayList.length==0){
+      alert('No Music Selected');
+      return;
+    }
+    if(Global.currentPlayingIndex==0){
+      alert('This is the first song in the list.');
+      return;
+    }
+    Global.currentPlayingIndex--;
+    musicDuration = 0;
+    this._playMusic();
+  }
+
+  _goToNext(){
+    if(Global.iosPlayList.length==0){
+      alert('No Music Selected');
+      return;
+    }
+    if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
+      alert('This is the last song in the list.');
+      return;
+    }
+    Global.currentPlayingIndex++;
+    musicDuration = 0;
+    this._playMusic();
+  }
+
+  _openCamera(){
+    var options = {
+      storageOptions: {
+        skipBackup: true,
+        cameraRoll: true
+      }
+    };
+    ImagePicker.launchCamera(options, (response)  => {
+      // Same code as in above section!
+    });
   }
 
   render() {
@@ -782,7 +924,7 @@ class Tracking extends Component {
         </View>
 
         <View style={{alignItems:'center',width:width}}>
-          <Text style={{fontSize:115,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:35}}>{main_value}</Text>
+          <Text style={{fontSize:95,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:25}}>{main_value}</Text>
         </View>
         <View style={{flex:1,backgroundColor:'rgba(21,139,205,1)',width:width,alignItems:'center'}}>
           <View style={{paddingTop:15}}>
@@ -808,20 +950,22 @@ class Tracking extends Component {
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>
             <View style={{width:width,height:28,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:15}}>Music Title - Singer</Text>
+              <Text style={{color:'white',fontSize:15}}>{this.state.music_title} {Global.iosPlayList.length!=0?'-':''} {this.state.singer}</Text>
             </View>
             <View style={{width:width,height:28,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/>
-              <Icon name="play" size={13} color="rgba(255,255,255,1)"/>
-              <Icon name="step-forward" size={13} color="rgba(255,255,255,1)" style={{paddingLeft:50}}/>
-              <Icon name="music" size={40} color="rgba(255,255,255,1)" onPress={()=>{Actions.musiclist({musicArr:tempArr})}} style={{position:'absolute',right:20,bottom:9}}/>
+              <TouchableOpacity onPress={()=>{this._goToPre()}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/></TouchableOpacity>
+              {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._playMusic()}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
+              <TouchableOpacity onPress={()=>{this._goToNext()}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)" style={{paddingLeft:50}}/></TouchableOpacity>
+              <TouchableOpacity onPress={()=>{Actions.musiclist()}} style={{position:'absolute',right:20,bottom:9}}>
+                <Image source={require('../../Images/btn_music.png')} style={{width:40,height:40}}/>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
         {this._lock()}
         <View style={{position:'absolute',right:18,top:18,flexDirection:'row'}}>
           <TouchableOpacity onPress={()=>{this._lockScreen()}}>
-            <Icon name={this.state.lock_icon} size={46} color="rgba(20,139,205,1)"/>
+            {!this.state.lock?<Image source={require('../../Images/btn_lock.png')} style={{width:46,height:46}}/>:<Image source={require('../../Images/btn_unlock.png')} style={{width:46,height:46}}/>}
           </TouchableOpacity>
         </View>
         {this._overlay()}

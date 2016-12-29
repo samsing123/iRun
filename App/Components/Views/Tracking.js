@@ -875,7 +875,6 @@ class Tracking extends Component {
         <View style={{position:'absolute',right:18,top:18,flexDirection:'row'}}>
           <TouchableOpacity onPress={()=>{this._lockScreen()}}>
             {!this.state.lock?<Image source={require('../../Images/btn_lock.png')} style={{width:46,height:46}}/>:<Image source={require('../../Images/btn_unlock.png')} style={{width:46,height:46}}/>}
-
           </TouchableOpacity>
         </View>
         {this._overlay()}

@@ -170,6 +170,7 @@ class ForgotPassword extends Component {
       method: 'POST',
       body: JSON.stringify({
         mobile_number:this.state.mobile,
+        birthday:this.state.birthday
       }),
       headers: {
         'Content-Type': 'application/json',

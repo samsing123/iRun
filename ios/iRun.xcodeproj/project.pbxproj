@@ -29,6 +29,7 @@
 		1B1BE27922CD4C068DCC6677 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C7264DD0DD24BD48A8B9E77 /* libRNImagePicker.a */; };
 		1FD1DD03A86844C185A25137 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E1E621DCCF7498DA966AA74 /* Ionicons.ttf */; };
 		2115FD7F1F30410C97F09AEF /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7172E79A60054A9391B809CE /* libRNFetchBlob.a */; };
+		21636E2EA2004448B98832D6 /* libRNInstagramShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C76A4A782144CA8AE025CA /* libRNInstagramShare.a */; };
 		2AC0EC5F4D284FFF9F3CCEAE /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60A541D041444CEBBFD64A6F /* MaterialIcons.ttf */; };
 		31E47E979DA5447C8E4EDD79 /* libRNMediaMeta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67596D4491A24796B3F7113D /* libRNMediaMeta.a */; };
 		4044113B38FD40ACBA6F599E /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45ECF0FE2C5E49459BFE4CB3 /* Entypo.ttf */; };
@@ -289,6 +290,13 @@
 			remoteGlobalIDString = 3245CDED1BFEE35C00EABF68;
 			remoteInfo = RCTOneSignal;
 		};
+		AE6EF29A1E09105000019219 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F860CA35D8DF4897A9D95FC2 /* RNInstagramShare.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C2928CBF1BF0FBA100626B74;
+			remoteInfo = RNInstagramShare;
+		};
 		AE83237D1DE6C4D200FF81EF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C17BC10806F747D8A6EFD38E /* RNSVG.xcodeproj */;
@@ -433,6 +441,7 @@
 		43389CE385454105AA9F22CC /* libRNMotionManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMotionManager.a; sourceTree = "<group>"; };
 		45ECF0FE2C5E49459BFE4CB3 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		4D36A417BADA4BAF84B93F8F /* RCTBEEPickerManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBEEPickerManager.xcodeproj; path = "../node_modules/react-native-picker/ios/RCTBEEPickerManager.xcodeproj"; sourceTree = "<group>"; };
+		53C76A4A782144CA8AE025CA /* libRNInstagramShare.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNInstagramShare.a; sourceTree = "<group>"; };
 		56AA8CB088AB4294A39ADA46 /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		56BBFAC914204D0D9BC7E39A /* RNMotionManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNMotionManager.xcodeproj; path = "../node_modules/react-native-motion-manager/RNMotionManager.xcodeproj"; sourceTree = "<group>"; };
 		5C9E87687BB64792B21FB135 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
@@ -490,6 +499,7 @@
 		F569F2854844405FACAA9C29 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		F6CD8BDEE93A405D896C9E87 /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		F77AFB0D05354306ABEBC062 /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
+		F860CA35D8DF4897A9D95FC2 /* RNInstagramShare.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNInstagramShare.xcodeproj; path = "../node_modules/react-native-instagram-share/RNInstagramShare.xcodeproj"; sourceTree = "<group>"; };
 		FB45D855443542A3B8887D5C /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -559,6 +569,7 @@
 				A5EC545122904B5495B72431 /* libRNSound.a in Frameworks */,
 				973564D13FF247A6BD6183FC /* libCodePush.a in Frameworks */,
 				073CDBD215174E2EAD9466A8 /* libimageCropPicker.a in Frameworks */,
+				21636E2EA2004448B98832D6 /* libRNInstagramShare.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,6 +722,7 @@
 				5D6AED781A504DB7A1728A6F /* RNSound.xcodeproj */,
 				56AA8CB088AB4294A39ADA46 /* CodePush.xcodeproj */,
 				BE6FAB5F1DAC4343B3415F7D /* ImageCropPicker.xcodeproj */,
+				F860CA35D8DF4897A9D95FC2 /* RNInstagramShare.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -933,6 +945,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		AE6EF27A1E09105000019219 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE6EF29B1E09105000019219 /* libRNInstagramShare.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		AE8323581DE6C4D200FF81EF /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1073,11 +1093,12 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = GJ7JXJ3GWN;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = GJ7JXJ3GWN;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1208,6 +1229,10 @@
 				{
 					ProductGroup = AE3EBF571DDEE578000B3043 /* Products */;
 					ProjectRef = 5C9E87687BB64792B21FB135 /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = AE6EF27A1E09105000019219 /* Products */;
+					ProjectRef = F860CA35D8DF4897A9D95FC2 /* RNInstagramShare.xcodeproj */;
 				},
 				{
 					ProductGroup = AEA08BD51DE401E400916A76 /* Products */;
@@ -1466,6 +1491,13 @@
 			remoteRef = AE3EC0491DDEF7CA000B3043 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		AE6EF29B1E09105000019219 /* libRNInstagramShare.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNInstagramShare.a;
+			remoteRef = AE6EF29A1E09105000019219 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		AE83237E1DE6C4D200FF81EF /* libRNSVG.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1592,7 +1624,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
+			shellScript = "";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1641,6 +1673,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1650,6 +1683,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1689,11 +1723,13 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				INFOPLIST_FILE = iRunTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1733,9 +1769,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1773,11 +1809,12 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-instagram-share/RNInstagramShare",
 				);
 				INFOPLIST_FILE = iRun/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1785,8 +1822,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
 				PRODUCT_NAME = iRun;
-				PROVISIONING_PROFILE = "344e88e2-3d97-436c-ba88-f61fe6bb5595";
-				PROVISIONING_PROFILE_SPECIFIER = iRunAdhoc2;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1796,8 +1833,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODEPUSH_KEY = uHefc3gk44F63IRwap_uJ98zbqzPNki9NrJXG;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1835,11 +1872,12 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-instagram-share/RNInstagramShare",
 				);
 				INFOPLIST_FILE = iRun/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1847,8 +1885,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
 				PRODUCT_NAME = iRun;
-				PROVISIONING_PROFILE = "344e88e2-3d97-436c-ba88-f61fe6bb5595";
-				PROVISIONING_PROFILE_SPECIFIER = iRunAdhoc2;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -1919,6 +1957,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-instagram-share/RNInstagramShare",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1988,9 +2027,11 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-instagram-share/RNInstagramShare",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2057,9 +2098,11 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-instagram-share/RNInstagramShare",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2070,8 +2113,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2109,11 +2152,12 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-instagram-share/RNInstagramShare",
 				);
 				INFOPLIST_FILE = iRun/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2121,8 +2165,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
 				PRODUCT_NAME = iRun;
-				PROVISIONING_PROFILE = "344e88e2-3d97-436c-ba88-f61fe6bb5595";
-				PROVISIONING_PROFILE_SPECIFIER = iRunAdhoc2;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Staging;
 		};
@@ -2131,11 +2175,13 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				INFOPLIST_FILE = iRunTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

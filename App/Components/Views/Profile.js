@@ -160,6 +160,7 @@ class Profile extends Component {
         step_count:Global.language.no_record
       });
     }
+
   }
   _getProfile(){
     let data = {
@@ -184,7 +185,7 @@ class Profile extends Component {
     Global._sendPostRequest(data,'api/run-history',(responseJson)=>{this._getRunHistory(responseJson)});
     Global._fetchImage('api/personal-icon',Global.user_profile.user_id,(v)=>{this._getUserCallback(v)});
 
-
+    console.log(Global.user_profile.run_stat_week);
     //Actions.home();
   }
 
@@ -224,6 +225,7 @@ class Profile extends Component {
           case 'Total Steps':sampleData.bar.data[i][0].v = data.plots[i].steps?data.plots[i].steps:0;break;
         }
       }
+      console.log(sampleData.bar.data);
   }
 
   _getRunHistory(response){
@@ -674,6 +676,18 @@ class Profile extends Component {
 
   }
 
+  _checkAllDataIsNotZero(arr){
+    for(var i=0;i<arr.length;i++){
+      if(arr[i][0].v!=0){
+        console.log(arr[i][0].v);
+        console.log('all is not zero!!');
+        return false;
+      }
+    }
+    console.log('all is zero!!');
+    return true;
+  }
+
   _renderRunStat(){
     console.log('check is calling?');
     var distance = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_distance)}}>
@@ -717,7 +731,7 @@ class Profile extends Component {
       steps = <TouchableOpacity onPress={()=>{Actions.fitnesstracker()}}>
         <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
           <Image source={require('../../Images/btn_step.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>n/a</Text>
+          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>--</Text>
           <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>
         </View>
       </TouchableOpacity>;
@@ -740,6 +754,9 @@ class Profile extends Component {
     var self = this;
     const run_now = this._renderRewardList();
     const run_session = this._renderRewardList();
+
+    var tempCheck = self._checkAllDataIsNotZero(sampleData.bar.data);
+    var tempCheck2= self._checkAllDataIsNotZero(sampleData.smoothLine.data);
     const run_now_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center',borderBottomWidth:1,borderBottomColor:'rgba(227,1,58,1)'}}>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48}}>REWARDS</Text>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
@@ -839,6 +856,36 @@ class Profile extends Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
+
+        {this.state.isSevenDay?<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
+          <View style={{alignSelf:'center',marginTop:10}}>
+            <Text>{this.state.display_title}</Text>
+            <View style={{alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
+            </View>
+          </View>
+          <View style={{position:'absolute',top:50,left:30}}>
+            {!tempCheck?<Bar data={sampleData.bar.data} options={sampleData.bar.options} accessorKey='v' style={{marginLeft:20}}/>:<Text style={{alignSelf:'center'}}>No Data</Text>}
+          </View>
+        </View>:null}
+        {this.state.isSevenDay?null:<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
+          <View style={{alignSelf:'center',marginTop:10}}>
+            <Text>{this.state.display_title}</Text>
+            <View style={{alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
+            </View>
+          </View>
+          <View style={{position:'absolute',top:50}}>
+          {!tempCheck2?
+            <SmoothLine
+              data={sampleData.smoothLine.data}
+              options={sampleData.smoothLine.options}
+              dateRange={this.dateRangeArr}
+              xKey='index'
+              yKey={this.state.show_graph} />:<Text style={{alignSelf:'center'}}>No Data</Text>
+          }
+          </View>
+        </View>}
 
         <View style={{width:width-16,height:100,justifyContent:'center',position:'relative'}}>
           {/*<Text style={{fontSize:17,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{Global.language.run_stat}</Text>*/}

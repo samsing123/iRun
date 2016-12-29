@@ -315,7 +315,7 @@ class FitnessTrackerConnect extends Component {
             redirect_uri: Global.fitbit_redirect,
             expires_in: '31536000',
             state:JSON.stringify({
-              user_id:Global.user_profile.user_id,
+              mobile_number:Global.tempMobileNumber,
               lang:Global.language.lang
             }),
           });
@@ -323,7 +323,7 @@ class FitnessTrackerConnect extends Component {
   }
   _jwAuth(){
     var data = qs.stringify({
-            mobile_number:Global.user_profile.mobile_number,
+            mobile_number:Global.tempMobileNumber,
             device_id:DeviceInfo.getUniqueID(),
           });
     data = data.replace("&","%26");

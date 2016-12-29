@@ -50,6 +50,8 @@ const {
   GraphRequestManager,
 } = FBSDK;
 var options = {
+  maxWidth:100,
+  maxHeight:100,
   title: 'Select Your User Icon',
   storageOptions: {
     skipBackup: true,
@@ -57,6 +59,10 @@ var options = {
   }
 };
 var Global = require('../Global');
+let pickerData = [
+  ['01','02','03','04','05','06','07','08','09','10','11','12'],
+  ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
+];
 function createDateData(){
     let month = [];
     for(let j = 1;j<13;j++){
@@ -114,8 +120,8 @@ class FB_Register extends Component {
   }
   _showDatePicker() {
       Picker.init({
-          pickerData: createDateData(),
-          selectedValue: ['1', '1'],
+          pickerData: pickerData,
+          selectedValue: ['01', '01'],
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
@@ -157,6 +163,8 @@ class FB_Register extends Component {
           const source = {uri: response.uri, isStatic: true};
         }
         Global.fb_icon = 'data:image/png;base64,'+response.data;
+        Global.tempIconUri = response.uri;
+        Global.tempIconBase64 = 'data:image/png;base64,'+response.data;
         this.setState(
           {
             imagePath:'data:image/png;base64,'+response.data
@@ -183,6 +191,7 @@ class FB_Register extends Component {
      .then((base64Data) => {
          // here's base64 encoded image
          Global.fb_icon = 'data:image/png;base64,'+base64Data;
+         Global.tempIconBase64 = 'data:image/png;base64,'+base64Data;
          this.setState(
            {
              imagePath:'data:image/png;base64,'+base64Data,
@@ -223,6 +232,7 @@ class FB_Register extends Component {
       birthday:this.state.birthday,
       device_id:DeviceInfo.getUniqueID(),
     };
+    Global.tempMobileNumber = this.state.mobile_no;
     var data={
       method:'POST',
       body:JSON.stringify({
@@ -256,6 +266,10 @@ class FB_Register extends Component {
   render() {
     var self = this;
     var photoImage;
+    var flex = 0;
+    if(Platform.OS=='ios'){
+      flex = 1;
+    }
     if(this.state.imagePath!=''){
       photoImage = <View>
         <View style={{width:100,height:100}}>
@@ -269,7 +283,7 @@ class FB_Register extends Component {
     return (
       <View>
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
-      <InputScrollView style={styles.container} inputs={temp}>
+      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
         <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>ALMOST THERE</H1>
           <View style={{paddingTop:20}}>
@@ -281,16 +295,16 @@ class FB_Register extends Component {
         </View>
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:24}}>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+            <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+            <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
             <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:14}}>{this.state.birthday}</Text></TouchableOpacity>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
+            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
           <View style={{width:width-64,marginTop:16}}>
             <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>

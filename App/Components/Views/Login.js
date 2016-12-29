@@ -109,17 +109,18 @@ function _sendFBLoginRequest(){
 }
 function _callback(responseJson){
   if(responseJson.status=='success'){
-    _saveFbLoginInformation();
+    _saveFbLoginInformation(responseJson.response.user_token);
     Actions.home({type:ActionConst.RESET});
   }else{
     alert(responseJson.response.error);
   }
 }
-async function _saveFbLoginInformation(){
+async function _saveFbLoginInformation(user_token){
     try{
        await AsyncStorage.setItem('is_login','true');
        await AsyncStorage.setItem('is_facebook','true');
-       console.log('login finish');
+       await AsyncStorage.setItem('user_token',user_token);
+       console.log('user token saved:'+user_token);
        //Actions.home({type:ActionConst.RESET});
     }catch(error){
        console.log(error);
@@ -279,6 +280,7 @@ class Login extends Component {
             //alert(accessToken);  // this token looks normal
             console.log('access token:'+accessToken);
             auth_token = accessToken;
+            this.user_token = accessToken;
             const infoRequest = new GraphRequest(
               '/me',
               { accessToken: accessToken,
@@ -304,7 +306,7 @@ class Login extends Component {
     return (
       <View style={{flex:1}}>
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
-      <InputScrollView style={styles.container} inputs={temp}>
+      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false} >
 
         <View style={{paddingTop:height*0.2,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>{Global.language.login}</H1>
@@ -335,7 +337,7 @@ class Login extends Component {
         </View>
 
       </InputScrollView>
-      <TouchableOpacity style={{position:'absolute',bottom:0}} onPress={()=>{Actions.register({type:ActionConst.REPLACE})}}>
+      <TouchableOpacity style={{position:'absolute',bottom:0}} onPress={()=>{Actions.pop()}}>
         <View style={{backgroundColor:'#148BCD',width:width,height:40,alignItems:'center',justifyContent:'center'}}>
           <Text style={{color:'white'}}>Dont have an Account? Register</Text>
         </View>

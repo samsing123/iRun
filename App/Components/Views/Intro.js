@@ -31,6 +31,7 @@ import Run from './Run';
 import Events from './Events';
 import Rewards from './Rewards';
 import Mores from './Mores';
+var eventArr = [];
 var posLat;
 var posLng;
 var Global = require('../Global');
@@ -75,11 +76,44 @@ class Intro extends Component {
       t5c:'#9C9C9C',
       is_have_new:false,
       aqi:0,
+      eventLoading:true,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
 
+  }
+
+  _getEventList(){
+    Global._getEventList((v)=>this._eventCallback(v));
+  }
+  _eventCallback(responseJson){
+    var arrLength = responseJson.response.event_list.length;
+
+    for(var i=0;i<arrLength;i++){
+      var title = responseJson.response.event_list[i].title;
+      var id = responseJson.response.event_list[i].id;
+      var date = Util._getEventDate(responseJson.response.event_list[i].start_time.split(' ')[0],responseJson.response.event_list[i].end_time.split(' ')[0]);
+      var count = i+1;
+      var is_last = count==arrLength?true:false;
+      Global._fetchEventImage('api/event-photo',id,title,date,(v,titles,ids,date)=>{this._getImageCallback(v,titles,ids,date,is_last)});
+      //Global._fetchImage('api/event-photo',id,(v)=>{this._getImageCallback(v,title,id,date,is_last)});
+    }
+  }
+  _getImageCallback(response,title,id,date,is_last){
+    var tempEvent = {
+      title:title,
+      id:id,
+      date:date,
+      image:response,
+    };
+    eventArr.push(tempEvent);
+    Global.eventArr = eventArr;
+    if(is_last){
+      this.setState({
+        eventLoading:false,
+      });
+    }
   }
 
   _getTotalNumberMusicFile(path){
@@ -171,6 +205,30 @@ class Intro extends Component {
   _openAlert(){
     this.refs.alert.open();
   }
+
+  _facebookAutoLogin(){
+    let data = {
+      method: 'POST',
+      body: JSON.stringify({
+        auth_token : Global.user_token,
+        mobile_number : Global.mobile_no,
+        device_id : DeviceInfo.getUniqueID(),
+        lang : Global.language.lang,
+        device_token:'',
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    console.log('facebook login data:');
+    console.log(data);
+    Global._sendPostRequest(data,'api/login-fb-auto',(v)=>{console.log(v);this._saveUserToken(v.response.user_token);this._getEventList();this._getProfile();});
+  }
+  async _saveUserToken(user_token){
+    console.log('facebook auto login and save user_token');
+    await AsyncStorage.setItem('user_token',user_token);
+  }
+
   _autoLogin(){
     if(Platform.OS=='ios'){
       let data = {
@@ -186,7 +244,7 @@ class Intro extends Component {
           'Content-Type': 'application/json',
         }
       };
-      Global._sendPostRequest(data,'api/login',(v)=>{console.log(v)});
+      Global._sendPostRequest(data,'api/login',(v)=>{this._getEventList();this._getProfile();console.log(v)});
     }else{
       OneSignal.configure({
           onIdsAvailable: function(device) {
@@ -204,7 +262,7 @@ class Intro extends Component {
                   'Content-Type': 'application/json',
                 }
               };
-              Global._sendPostRequest(data,'api/login',(v)=>{console.log(v)});
+              Global._sendPostRequest(data,'api/login',(v)=>{this._getEventList();this._getProfile();console.log(v)});
           },
         onNotificationOpened: function(message, data, isActive) {
 
@@ -236,7 +294,7 @@ class Intro extends Component {
         'Content-Type': 'application/json',
       }
     };
-    Global._sendPostRequest(data,'api/login',(v)=>{this._getProfile();console.log(v)});
+    Global._sendPostRequest(data,'api/login',(v)=>{this._getEventList();this._getProfile();console.log(v)});
   }
 
   _loginCallback(responseJson){
@@ -257,7 +315,12 @@ class Intro extends Component {
       this.props.isReset = false;
       Actions.home({type:'reset',title:'HOME1'});
     }
-    this._autoLoginIOS();
+    if(Global.is_facebook){
+      this._facebookAutoLogin();
+    }else{
+      this._autoLogin();
+    }
+
     AppEventEmitter.addListener('image fetch finish', this._eventTrigger());
     AppEventEmitter.addListener('changeLanguage', ()=>{this.setState({refresh:true})});
     AppEventEmitter.addListener('overlayAlert', ()=>{this._openAlert()});
@@ -421,6 +484,8 @@ class Intro extends Component {
   }
   _requestCallback(responseJson){
     Global.user_profile = responseJson.response;
+    console.log('go to save mobile!!');
+    Global._saveMobileNumber(responseJson.response.mobile_number);
     let data = {
       method: 'GET',
       headers: {
@@ -497,22 +562,31 @@ class Intro extends Component {
 
   render() {
     var self = this;
+    var content = <View/>;
     if(this.props.tab){
 
     }
+    if(this.state.eventLoading){
+      content = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
+        <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
+      </View>;
+    }else{
+      content = <Tabs selected={this.state.page} style={{backgroundColor:'white'}} onSelect={el=>this._tabChange(el.props.name)}>
+          <View name="home" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_home.png')} style={{width:24,height:24,tintColor:this.state.t1c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t1c}}>{Global.language.home}</Text></View>
+          <View name="event" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_event.png')} style={{width:24,height:24,tintColor:this.state.t2c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t2c}}>{Global.language.events}</Text></View>
+          <View name="run" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_run.png')} style={{width:24,height:24,tintColor:this.state.t3c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t3c}}>{Global.language.run}</Text></View>
+          <View name="reward" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_reward.png')} style={{width:24,height:24,tintColor:this.state.t4c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t4c}}>{Global.language.reward}</Text></View>
+          <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t5c}}>{Global.language.more}</Text></View>
+      </Tabs>
+    }
+
     return (
       <View style={styles.container}>
         {Global.status_bar}
         {this.state.page}
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}} onSelect={el=>this._tabChange(el.props.name)}>
-            <View name="home" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_home.png')} style={{width:24,height:24,tintColor:this.state.t1c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t1c}}>{Global.language.home}</Text></View>
-            <View name="event" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_event.png')} style={{width:24,height:24,tintColor:this.state.t2c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t2c}}>{Global.language.events}</Text></View>
-            <View name="run" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_run.png')} style={{width:24,height:24,tintColor:this.state.t3c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t3c}}>{Global.language.run}</Text></View>
-            <View name="reward" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_reward.png')} style={{width:24,height:24,tintColor:this.state.t4c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t4c}}>{Global.language.reward}</Text></View>
-            <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t5c}}>{Global.language.more}</Text></View>
-        </Tabs>
-        <AvailiblePointAlert ref="alert"/>
-        <FitnessAlert ref="fitnesstrackerAlert" agree={()=>{this._fitnessTrackerAgree()}} cancel={()=>{this._fitnessTrackerCancel()}}/>
+        {content}
+        <AvailiblePointAlert ref="alert" style={{backgroundColor:'white'}}/>
+        <FitnessAlert ref="fitnesstrackerAlert" style={{backgroundColor:'white'}} agree={()=>{this._fitnessTrackerAgree()}} cancel={()=>{this._fitnessTrackerCancel()}}/>
       </View>
     );
   }

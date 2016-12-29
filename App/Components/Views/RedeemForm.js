@@ -53,8 +53,8 @@ class RedeemForm extends Component {
       Picker.init({
           pickerData: [Global.language.KLN,Global.language.NT,Global.language.HK],
           selectedValue: [Global.language.KLN],
-          pickerConfirmBtnText:Global.language.done,
-          pickerCancelBtnText:Global.language.cancel,
+          pickerConfirmBtnText:'Done',
+          pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
           pickerToolBarBg:[255,255,255,1],
           pickerTitleText:Global.language.district,
@@ -109,6 +109,10 @@ class RedeemForm extends Component {
   }
 
   render() {
+    var flex = 0;
+    if(Platform.OS=='ios'){
+      flex=1;
+    }
     return (
       <View style={{flex:1}}>
       {Global.status_bar}
@@ -119,7 +123,7 @@ class RedeemForm extends Component {
         <View style={{paddingTop:40,alignItems:'flex-start',justifyContent:'center',paddingLeft:40,paddingRight:40}}>
           <Text>{Global.language.reci_name}</Text>
           <View style={{width:width-80,height:40,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
-            <TextInput style={{fontSize:16}} value={this.state.recipient_name} underlineColorAndroid='rgba(0,0,0,0)' onChangeText={(text) => {Global.currentReward.recipient_name = text;this.setState({recipient_name:text})}}></TextInput>
+            <TextInput style={{fontSize:16,flex:flex}} value={this.state.recipient_name} underlineColorAndroid='rgba(0,0,0,0)' onChangeText={(text) => {Global.currentReward.recipient_name = text;this.setState({recipient_name:text})}}></TextInput>
           </View>
         </View>
         <View style={{paddingTop:20,alignItems:'flex-start',justifyContent:'center',paddingLeft:40,paddingRight:40}}>

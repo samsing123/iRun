@@ -45,6 +45,8 @@ const {
 } = FBSDK;
 var options = {
   title: 'Select Your User Icon',
+  maxWidth:100,
+  maxHeight:100,
   storageOptions: {
     skipBackup: true,
     path: 'images'
@@ -62,7 +64,7 @@ class Welcome extends Component {
       display_name:'',
       mobile_no:'',
       birthday:'',
-      imagePath:Global.fb_icon,
+      imagePath:Global.tempIconBase64,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -96,7 +98,7 @@ class Welcome extends Component {
         } else {
           const source = {uri: response.uri, isStatic: true};
         }
-
+        Global.tempIconUri = response.uri;
         this.setState(
           {
             imagePath:'data:image/png;base64,'+response.data
@@ -105,23 +107,7 @@ class Welcome extends Component {
       }
     });
   }
-  _sendFormData(imagePath){
-    let formData = new FormData();
-    formData.append('icon', {uri: imagePath, type: 'image/jpeg', name: 'image.jpg'});
-    let option = {};
-    option.body = formData;
-    option.method = 'POST';
-    //https://www.posttestserver.com
-    //Global.serverHost+"api/personal-icon"
-    fetch(Global.serverHost+"api/personal-icon", option)
-    .then((response) => response.json())
-    .then((responseJson)=>{
-      console.log(responseJson);
-      if(responseJson.status=='success'){
 
-      }
-    });
-  }
   /*
   static renderNavigationBar(props){
     return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
@@ -132,7 +118,7 @@ class Welcome extends Component {
     var self = this;
     var photo;
     if(this.state.imagePath!=''){
-      photo = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:88,height:88,borderRadius:88/2}} source={{uri:this.state.imagePath}}></Image></TouchableOpacity>
+      photo = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:88,height:88,borderRadius:88/2}} source={{uri:this.state.imagePath}}></Image><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>
     }else{
       photo = <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:88,height:88,borderRadius:88/2,tintColor:'white'}} source={require('../../Images/btn_profile.png')}></Image><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>
     }
@@ -148,8 +134,8 @@ class Welcome extends Component {
           <Text style={{color:'white'}}>get to know you a little bit better.</Text>
         </View>
         <View style={{position:'absolute',bottom:23,left:0,flexDirection:'row',width:width,alignItems:'center',justifyContent:'center'}}>
-          <Button onPress={()=>{Actions.home({type:ActionConst.RESET,fitnesstracker:true})}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12,fontWeight:'bold'}}>NOT NOW</Text></Button>
-          <Button onPress={()=>{Actions.personalinformation()}}style={{backgroundColor:'white',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4,marginLeft:11}} transparent={true}><Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>GET STARTED</Text></Button>
+          <Button onPress={()=>{Global._sendFormData(Global.tempIconUri);Actions.home({type:ActionConst.RESET,fitnesstracker:true})}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12,fontWeight:'bold'}}>NOT NOW</Text></Button>
+          <Button onPress={()=>{Global._sendFormData(Global.tempIconUri);Actions.personalinformation()}}style={{backgroundColor:'white',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4,marginLeft:11}} transparent={true}><Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>GET STARTED</Text></Button>
         </View>
       </View>
     );
