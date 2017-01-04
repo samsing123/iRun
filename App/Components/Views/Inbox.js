@@ -516,7 +516,7 @@ class Inbox extends Component {
         return (
           <View key={i} style={{flexDirection:'row'}}>
             {deletebtn}
-            <TouchableOpacity onPress={()=>{self.setState({refresh:true});AppEventEmitter.emit('inbox.get');Global.inbox_list[i].is_read=true;Actions.inboxmessage({image:msg.image,title:msg.heading,id:msg.id,desc:msg.description})}}>
+            <TouchableOpacity onPress={()=>{self.setState({refresh:true});AppEventEmitter.emit('inbox.get');Global.inbox_list[i].is_read=true;Actions.inboxmessage({image:msg.image,title:msg.heading,id:msg.id,desc:msg.description,hasImage:true,msg_time:msg.msg_time})}}>
               <View style={{width:width,height:240,borderRadius:4,marginBottom:5}}>
                 <Image style={{width:width,height:240,borderRadius:4,position:'absolute',top:0}} source={{uri:msg.image}}/>
                 <View refs="messageBackground" style={{flexDirection:'row',borderRadius:8,width:width,height:100,backgroundColor:'rgba(103,103,103,0.8)',alignItems:'flex-start',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
@@ -543,7 +543,7 @@ class Inbox extends Component {
         return (
           <View key={i} style={{flexDirection:'row'}}>
             {deletebtn}
-            <TouchableOpacity style={{flexDirection:'row'}} key={i} onPress={()=>{self.setState({refresh:true});Global.inbox_list[i].is_read=true;Actions.inboxmessage({image:msg.image,title:msg.heading,id:msg.id,desc:msg.description})}}>
+            <TouchableOpacity style={{flexDirection:'row'}} key={i} onPress={()=>{self.setState({refresh:true});Global.inbox_list[i].is_read=true;Actions.inboxmessage({image:msg.image,title:msg.heading,id:msg.id,desc:msg.description,hasImage:true,msg_time:msg.msg_time})}}>
               <View style={{width:width,height:100,borderRadius:4,marginBottom:5}}>
                 <View style={{flexDirection:'row',borderRadius:4,width:width,height:100,backgroundColor:'rgba(103,103,103,0.8)',alignItems:'flex-start',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
                   <View style={{width:6,height:100,backgroundColor:bgColor,position:'relative',top:-5,borderRadius:4}}/>

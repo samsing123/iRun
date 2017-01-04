@@ -86,7 +86,7 @@ function createDateData(){
     for(let j = 1;j<13;j++){
         let day = [];
         if(j === 2){
-            for(let k=1;k<29;k++){
+            for(let k=1;k<30;k++){
                 if(k<10){
                   k='0'+k;
                 }
@@ -176,6 +176,7 @@ class ForgotPassword extends Component {
         'Content-Type': 'application/json',
       }
     };
+    console.log(data);
     Global._sendPostRequest(data,'api/sms-resend',(responseJson)=>{this._requestCallback(responseJson)});
   }
   async _saveNewPassword(){
@@ -187,6 +188,7 @@ class ForgotPassword extends Component {
       }
   }
   _requestCallback(responseJson){
+    console.log(responseJson);
     if(responseJson.status=='success'){
       Actions.verify({smsType:'reset_password',mobile_no:this.state.mobile});
     }else{
@@ -279,8 +281,8 @@ class ForgotPassword extends Component {
             <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>NEXT</Text></Button>
           </View>
         </View>
-        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>
-         <Text style={{fontSize:20,color:'blue'}}>{this.state.arrow}</Text>
+        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+         <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
       </InputScrollView>
       </View>

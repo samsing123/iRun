@@ -3,7 +3,7 @@
 var ENG =  require('./Language/Language_ENG');
 var TC =  require('./Language/Language_TC');
 var SC =  require('./Language/Language_SC');
-var serverHost = 'http://52.37.115.132/axa/irun/';
+var serverHost = 'http://52.37.115.132/';
 var tumblrLink = 'https://api.tumblr.com/v2/blog/livelifehk.tumblr.com/posts?api_key=fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4';
 import RNFetchBlob from 'react-native-fetch-blob';
 import React from 'react';
@@ -232,6 +232,25 @@ function _sendRunImageData(id,imageUri){
   });
 }
 
+async function _resetLoginInfo(){
+    try{
+       await AsyncStorage.removeItem('email');
+       await AsyncStorage.removeItem('password');
+       await AsyncStorage.removeItem('is_login');
+       await AsyncStorage.removeItem('is_facebook');
+       Global.email = null;
+       Global.password = null;
+       Global.is_facebook = false;
+       Global.is_login = false;
+       Global.user_profile = null;
+       Global.user_icon = '';
+
+       //Actions.home({type:ActionConst.RESET});
+    }catch(error){
+       console.log(error);
+    }
+}
+
 
 async function _saveMobileNumber(number){
     try{
@@ -250,7 +269,7 @@ var status_bar = null;
   />;
 var navbarHeight = Platform.OS === 'ios' ? 64 : 54;
 var Global = {
-    version:'v1.1.13',
+    version:'v1.1.18', // v1.2.1
     isLogin:false,
     serverHost:'http://52.37.115.132/axa/irun/',
     serverDomain:'',
@@ -351,6 +370,9 @@ var Global = {
     _sendFormData:_sendFormData,
     _saveMobileNumber:_saveMobileNumber,
     _sendRunImageData:_sendRunImageData,
+    first_time_fb:false,
+    _resetLoginInfo:_resetLoginInfo,
+    music_selected:false,
     contactUsTemp:'<p>Email:customer.services@axa.com.hk</p>',
     mobilePermission:'{"category.categories.index":true,"category.categories.create":true,"category.categories.store":true,"category.categories.edit":true,"category.categories.update":true,"category.categories.destroy":true,"dashboard.grid.save":false,"dashboard.grid.reset":false,"dashboard.index":false,"greetingcardimage.greetingcardimages.index":true,"greetingcardimage.greetingcardimages.create":true,"greetingcardimage.greetingcardimages.store":true,"greetingcardimage.greetingcardimages.edit":true,"greetingcardimage.greetingcardimages.update":true,"greetingcardimage.greetingcardimages.destroy":true,"greetingcardimage.greetingcardimages.uploadImage":true,"greetingcardintegrated.greetingcardintegrateds.index":true,"greetingcardintegrated.greetingcardintegrateds.create":true,"greetingcardintegrated.greetingcardintegrateds.store":true,"greetingcardintegrated.greetingcardintegrateds.edit":true,"greetingcardintegrated.greetingcardintegrateds.update":true,"greetingcardintegrated.greetingcardintegrateds.destroy'+
 '":true,"greetingcardintegrated.greetingcardintegrateds.uploadGreetingCard":true,"greetingcardvideo.greetingcardvideos.index":true,"greetingcardvideo.greetingcardvideos.create":true,"greetingcardvideo.greetingcardvideos.store":true,"greetingcardvideo.greetingcardvideos.edit":true,"greetingcardvideo.greetingcardvideos.update":true,"greetingcardvideo.greetingcardvideos.destroy":true,"greetingcardvideo.greetingcardvideos.uploadVideo":true,"greetingtext.greetingtexts.index":true,"greetingtext.greetingtexts.create":true,"greetingtext.greetingtexts.store":true,"greetingtext.greetingtexts.edit":true,"greetingtext.greetingtexts.update":true,"greetingtext.greetingtexts.destroy":true,"media.media.index":true,"media.media.create":true,"media.media.store":true,"media.media.edit":true,"media.media.update":true,"media.media.destroy":true,"media.media.getCategoryList":true,"media.media-grid.index":true,"media.media-grid.ckIndex":true,"menu.menus.index":false,"menu.menus.create":false,"menu.menus.sto'+

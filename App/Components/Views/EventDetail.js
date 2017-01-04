@@ -71,7 +71,7 @@ class EventDetail extends Component {
       tag:'',
       date:'',
       arrow:'<',
-      videoContent:'<html><iframe align="center" width="'+webviewWidth+'" height="290" src="https://www.youtube.com/embed/RJa4kG1N3d0" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
+      videoContent:'<html><iframe align="center" width="'+webviewWidth+'" height="240" src="https://www.youtube.com/embed/ePpPVE-GGJw" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -101,12 +101,16 @@ class EventDetail extends Component {
       contentType: 'link',
       contentUrl: response.response.link,
     };
+
     this.setState({
       tag:tagList,
       htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
       date:date,
       shareLinkContent:tempContent,
+      video:response.response.video,
+      videoContent:'<html><iframe align="center" width="'+width+'" height="240" src="https://www.youtube.com/embed/'+response.response.video+'" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
     });
+    console.log('video:'+this.state.video);
     count=5;
   }
   _onNavigationStateChange(navState) {
@@ -150,7 +154,7 @@ class EventDetail extends Component {
          <ParallaxScrollView
           backgroundColor="white"
           contentBackgroundColor="white"
-          parallaxHeaderHeight={290}
+          parallaxHeaderHeight={240}
           stickyHeaderHeight={60}
           onScroll={(e)=>{
             this.refs.title1.measure((ox, oy, width, height, px, py) => {
@@ -166,12 +170,11 @@ class EventDetail extends Component {
             });
           }}
           renderForeground={() => (
-           <View style={{ height: 290,width:width,flex: 1,}}>
-              {/*<WebView
+           <View style={{ height: 240,width:width,flex: 1,}}>
+              {this.state.video?<WebView
                 source={{html:this.state.videoContent}}
-                style={{width:width,height:290}}
-              />*/}
-              <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
+                style={{width:width,height:240}}/>:
+                <Image style={{height:240,width:width}} source={{uri:this.props.image}} resizeMode={Image.resizeMode.cover}/>}
               <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',bottom:-24,right:16,zIndex:100}}>
                 <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
               </View>

@@ -280,7 +280,7 @@ class RewardDetail extends Component {
                     <View style={{flexDirection:'row',paddingTop:15}}>
                       <TouchableOpacity onPress={()=>{this.minorCurrentNum()}} style={{width:32,height:32}}>
                         <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'center',marginTop:3}}>
-                          <Text>-</Text>
+                          <Text style={{fontSize:12}}>-</Text>
                         </View>
                       </TouchableOpacity>
                       <View style={{width:50,alignItems:'center',marginRight:16}}>

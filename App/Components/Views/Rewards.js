@@ -129,6 +129,11 @@ class Rewards extends Component {
   }
   _rewardCallback(responseJson){
     rewardLength = responseJson.response.reward_list.length;
+    if(rewardLength==0){
+      this.setState({
+        loading:false,
+      });
+    }
     this.setState({
       availPoint:responseJson.response.avail_point,
     });

@@ -19,7 +19,7 @@ import {
   DeviceEventEmitter,
   Switch
 } from 'react-native';
-import {Actions} from "react-native-router-flux";
+import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
 import GoogleAnalytics from 'react-native-google-analytics-bridge';
 import Swiper from 'react-native-swiper';
@@ -89,13 +89,18 @@ class Intro extends Component {
   }
   _eventCallback(responseJson){
     var arrLength = responseJson.response.event_list.length;
-
+    if(arrLength==0){
+      this.setState({
+        eventLoading:false,
+      });
+    }
     for(var i=0;i<arrLength;i++){
       var title = responseJson.response.event_list[i].title;
       var id = responseJson.response.event_list[i].id;
       var date = Util._getEventDate(responseJson.response.event_list[i].start_time.split(' ')[0],responseJson.response.event_list[i].end_time.split(' ')[0]);
       var count = i+1;
       var is_last = count==arrLength?true:false;
+      var video = responseJson.response.event_list[i].video;
       Global._fetchEventImage('api/event-photo',id,title,date,(v,titles,ids,date)=>{this._getImageCallback(v,titles,ids,date,is_last)});
       //Global._fetchImage('api/event-photo',id,(v)=>{this._getImageCallback(v,title,id,date,is_last)});
     }
@@ -188,7 +193,8 @@ class Intro extends Component {
         <TouchableOpacity style={{borderRadius:4,paddingBottom:2}} onPress={()=>{Actions.eventdetail(
           {id:news.id,
           title:news.title,
-          image:news.image}
+          image:news.image,
+          video:news.video}
         )}} key={i}>
           {image}
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
@@ -203,7 +209,11 @@ class Intro extends Component {
     Actions.refresh();
   }
   _openAlert(){
-    this.refs.alert.open();
+    if(this.pointAlert){
+      this.pointAlert.open();
+    }else{
+      console.log('point alert is null');
+    }
   }
 
   _facebookAutoLogin(){
@@ -220,12 +230,38 @@ class Intro extends Component {
         'Content-Type': 'application/json',
       }
     };
-    console.log('facebook login data:');
+    console.log('facebook Auto login');
     console.log(data);
-    Global._sendPostRequest(data,'api/login-fb-auto',(v)=>{console.log(v);this._saveUserToken(v.response.user_token);this._getEventList();this._getProfile();});
+    Global._sendPostRequest(data,'api/login-fb-auto',(v)=>{
+
+      console.log(v);
+      if(v.status){
+        if(v.status=='success'){
+          this._saveUserToken(v.response.user_token);
+          this._getEventList();
+          this._getProfile();
+        }else{
+          console.log('is first time:'+Global.first_time_fb);
+          if(Global.first_time_fb){
+            this._saveUserToken(v.response.user_token);
+            this._getEventList();
+            this._getProfile();
+          }else{
+            alert('Authentication failed. Please login again');
+            Global._resetLoginInfo();
+             Actions.frontpage({type:ActionConst.RESET});
+          }
+        }
+      }else{
+        alert('Authentication failed. Please Login Again!');
+        Global._resetLoginInfo();
+         Actions.frontpage({type:ActionConst.RESET});
+      }
+    });
   }
   async _saveUserToken(user_token){
     console.log('facebook auto login and save user_token');
+    Global.user_token = user_toekn;
     await AsyncStorage.setItem('user_token',user_token);
   }
 
@@ -244,7 +280,29 @@ class Intro extends Component {
           'Content-Type': 'application/json',
         }
       };
-      Global._sendPostRequest(data,'api/login',(v)=>{this._getEventList();this._getProfile();console.log(v)});
+      Global._sendPostRequest(data,'api/login',(v)=>{
+        console.log(v);
+        if(v.status){
+          if(v.status=='success'){
+            this._getEventList();
+            this._getProfile();
+          }else{
+            console.log('is first time:'+Global.first_time_fb);
+            if(Global.first_time_fb){
+              this._getEventList();
+              this._getProfile();
+            }else{
+              alert('Authentication failed. Please login again');
+              Global._resetLoginInfo();
+               Actions.frontpage({type:ActionConst.RESET});
+            }
+          }
+        }else{
+          alert('Authentication failed. Please login again');
+          Global._resetLoginInfo();
+           Actions.frontpage({type:ActionConst.RESET});
+        }
+      });
     }else{
       OneSignal.configure({
           onIdsAvailable: function(device) {
@@ -315,11 +373,12 @@ class Intro extends Component {
       this.props.isReset = false;
       Actions.home({type:'reset',title:'HOME1'});
     }
-    if(Global.is_facebook){
+    if(Global.is_facebook&&!Global.first_time_fb){
       this._facebookAutoLogin();
     }else{
       this._autoLogin();
     }
+    Global.eventArr = [];
 
     AppEventEmitter.addListener('image fetch finish', this._eventTrigger());
     AppEventEmitter.addListener('changeLanguage', ()=>{this.setState({refresh:true})});
@@ -360,7 +419,8 @@ class Intro extends Component {
         var temperatures=responseText.substring(responseText.lastIndexOf("Air temperature : ")+18,responseText.lastIndexOf(" degrees Celsius"));
         var uv = responseText.substring(responseText.lastIndexOf("King's Park : ")+14,responseText.lastIndexOf("King's Park : ")+16);
         var weatherImage = responseText.substring(responseText.lastIndexOf('<img src="')+10,responseText.lastIndexOf('" style="vertical-align: middle;">'));
-
+        var weatherNumber = weatherImage.substring(weatherImage.lastIndexOf('img/pic')+7,weatherImage.lastIndexOf('.png'));
+        console.log('the weather image number:'+weatherNumber);
         //<img src="http://rss.weather.gov.hk/img/pic50.png" style="vertical-align: middle;">
         if(uv.indexOf('<')){
           uv=uv.substring(0,1);
@@ -398,12 +458,14 @@ class Intro extends Component {
             </View>
           </View>;
         }
+
+        var weatherImagePath = Util._getWeatherImage(weatherNumber);
         var Home = <View style={{height:height-130}}>
         <ScrollView contentContainerStyle={styles.scrollContainer} pagingEnabled={true}>
           <View>
             <Image source={require('../../Images/bg_home.png')} style={{height:height*0.5,width:width}}/>
             <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
-              <Image source={{uri:weatherImage}} style={{width:130,height:130}} resizeMode={Image.resizeMode.contain}/>
+              <Image source={weatherImagePath} style={{width:130,height:130}} resizeMode={Image.resizeMode.contain}/>
             </View>
             <View style={{position:'absolute',left:width*0.52,top:height*0.01,backgroundColor:'rgba(0,0,0,0)'}}>
               <Text style={{fontSize:100,color:"white"}}>{temperatures}°</Text>
@@ -447,6 +509,7 @@ class Intro extends Component {
         switch(this.props.tab){
           case 'reward':currentPage = Reward;this._tabChange('reward');break;
           case 'history':Reward = <Rewards tab='history'/>;currentPage = Reward;this._tabChange('reward');break;
+          case 'home':currentPage = Home;this._tabChange('home');break;
         }
         this.setState({
           home:Home,
@@ -585,7 +648,7 @@ class Intro extends Component {
         {Global.status_bar}
         {this.state.page}
         {content}
-        <AvailiblePointAlert ref="alert" style={{backgroundColor:'white'}}/>
+        <AvailiblePointAlert ref={(alert) => { this.pointAlert = alert; }} style={{backgroundColor:'white'}}/>
         <FitnessAlert ref="fitnesstrackerAlert" style={{backgroundColor:'white'}} agree={()=>{this._fitnessTrackerAgree()}} cancel={()=>{this._fitnessTrackerCancel()}}/>
       </View>
     );

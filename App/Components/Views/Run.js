@@ -75,6 +75,7 @@ class Run extends Component {
       distance:'Distance',
       duration:'Duration',
       opacity:0,
+      is_run_plan:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -325,8 +326,6 @@ class Run extends Component {
       </View>
     </View>;
     const run_session = <Image source={require('../../Images/bg_run.png')} style={{width:width,height:height-185,backgroundColor:'white',alignItems:'center'}}>
-
-
       <View style={{width:width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0)',paddingTop:24}}>
         <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}>SET UP A GOAL FOR THIS</Text>
         <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}>SESSION</Text>
@@ -374,15 +373,124 @@ class Run extends Component {
         </View>
       </View>
     </Image>;
-    const run_now_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-      <Text style={{color:'rgba(227,1,58,1)',paddingRight:48}}>{Global.language.run_now}</Text>
-      <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_now:false})}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_session}</Text></TouchableOpacity>
+
+    const run_plan_select_plan = <ScrollView style={{width:width,height:height-185,backgroundColor:'rgba(239,239,239,1)'}} contentContainerStyle={{alignItems:'center'}}>
+      <Text>Select a goal first and we will build a plan for you</Text>
+      <TouchableOpacity onPress={()=>{Actions.runplansetting({runplantitle:'LEARN TO RUN'})}}>
+        <Image style={{width:width-8,height:130,marginBottom:8,marginTop:6,alignItems:'center',justifyContent:'center'}} source={{uri:'http://s3.amazonaws.com/etntmedia/media/images/ext/856713395/woman-exercising.jpg'}}>
+          <Text style={{backgroundColor:'rgba(0,0,0,0)',color:'white',fontSize:24,fontWeight:'bold'}}>LEARN TO RUN</Text>
+        </Image>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{Actions.runplansetting({runplantitle:'GET FIT'})}}>
+        <Image style={{width:width-8,height:130,marginBottom:8,alignItems:'center',justifyContent:'center'}} source={{uri:'http://s3.amazonaws.com/etntmedia/media/images/ext/856713395/woman-exercising.jpg'}}>
+          <Text style={{backgroundColor:'rgba(0,0,0,0)',color:'white',fontSize:24,fontWeight:'bold'}}>GET FIT</Text>
+        </Image>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{Actions.runplansetting({runplantitle:'PREPARE A RACE'})}}>
+        <Image style={{width:width-8,height:130,marginBottom:8,alignItems:'center',justifyContent:'center'}} source={{uri:'http://s3.amazonaws.com/etntmedia/media/images/ext/856713395/woman-exercising.jpg'}}>
+          <Text style={{backgroundColor:'rgba(0,0,0,0)',color:'white',fontSize:24,fontWeight:'bold'}}>PREPARE A RACE</Text>
+        </Image>
+      </TouchableOpacity>
+    </ScrollView>;
+
+    const run_plan_have_run = <ScrollView>
+      <Image source={require('../../Images/bg_run.png')} style={{width:width,height:height-185,backgroundColor:'white',alignItems:'center'}}>
+        <View style={{width:width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0)',paddingTop:45}}>
+          <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}>PERPARE A RACE</Text>
+          <Text style={{fontSize:17,fontWeight:'bold',color:'white'}}>Lets get stated, shall we?</Text>
+        </View>
+        <View style={{paddingTop:40,alignItems:'center',flexDirection:'row'}}>
+          <View style={{alignItems:'center'}}>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:40,fontWeight:'bold',color:'white'}}>5 KM</Text>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:20,fontWeight:'bold',color:'white'}}>within 1 hr</Text>
+          </View>
+          <View style={{width:1,backgroundColor:'white',height:50,marginLeft:10,marginRight:10}} />
+          <View style={{alignItems:'center'}}>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:40,fontWeight:'bold',color:'white'}}>09/12</Text>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:20,fontWeight:'bold',color:'white'}}>Next Run</Text>
+          </View>
+        </View>
+        <View style={{position:'absolute',bottom:41,width:width,flexDirection:'row'}}>
+          <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity onPress={()=>{Actions.setting({isRunSetting:true,title:'Run Setting'})}}>
+              <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_msuicsetting.png')} resizeMode={Image.resizeMode.contain}></Image>
+            </TouchableOpacity>
+          </View>
+          <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity onPress={()=>{this._startRunSession()}}>
+              <Image style={{width:width/3,height:height/3}} source={require('../../Images/btn_go.png')} resizeMode={Image.resizeMode.contain}></Image>
+            </TouchableOpacity>
+          </View>
+          <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity onPress={()=>{Actions.musiclist({list:tempArr})}}>
+              <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_music.png')} resizeMode={Image.resizeMode.contain}></Image>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Image>
+      <View style={{width:width,backgroundColor:'rgba(244,246,249,1)'}}>
+        <Text style={{fontSize:17,paddingLeft:20,paddingTop:20,color:'rgba(74,74,74,1)'}}>Run Plan Overview</Text>
+        <View style={{paddingTop:10,alignItems:'center',flexDirection:'row',width:width,justifyContent:'center'}}>
+          <View style={{alignItems:'center'}}>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:40,fontWeight:'bold',color:'rgba(155,155,155,1)'}}>5 KM</Text>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:20,fontWeight:'bold',color:'rgba(155,155,155,1)'}}>within 1 hr</Text>
+          </View>
+          <View style={{width:1,backgroundColor:'rgba(155,155,155,1)',height:50,marginLeft:10,marginRight:10}} />
+          <View style={{alignItems:'center'}}>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:40,fontWeight:'bold',color:'rgba(155,155,155,1)'}}>09/12</Text>
+            <Text style={{backgroundColor:'rgba(0,0,0,0)',fontSize:20,fontWeight:'bold',color:'rgba(155,155,155,1)'}}>Next Run</Text>
+          </View>
+        </View>
+        <View style={{paddingTop:20,paddingLeft:20,paddingRight:20,alignItems:'center',justifyContent:'center',width:width,flexDirection:'row'}}>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(20,139,205,1)',marginLeft:2.5,borderRadius:9}}></View>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(20,139,205,1)',marginLeft:2.5,borderRadius:9}}></View>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(20,139,205,1)',marginLeft:2.5,borderRadius:9}}></View>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(20,139,205,1)',marginLeft:2.5,borderRadius:9}}></View>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(20,139,205,1)',marginLeft:2.5,borderRadius:9}}></View>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(155,155,155,1)',marginLeft:2.5,borderRadius:9}}></View>
+          <View style={{width:width/9,height:8,backgroundColor:'rgba(155,155,155,1)',marginLeft:2.5,borderRadius:9}}></View>
+        </View>
+        <View style={{width:width,paddingRight:20,justifyContent:'flex-end',alignItems:'flex-end'}}>
+          <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>20/28 Sessions</Text>
+        </View>
+      </View>
+      <View style={{width:width,paddingTop:12,backgroundColor:'white',paddingLeft:20,paddingRight:20,flexDirection:'row',justifyContent:'space-between'}}>
+          <Text style={{fontSize:17,color:'rgba(74,74,74,1)'}}>schedule</Text>
+          <Text style={{fontSize:17,color:'rgba(74,74,74,1)'}}>></Text>
+      </View>
+      <View style={{paddingTop:12,flexDirection:'row',width:width,paddingLeft:20}}>
+          <View style={{flex:0.5,justifyContent:'flex-start'}}>
+            <Text style={{fontSize:17,fontWeight:'bold'}}>TODAY</Text>
+            <View style={{height:1,width:width-40,backgroundColor:'rgba(233,233,233,1)',marginTop:12,marginBottom:12}}/>
+            <Text style={{fontSize:17,fontWeight:'bold'}}>5/1</Text>
+            <View style={{height:1,width:width-40,backgroundColor:'rgba(233,233,233,1)',marginTop:12,marginBottom:12}}/>
+            <Text style={{fontSize:17,fontWeight:'bold'}}>6/1</Text>
+          </View>
+          <View style={{flex:0.5}}>
+            <Text style={{fontSize:17,fontWeight:'bold'}}>REST DAY</Text>
+            <View style={{height:1,width:width-60,backgroundColor:'rgba(233,233,233,1)',marginTop:12,marginBottom:12}}/>
+            <Text style={{fontSize:17,fontWeight:'bold'}}>5 KM/hr</Text>
+            <View style={{height:1,width:width-60,backgroundColor:'rgba(233,233,233,1)',marginTop:12,marginBottom:12}}/>
+            <Text style={{fontSize:17,fontWeight:'bold'}}>5 KM/hr</Text>
+          </View>
+      </View>
+      <View style={{height:100,width:width,backgroundColor:'white'}}/>
+    </ScrollView>;
+
+    const run_now_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
+      <View style={{borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)'}}>{Global.language.run_now}</Text></View>
+      <TouchableOpacity onPress={()=>{this.setState({is_run_now:false,is_run_plan:false})}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_session}</Text></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{this.setState({is_run_plan:true})}}><Text style={{color:'rgba(155,155,155,1)'}}>RUN PLAN</Text></TouchableOpacity>
     </View>;
-    const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_now:true})}}><Text style={{color:'rgba(155,155,155,1)',paddingRight:48}}>{Global.language.run_now}</Text></TouchableOpacity>
-      <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
-      <Text style={{color:'rgba(227,1,58,1)'}}>{Global.language.run_session}</Text>
+    const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
+      <TouchableOpacity onPress={()=>{this.setState({is_run_now:true,is_run_plan:false})}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_now}</Text></TouchableOpacity>
+      <View style={{borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)'}}>{Global.language.run_session}</Text></View>
+      <TouchableOpacity onPress={()=>{this.setState({is_run_plan:true})}}><Text style={{color:'rgba(155,155,155,1)'}}>RUN PLAN</Text></TouchableOpacity>
+    </View>;
+    const run_plan_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
+      <TouchableOpacity onPress={()=>{this.setState({is_run_now:true,is_run_plan:false})}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_now}</Text></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{this.setState({is_run_now:false,is_run_plan:false})}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_session}</Text></TouchableOpacity>
+      <View style={{borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)'}}>RUN PLAN</Text></View>
     </View>;
     var title = run_now_title;
     var content = run_now;
@@ -392,6 +500,10 @@ class Run extends Component {
     }else{
       title = run_session_title;
       content = run_session;
+    }
+    if(this.state.is_run_plan){
+      title = run_plan_title;
+      content = run_plan_have_run;
     }
     return (
       <View style={styles.container}>

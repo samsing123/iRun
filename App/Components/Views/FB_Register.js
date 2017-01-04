@@ -120,7 +120,7 @@ class FB_Register extends Component {
   }
   _showDatePicker() {
       Picker.init({
-          pickerData: pickerData,
+          pickerData: createDateData(),
           selectedValue: ['01', '01'],
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',

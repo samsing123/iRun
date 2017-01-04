@@ -14,6 +14,9 @@
 #import "RCTRootView.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
+#import <objc/runtime.h>
 
 @implementation AppDelegate
 
@@ -23,7 +26,7 @@
 
   
 #ifdef DEBUG
-    jsCodeLocation = [NSURL URLWithString:@"http://10.1.20.139:8081/index.ios.bundle"];
+    jsCodeLocation = [NSURL URLWithString:@"http://10.1.20.236:8081/index.ios.bundle"];
     //jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 #else
     jsCodeLocation = [CodePush bundleURL];
@@ -40,21 +43,29 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [[FBSDKApplicationDelegate sharedInstance] application:application
-                           didFinishLaunchingWithOptions:launchOptions];
+  
+  SEL useNativeSel = sel_getUid("useNativeDialogForDialogName:");
+  Class FBSDKServerConfiguration = NSClassFromString(@"FBSDKServerConfiguration");
+  
+  
+  Method useNativeMethod = class_getInstanceMethod(FBSDKServerConfiguration, useNativeSel);
+  
+  IMP returnYES = imp_implementationWithBlock(^BOOL(id me, id dialogName) {
+    return YES;
+  });
+  method_setImplementation(useNativeMethod, returnYES);
   return YES;
 }
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  
-  BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                                openURL:url
-                                                      sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
-                                                             annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
-                  ];
-  // Add any custom logic here.
-  return handled;
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+  [FBSDKAppEvents activateApp];
+}
+
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+  return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                        openURL:url
+                                              sourceApplication:sourceApplication
+                                                     annotation:annotation];
 }
 @end

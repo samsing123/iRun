@@ -18,7 +18,9 @@ import {
   Animated,
   DeviceEventEmitter,
   BackAndroid,
-  Switch
+  Switch,
+  Vibration,
+  PanResponder
 } from 'react-native';
 import {Actions} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -127,6 +129,11 @@ const data = [
 var tempArr = [];
 var Sound = require('react-native-sound');
 var ImagePicker = require('react-native-image-picker');
+
+var vibrateFrequency = 1000;//ms for Vibration
+var holdingTime = 3000;//ms for holding to open the emergency contact
+var emergency_opacity = 0;
+
 class Tracking extends Component {
   constructor(props){
     super(props);
@@ -156,6 +163,14 @@ class Tracking extends Component {
       music_title:'No Music',
       singer:'',
       is_playing:false,
+      emergency_opacity:0,
+      is_3s_later:false,
+      is_1s_later:false,
+      can_push:false,
+      start_point:{
+        x:0,
+        y:0,
+      }
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -210,6 +225,14 @@ class Tracking extends Component {
       textInputValue:'',
       lock_icon:'unlock-alt',
       playing:false,
+      emergency_opacity:0,
+      is_3s_later:false,
+      is_1s_later:false,
+      can_push:false,
+      start_point:{
+        x:0,
+        y:0,
+      }
     });
     Global.pathArr=[];
     fill = 0;
@@ -239,6 +262,69 @@ class Tracking extends Component {
     cur_lng = 0;
     musicDuration = 0;
   }
+  componentWillMount(){
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: ()=> true,
+      onPanResponderGrant: (e,gs)=>{
+        var temp = {
+          x:gs.dx,
+          y:gs.dy,
+        }
+        this.setState({
+          start_point:temp
+        });
+        this._longPress()
+      },
+      onPanResponderMove: (e,gs)=>{
+        if(this.state.can_push){
+            if(gs.dy<-150){
+              alert('emergency message sent!!');
+              clearTimeout(this.long_press_timeout);clearTimeout(this.long_start_opacity);clearInterval(this.vibrate_controller);clearInterval(this.emergency);emergency_opacity = 0;this.setState({emergency_opacity:emergency_opacity,is_3s_later:false,is_1s_later:false,can_push:false});
+            }
+        }
+      },
+      onPanResponderRelease: (evt,gs)=>{
+        clearTimeout(this.long_press_timeout);clearTimeout(this.long_start_opacity);clearInterval(this.vibrate_controller);clearInterval(this.emergency);emergency_opacity = 0;this.setState({emergency_opacity:emergency_opacity,is_3s_later:false,is_1s_later:false,can_push:false});
+      }
+    });
+  }
+
+  _firstLongPress(){
+    var self = this;
+    this.long_start_opacity = setTimeout(function(){
+                                self.setState({is_1s_later:true});
+                                self.emergency = setInterval(function(){
+                                  emergency_opacity += 1/10;
+                                  self.setState({emergency_opacity:emergency_opacity});
+                                },100);
+                              }, 1000);
+  }
+
+  _checkIsMovingUp(e,gestureState){
+    console.log(gestureState.dx+','+gestureState.dy);
+  }
+
+  _longPress(){
+    var self = this;
+    this.long_start_opacity = setTimeout(function(){
+                                self.setState({is_1s_later:true});
+                                self.emergency = setInterval(function(){
+                                  emergency_opacity += 1/10;
+                                  self.setState({emergency_opacity:emergency_opacity});
+                                },100);
+                              }, 1000);
+    this.long_press_timeout = setTimeout(function(){
+                                self.vibrate_controller = setInterval(function(){
+                                  Vibration.vibrate();
+                                  self.setState({
+                                    is_3s_later:true,
+                                    can_push:true,
+                                  });
+                                },1000);
+                              }, 3000);
+  }
+
   componentWillUnmount(){
     clearInterval(timer);
     clearInterval(musicTimer);
@@ -334,7 +420,7 @@ class Tracking extends Component {
       this._lockScreen();
     }
 
-    if(Global.iosPlayList.length!=0){
+    if(Global.iosPlayList.length!=0&&Global.selectedPlaylist!=null){
       this.startMusicTimer();
       iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[0])
       .then(res => {
@@ -910,7 +996,7 @@ class Tracking extends Component {
 
     return (
 
-      <View style={styles.container}>
+      <View style={styles.container} {...this._panResponder.panHandlers}>
       <MapView
         liteMode
         style={{width:0,height:0}}
@@ -945,12 +1031,12 @@ class Tracking extends Component {
               </TouchableOpacity>
           </View>
           <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:30}}>
-            <TouchableOpacity onPressIn={()=>{this._clickToPause()}} onPressOut={()=>{this.setState({showProgress:false})}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={require('../../Images/btn_runpause.png')}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._clickToPause()}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={require('../../Images/btn_runpause.png')}/></TouchableOpacity>
             {/*this._loadingProgress()*/}
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>
             <View style={{width:width,height:28,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:15}}>{this.state.music_title} {Global.iosPlayList.length!=0?'-':''} {this.state.singer}</Text>
+              <Text style={{color:'white',fontSize:15}}>{this.state.music_title} {Global.selectedPlaylist!=null?'-':''} {this.state.singer}</Text>
             </View>
             <View style={{width:width,height:28,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
               <TouchableOpacity onPress={()=>{this._goToPre()}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/></TouchableOpacity>
@@ -969,6 +1055,24 @@ class Tracking extends Component {
           </TouchableOpacity>
         </View>
         {this._overlay()}
+        {this.state.is_1s_later?<View style={{width:width,height:height,opacity:this.state.emergency_opacity,backgroundColor:'rgba(234,40,57,1)',position:'absolute',top:0,left:0,alignItems:'center'}}>
+          <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',marginTop:64}}>EMERGENCY</Text>
+          <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold'}}>CONTACT</Text>
+          {
+            this.state.is_3s_later?
+            <View>
+              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>For emergency, please slide the screen</Text>
+              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>below and we will send a SMS to</Text>
+              <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',textAlign:'center'}}>NAME</Text>
+              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>with your exact location</Text>
+            </View>
+            :
+            <View>
+              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>Hold down for 3 second,</Text>
+              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>then push up to confirm.</Text>
+            </View>
+          }
+        </View>:null}
       </View>
     );
   }

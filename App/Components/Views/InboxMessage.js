@@ -59,6 +59,7 @@ class InboxMessage extends Component {
       trueSwitchIsOn: false,
       category:'FOOD',
       title:this.props.title,
+      msg_time:this.props.msg_time,
       top_title:'FOOD',
       image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ9-Cysdb_QABuO_b6yR46AtZSTvjOSioccErLmqe69VW7nqpZ',
       webViewHeight:2000,
@@ -140,9 +141,8 @@ class InboxMessage extends Component {
         </View>
       </View>;
       tag = <View style={{paddingBottom:10}}>
-      <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,paddingTop:18,fontWeight:'bold'}}>{this.state.tag}</Text>
-      <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10}} ref="title1">{this.state.title}</Text>
-      <Text style={{color:'rgba(103,103,103,1)',fontSize:14,paddingLeft:10}}>{this.state.date}</Text>
+      <Text style={{color:'rgba(74,74,74,1)',fontSize:14,paddingTop:5,paddingLeft:10,fontWeight:'bold'}}>{this.state.msg_time}</Text>
+      <Text style={{color:'rgba(74,74,74,1)',fontSize:20,paddingTop:5,paddingLeft:10,fontWeight:'bold'}} ref="title1">{this.state.title}</Text>
       </View>;
     }
     var messageView = <View/>;
@@ -150,7 +150,7 @@ class InboxMessage extends Component {
       messageView = <ParallaxScrollView
        backgroundColor="white"
        contentBackgroundColor="white"
-       parallaxHeaderHeight={290}
+       parallaxHeaderHeight={240}
        stickyHeaderHeight={60}
        onScroll={(e)=>{
          this.refs.title1.measure((ox, oy, width, height, px, py) => {
@@ -166,15 +166,14 @@ class InboxMessage extends Component {
          });
        }}
        renderForeground={() => (
-        <View style={{ height: 290,width:width, flex: 1}}>
-           <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
+        <View style={{ height: 240,width:width, flex: 1}}>
+           <Image style={{height:240,width:width}} source={{uri:'https://www.patrickhenry.org/wp-content/uploads/2016/01/family_history2.jpg'}} />
 
         </View>
        )}
        renderStickyHeader={() => (
          <View key="sticky-header" style={{flexDirection:'row',paddingTop:20,paddingLeft:30}}>
-
-           <Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>
+           {/*<Text style={{color:'rgba(74,74,74,1)',fontSize:24}}>{this.props.title}</Text>*/}
          </View>
        )}>
        {content}

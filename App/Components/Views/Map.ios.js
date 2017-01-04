@@ -699,7 +699,7 @@ class Map extends Component {
         uri => {
           imageUri = uri;
           Global._sendRunImageData(current_id,imageUri);
-          Actions.home({type:ActionConst.RESET});
+          Actions.home({type:'reset',tab:'home'});
         },
         error => console.log("Oops, snapshot failed", error)
       );

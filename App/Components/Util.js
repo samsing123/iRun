@@ -179,6 +179,42 @@ function _removeSymbol(title){
   return title.replace("<br/>", "");
 }
 
+function _getWeatherImage(number){
+  switch(number){
+    case '1':return require('../Images/1.png');break;
+    case '2':return require('../Images/2.png');break;
+    case '3':return require('../Images/3.png');break;
+    case '4':return require('../Images/4.png');break;
+    case '5':return require('../Images/5.png');break;
+    case '6':return require('../Images/6.png');break;
+    case '7':return require('../Images/7.png');break;
+    case '8':return require('../Images/8.png');break;
+    case '9':return require('../Images/9.png');break;
+    case '10':return require('../Images/10.png');break;
+    case '11':return require('../Images/11.png');break;
+    case '12':return require('../Images/12.png');break;
+    case '13':return require('../Images/13.png');break;
+    case '14':return require('../Images/14.png');break;
+    case '15':return require('../Images/15.png');break;
+    case '16':return require('../Images/16.png');break;
+    case '17':return require('../Images/17.png');break;
+    case '18':return require('../Images/18.png');break;
+    case '19':return require('../Images/19.png');break;
+    case '20':return require('../Images/20.png');break;
+    case '21':return require('../Images/21.png');break;
+    case '50':return require('../Images/50.png');break;
+    case '51':return require('../Images/51.png');break;
+    case '52':return require('../Images/52.png');break;
+    case '53':return require('../Images/53.png');break;
+    case '54':return require('../Images/54.png');break;
+    case '60':return require('../Images/60.png');break;
+    case '61':return require('../Images/61.png');break;
+    case '62':return require('../Images/62.png');break;
+    case '64':return require('../Images/64.png');break;
+    case '65':return require('../Images/65.png');break;
+  }
+}
+
 
 
 var Util = {
@@ -202,5 +238,6 @@ var Util = {
     _removeSymbol:_removeSymbol,
     _findMaxInArray:_findMaxInArray,
     _getTimestampDate:_getTimestampDate,
+    _getWeatherImage:_getWeatherImage,
 };
 module.exports = Util;

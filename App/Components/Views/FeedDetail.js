@@ -128,7 +128,7 @@ class FeedDetail extends Component {
          <ParallaxScrollView
           backgroundColor="white"
           contentBackgroundColor="white"
-          parallaxHeaderHeight={290}
+          parallaxHeaderHeight={240}
           stickyHeaderHeight={60}
           onScroll={(e)=>{
             this.refs.title1.measure((ox, oy, width, height, px, py) => {
@@ -144,9 +144,9 @@ class FeedDetail extends Component {
             });
           }}
           renderForeground={() => (
-           <View style={{ height: 290,width:width, flex: 1}}>
+           <View style={{ height: 240,width:width, flex: 1}}>
 
-              <Image style={{height:290,width:width}} source={{uri:this.props.image}} />
+              <Image style={{height:240,width:width}} source={{uri:this.props.image}} />
               <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',bottom:-24,right:16,zIndex:100}}>
                 <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
               </View>

@@ -134,8 +134,8 @@ class Welcome extends Component {
           <Text style={{color:'white'}}>get to know you a little bit better.</Text>
         </View>
         <View style={{position:'absolute',bottom:23,left:0,flexDirection:'row',width:width,alignItems:'center',justifyContent:'center'}}>
-          <Button onPress={()=>{Global._sendFormData(Global.tempIconUri);Actions.home({type:ActionConst.RESET,fitnesstracker:true})}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12,fontWeight:'bold'}}>NOT NOW</Text></Button>
-          <Button onPress={()=>{Global._sendFormData(Global.tempIconUri);Actions.personalinformation()}}style={{backgroundColor:'white',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4,marginLeft:11}} transparent={true}><Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>GET STARTED</Text></Button>
+          <Button onPress={()=>{Global.tempIconUri==''?console.log('no image need to upload'):Global._sendFormData(Global.tempIconUri);Actions.home({type:ActionConst.RESET,fitnesstracker:true})}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12,fontWeight:'bold'}}>NOT NOW</Text></Button>
+          <Button onPress={()=>{Global.tempIconUri==''?console.log('no image need to upload'):Global._sendFormData(Global.tempIconUri);Actions.personalinformation()}}style={{backgroundColor:'white',borderWidth:1,borderColor:'#fff',width:160,height:40,borderRadius:4,marginLeft:11}} transparent={true}><Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>GET STARTED</Text></Button>
         </View>
       </View>
     );

@@ -70,6 +70,7 @@
 		AEA08B6D1DE3F44C00916A76 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA08B6C1DE3F44C00916A76 /* Bolts.framework */; };
 		AEA08C471DE40FC100916A76 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA08C461DE40FC100916A76 /* Social.framework */; };
 		AEA08C491DE40FC800916A76 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA08C481DE40FC800916A76 /* MessageUI.framework */; };
+		AEF3B88F1E1519EA00DB96BF /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEF3B88E1E1519EA00DB96BF /* SafariServices.framework */; };
 		B26AA000749F4DA9A5D4B898 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB45D855443542A3B8887D5C /* libBVLinearGradient.a */; };
 		BEB7DA3C843E41DD9CED21CA /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D775AC370524B14B264AAD7 /* FontAwesome.ttf */; };
 		C52F307B27FB4479AE0F64BF /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79EF79C1568444AC9B310DF6 /* EvilIcons.ttf */; };
@@ -481,6 +482,7 @@
 		AEA08B6C1DE3F44C00916A76 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		AEA08C461DE40FC100916A76 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		AEA08C481DE40FC800916A76 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		AEF3B88E1E1519EA00DB96BF /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		AFB4473840A24BA5A3A0EBC8 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		B0FB3D6CAD3948E0B1E8F080 /* libRNShare.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNShare.a; sourceTree = "<group>"; };
 		B3B692745ABD4233ACC5C2E9 /* RNMediaMeta.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNMediaMeta.xcodeproj; path = "../node_modules/react-native-media-meta/ios/RNMediaMeta.xcodeproj"; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEF3B88F1E1519EA00DB96BF /* SafariServices.framework in Frameworks */,
 				AE1BC2731DFE668D00923A82 /* libRCTCameraRoll.a in Frameworks */,
 				AEA08C491DE40FC800916A76 /* MessageUI.framework in Frameworks */,
 				AEA08C471DE40FC100916A76 /* Social.framework in Frameworks */,
@@ -906,6 +909,7 @@
 		AE3EBFA61DDEE8BE000B3043 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AEF3B88E1E1519EA00DB96BF /* SafariServices.framework */,
 				AEA08C481DE40FC800916A76 /* MessageUI.framework */,
 				AEA08C461DE40FC100916A76 /* Social.framework */,
 				AEA08B6C1DE3F44C00916A76 /* Bolts.framework */,
@@ -1771,7 +1775,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1820,7 +1824,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
+				PRODUCT_BUNDLE_IDENTIFIER = com.irun12;
 				PRODUCT_NAME = iRun;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1834,7 +1838,7 @@
 				CODEPUSH_KEY = uHefc3gk44F63IRwap_uJ98zbqzPNki9NrJXG;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1883,7 +1887,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
+				PRODUCT_BUNDLE_IDENTIFIER = com.irun12;
 				PRODUCT_NAME = iRun;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2114,7 +2118,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2163,7 +2167,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
+				PRODUCT_BUNDLE_IDENTIFIER = com.irun12;
 				PRODUCT_NAME = iRun;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

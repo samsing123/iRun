@@ -210,6 +210,7 @@ class Verify extends Component {
     if(responseJson.status=='success'){
       if(this.props.isFacebook){
         this.user_token = responseJson.response.user_token;
+        Global.first_time_fb = true;
         this._sendFacebookLoginRequest();
         this._saveFBLoginInformation();
       }else{
@@ -247,7 +248,8 @@ class Verify extends Component {
         'Content-Type': 'application/json',
       }
     };
-    console.log('data body:'+this.mobile_no);
+    console.log('data body:');
+    console.log(data);
     Global._sendPostRequest(data,'api/login-fb-auto',(responseJson)=>{self._requestCallback(responseJson)});
     /*
     OneSignal.configure({

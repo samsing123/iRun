@@ -129,7 +129,7 @@ class Register extends Component {
 
   _showDatePicker() {
       Picker.init({
-          pickerData: pickerData,
+          pickerData: createDateData(),
           selectedValue: this.state.birthday_data,
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',

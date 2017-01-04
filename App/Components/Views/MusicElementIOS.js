@@ -44,10 +44,12 @@ class MusicElementIOS extends Component {
     Global.musicToPlay.path = this.state.path;
     Global.musicToPlay.title = this.state.title;
     Global.musicToPlay.singer = this.state.artist;
+
     Actions.pop();
   }
 
   _playlistSelected(){
+    Global.music_selected = true;
     this._playMusic();
   }
 

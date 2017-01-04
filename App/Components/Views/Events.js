@@ -259,7 +259,8 @@ class Events extends Component {
         <TouchableOpacity onPress={()=>{Actions.eventdetail(
           {id:news.id,
           title:news.title,
-          image:news.image}
+          image:news.image,
+          video:news.video,}
         )}} key={i}>
           <View style={{borderRadius:6,paddingTop:10,width:width-10}}>
             {image}

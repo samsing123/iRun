@@ -117,6 +117,9 @@ function _callback(responseJson){
 }
 async function _saveFbLoginInformation(user_token){
     try{
+       Global.is_facebook = true;
+       Global.first_time_fb = true;
+       Global.user_token = user_token;
        await AsyncStorage.setItem('is_login','true');
        await AsyncStorage.setItem('is_facebook','true');
        await AsyncStorage.setItem('user_token',user_token);
@@ -225,6 +228,7 @@ class Login extends Component {
   }
   async _saveLoginInformation(){
       try{
+         Global.first_time_fb = true;
          await AsyncStorage.setItem('email',this.state.email);
          await AsyncStorage.setItem('password',this.state.password);
          await AsyncStorage.setItem('is_login','true');

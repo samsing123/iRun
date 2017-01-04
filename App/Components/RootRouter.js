@@ -2,7 +2,7 @@
 
 import React, {Component} from "react";
 import {Navigator, Text, View, BackAndroid, ToastAndroid,StatusBar,TouchableOpacity,AsyncStorage,Image,Dimensions} from "react-native";
-import {Scene, Router, Schema, Actions, Animations, TabBar} from "react-native-router-flux";
+import {Scene, Router, Schema, Actions, Animations, TabBar,Modal} from "react-native-router-flux";
 import AppEventEmitter from "../Services/AppEventEmitter";
 import SideMenu from "./Controls/SideMenu";
 import Drawer from "react-native-drawer";
@@ -51,6 +51,7 @@ import personalrecord from './Views/PersonalRecord';
 import tnc from './Views/TNC';
 import redeemhistorysummary from './Views/RedeemHistorySummary';
 import profileediting from './Views/ProfileEditing';
+import runplansetting from './Views/RunPlanSetting';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -460,13 +461,14 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="tnc" component={tnc} title="Terms and Condition" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="redeemhistorysummary" component={redeemhistorysummary} title="Redeem History Detail" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="profileediting" component={profileediting} title="PROFILE" hideNavBar={false}/>
-
+                <Scene renderRightButton={createRightButton} key="runplansetting" component={runplansetting} title="Run Plan Setting" hideNavBar={true}/>
+                <Scene key="pointalert" component={AvailiblePointAlert} schema="modal" title="availible point" hideNavBar={true} sceneStyle={{backgroundColor:'rgba(0,0,0,0)'}}/>
             </Scene>
         );
         return(
+            <Router hideNavBar={false} scenes={scenes}>
 
-            <Router hideNavBar={false} scenes={scenes} />
-
+            </Router>
         )
 
     }

@@ -697,6 +697,13 @@ class ProfileEditing extends Component {
          await AsyncStorage.removeItem('email');
          await AsyncStorage.removeItem('password');
          await AsyncStorage.removeItem('is_login');
+         await AsyncStorage.removeItem('is_facebook');
+         Global.email = null;
+         Global.password = null;
+         Global.is_facebook = false;
+         Global.is_login = false;
+         Global.user_profile = null;
+         Global.user_icon = '';
          Actions.frontpage({type:ActionConst.RESET});
          //Actions.home({type:ActionConst.RESET});
       }catch(error){
@@ -705,6 +712,7 @@ class ProfileEditing extends Component {
   }
 
   _profileEdit(){
+    console.log('is facebook:'+Global.is_facebook);
     return <View style={{flex:1}}>
     <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
         <View>
@@ -897,11 +905,18 @@ class ProfileEditing extends Component {
             }else{
               profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;
             }
+
+    var tempHeight;
+    if(Global.is_facebook){
+      tempHeight = height+92;
+    }else{
+      tempHeight = height+152;
+    }
     return (
       <ScrollView animation="fadeIn">
 
         <View style={styles.container}>
-          <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:height+152,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_profile.png')}>
+          <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:tempHeight,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_profile.png')}>
               <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
                 {profileImage}
                 <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>
@@ -928,12 +943,14 @@ class ProfileEditing extends Component {
                       </View>
                     </View>
                   </View>
+                  {Global.is_facebook?<View/>:
                   <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
                       <Text style={styles.textColor}>{Global.language.change_password}</Text><Text style={styles.textColor}>></Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                  }
+                  <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1',borderTopWidth:Global.is_facebook?1:0,borderColor:'#f1f1f1',marginTop:Global.is_facebook?40:0}}>
                     <Text style={styles.textColor}>{Global.language.your_interest}</Text><Text style={styles.textColor}>></Text>
                   </View>
                   <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
