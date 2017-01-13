@@ -56,9 +56,7 @@ class MusicList extends Component {
         refresh:false,
       });
     }else{
-      setTimeout(() => {
-        this._getFileRecursively('/sdcard/');
-      }, 1000);
+      this._getFileRecursively('/sdcard/');
     }
 
 
@@ -91,7 +89,7 @@ class MusicList extends Component {
             this._getFileRecursively(files[i].path);
           }
           if(files[i].isFile()){
-            if(Util._getFileExtension(files[i].name)=='mp3'||Util._getFileExtension(files[i].name)=='m4a'){
+            if(Util._getFileExtension(files[i].name)=='mp3'){
               //console.log(files[i].path);
               tempArr.push({
                 path:files[i].path,
@@ -104,7 +102,6 @@ class MusicList extends Component {
                   refresh:false,
                 });
                 Global.tempMusicArr = tempArr;
-                console.log('music list:'+Global.tempMusicArr[0].path)
               }
             }
           }

@@ -469,10 +469,10 @@ class Rewards extends Component {
     const run_now_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#D57D91'}}>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48}}>{Global.language.reward}</Text>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_now:false});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.redeem_history}</Text></TouchableOpacity>
+      <TouchableOpacity hitSlop={{top: 20, bottom: 20, left: 20, right: 20}} onPress={()=>{this.setState({is_run_now:false});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.redeem_history}</Text></TouchableOpacity>
     </View>;
     const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#D57D91'}}>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_now:true});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)',paddingRight:48}}>{Global.language.reward}</Text></TouchableOpacity>
+      <TouchableOpacity hitSlop={{top: 20, bottom: 20, left: 20, right: 20}} onPress={()=>{this.setState({is_run_now:true});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)',paddingRight:48}}>{Global.language.reward}</Text></TouchableOpacity>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
       <Text style={{color:'rgba(227,1,58,1)'}}>{Global.language.redeem_history}</Text>
     </View>;
@@ -506,10 +506,8 @@ class Rewards extends Component {
         {this.state.is_run_now?<View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
             <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>{Global.language.avail_point}</Text>
-            <TouchableOpacity onPress={()=>{this.openAlert()}}>
-              <View style={{marginLeft:10,alignItems:'center',justifyContent:'center',height:14,width:14,borderRadius:14/2,borderWidth:1,borderColor:'#D1D1D1'}}>
-                <Text style={{color:'#D1D1D1',fontSize:8}}>i</Text>
-              </View>
+            <TouchableOpacity onPress={()=>{this.openAlert()}} style={{paddingLeft:10}} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+              <Image source={require('../../Images/iBtn.png')} style={{width:16,height:16}}/>
             </TouchableOpacity>
           </View>
           <View style={{flexDirection:'row'}}>

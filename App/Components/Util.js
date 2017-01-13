@@ -119,18 +119,50 @@ function _removeA(arr) {
 
 function _monthToEng(month){
   switch(month){
-    case '1':return 'JANUARY';break;
-    case '2':return 'FEBRUARY';break;
-    case '3':return 'MARCH';break;
-    case '4':return 'APRIL';break;
-    case '5':return 'MAY';break;
-    case '6':return 'JUNE';break;
-    case '7':return 'JULY';break;
-    case '8':return 'AUGUST';break;
-    case '9':return 'SEPTEMBER';break;
+    case '01':return 'JANUARY';break;
+    case '02':return 'FEBRUARY';break;
+    case '03':return 'MARCH';break;
+    case '04':return 'APRIL';break;
+    case '05':return 'MAY';break;
+    case '06':return 'JUNE';break;
+    case '07':return 'JULY';break;
+    case '08':return 'AUGUST';break;
+    case '09':return 'SEPTEMBER';break;
     case '10':return 'OCTOBER';break;
     case '11':return 'NOVEMBER';break;
     case '12':return 'DECEMBER';break;
+  }
+}
+function _monthToEngShort(month){
+  switch(month){
+    case 1:return 'JAN';break;
+    case 2:return 'FEB';break;
+    case 3:return 'MAR';break;
+    case 4:return 'APR';break;
+    case 5:return 'MAY';break;
+    case 6:return 'JUNE';break;
+    case 7:return 'JULY';break;
+    case 8:return 'AUG';break;
+    case 9:return 'SEP';break;
+    case 10:return 'OCT';break;
+    case 11:return 'NOV';break;
+    case 12:return 'DEC';break;
+  }
+}
+function _monthToEngShortStr(month){
+  switch(month){
+    case "01":return 'JAN';break;
+    case "02":return 'FEB';break;
+    case "03":return 'MAR';break;
+    case "04":return 'APR';break;
+    case "05":return 'MAY';break;
+    case "06":return 'JUNE';break;
+    case "07":return 'JULY';break;
+    case "08":return 'AUG';break;
+    case "09":return 'SEP';break;
+    case "10":return 'OCT';break;
+    case "11":return 'NOV';break;
+    case "12":return 'DEC';break;
   }
 }
 function _secondToMinuteDisplay(seconds,type){
@@ -231,6 +263,7 @@ var Util = {
     _getMonth:_getMonth,
     _getYear:_getYear,
     _monthToEng:_monthToEng,
+    _monthToEngShort:_monthToEngShort,
     _secondToMinuteDisplay:_secondToMinuteDisplay,
     _removeA:_removeA,
     _dateLastRunFormat:_dateLastRunFormat,
@@ -239,5 +272,6 @@ var Util = {
     _findMaxInArray:_findMaxInArray,
     _getTimestampDate:_getTimestampDate,
     _getWeatherImage:_getWeatherImage,
+    _monthToEngShortStr:_monthToEngShortStr,
 };
 module.exports = Util;

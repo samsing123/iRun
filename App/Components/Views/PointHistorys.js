@@ -405,7 +405,9 @@ class PointHistorys extends Component {
   _renderPointHistory(){
     var self = this;
     return pointHistory.map(function (points,i){
+      var temp = _renderBar(points);
       return <View>
+        {temp}
         <View style={{paddingLeft:20,paddingRight:20}}>
           <View style={{height:60,width:width-60,borderBottomWidth:1,borderBottomColor:'#f1f1f1',alignItems:'flex-start',justifyContent:'center'}}>
             <Text>{Util._changeDateFormat(points.date)}</Text>

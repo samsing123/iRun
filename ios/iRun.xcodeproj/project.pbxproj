@@ -1102,7 +1102,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = GJ7JXJ3GWN;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1628,7 +1628,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1773,7 +1773,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1824,10 +1824,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.irun12;
+				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
 				PRODUCT_NAME = iRun;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "1acf5dbf-eb9d-44b5-b50c-6a72dd4875f0";
+				PROVISIONING_PROFILE_SPECIFIER = iRunAdhoc5;
 			};
 			name = Debug;
 		};
@@ -1837,7 +1837,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODEPUSH_KEY = uHefc3gk44F63IRwap_uJ98zbqzPNki9NrJXG;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1887,10 +1887,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.irun12;
+				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
 				PRODUCT_NAME = iRun;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "1acf5dbf-eb9d-44b5-b50c-6a72dd4875f0";
+				PROVISIONING_PROFILE_SPECIFIER = iRunAdhoc5;
 			};
 			name = Release;
 		};
@@ -2117,7 +2117,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Emmanouil Perrakis (GJ7JXJ3GWN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = GJ7JXJ3GWN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2167,10 +2167,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.irun12;
+				PRODUCT_BUNDLE_IDENTIFIER = com.irun;
 				PRODUCT_NAME = iRun;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "1acf5dbf-eb9d-44b5-b50c-6a72dd4875f0";
+				PROVISIONING_PROFILE_SPECIFIER = iRunAdhoc5;
 			};
 			name = Staging;
 		};

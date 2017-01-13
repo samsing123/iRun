@@ -52,6 +52,7 @@ import tnc from './Views/TNC';
 import redeemhistorysummary from './Views/RedeemHistorySummary';
 import profileediting from './Views/ProfileEditing';
 import runplansetting from './Views/RunPlanSetting';
+import eventform from './Views/EventForm';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -158,8 +159,8 @@ export default class RootRouter extends Component {
           'Content-Type': 'application/json',
         }
       };
-      Global._sendPostRequest(data,'api/inbox',(responseJson)=>{this._inboxRefreshCallback(responseJson)});
-      console.log('inbox refreshing');
+      Global._sendInboxRequest(data,'api/inbox',(responseJson)=>{this._inboxRefreshCallback(responseJson)});
+      //console.log('inbox refreshing');
     }
 
     _inboxRefreshCallback(response){
@@ -196,8 +197,12 @@ export default class RootRouter extends Component {
         var content = '';
         if(responseJson.response.posts[i].caption.indexOf('data-orig-width="620"')!=-1){
           content = replaceAll(responseJson.response.posts[i].caption,'data-orig-width="620"','width="300" style="position:relative;left:-20px"');
-        }else{
+        }else if(responseJson.response.posts[i].caption.indexOf('data-orig-width="640"')!=-1){
           content = replaceAll(responseJson.response.posts[i].caption,'data-orig-width="640"','width="300" style="position:relative;left:-20px"');
+        }else{
+          //var regex = /data-orig-width="[0-9]"/;
+          //content.replace(responseJson.response.posts[i].caption,'data-orig-width="1254"','width="300" style="position:relative;left:-20px"');
+          content = replaceAll(responseJson.response.posts[i].caption,'data-orig-width="1254"','width="300" style="position:relative;left:-20px"');
         }
         if(responseJson.response.posts[i].caption.indexOf('iframe ')!=-1){
           var regex = /iframe width="*" height="*"/;
@@ -463,6 +468,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="profileediting" component={profileediting} title="PROFILE" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="runplansetting" component={runplansetting} title="Run Plan Setting" hideNavBar={true}/>
                 <Scene key="pointalert" component={AvailiblePointAlert} schema="modal" title="availible point" hideNavBar={true} sceneStyle={{backgroundColor:'rgba(0,0,0,0)'}}/>
+                <Scene renderRightButton={createRightButton} key="eventform" component={eventform} title="Registration" hideNavBar={false}/>
             </Scene>
         );
         return(

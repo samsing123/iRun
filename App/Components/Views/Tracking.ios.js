@@ -370,17 +370,33 @@ class Tracking extends Component {
   }
 
   startMusicTimer(){
-    musicTimer = setInterval(()=>{
-      musicDuration++;
-      console.log('music time:'+musicDuration);
-      if(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
-        if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
-          Global.currentPlayingIndex = -1; // reset the playing pointer to first track
+    if(musicTimer){
+      clearInterval(musicTimer);
+      musicTimer = setInterval(()=>{
+        musicDuration++;
+        console.log('music time:'+musicDuration);
+        if(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
+          if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
+            Global.currentPlayingIndex = -1; // reset the playing pointer to first track
+          }
+          this._goToNext();
+          musicDuration=0;
         }
-        this._goToNext();
-        musicDuration=0;
-      }
-    },1000);
+      },1000);
+    }else{
+      musicTimer = setInterval(()=>{
+        musicDuration++;
+        console.log('music time:'+musicDuration);
+        if(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
+          if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
+            Global.currentPlayingIndex = -1; // reset the playing pointer to first track
+          }
+          this._goToNext();
+          musicDuration=0;
+        }
+      },1000);
+    }
+
   }
   _pauseMusicTimer(){
     clearInterval(musicTimer);
@@ -392,7 +408,6 @@ class Tracking extends Component {
   _changeMusic(){
     iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[0])
     .then(res => {
-
       console.log('is playing');
       musicDuration = 0;
       this.startMusicTimer();
@@ -877,6 +892,7 @@ class Tracking extends Component {
   _getIconFromValue(value){
     var case1 = 0;
     var case2 = 0;
+    value+='';
     if(value!=''){
       case1 = value.indexOf(':');
       case2 = value.indexOf('"');
@@ -900,7 +916,7 @@ class Tracking extends Component {
     });
   }
   _playMusic(){
-    console.log('ios play l'+Global.iosPlayList.length);
+
     if(Global.iosPlayList.length==0){
       alert('No Music Selected');
       return;
@@ -1004,12 +1020,11 @@ class Tracking extends Component {
         followsUserLocation={true}
       >
       </MapView>
-        <View style={{position:'relative',top:0,left:0}}>
+        <View style={{position:'absolute',top:20,left:0}}>
           <Text>position: {cur_lat}-{cur_lng} </Text>
           <Text>speed:{acceleration}</Text>
         </View>
-
-        <View style={{alignItems:'center',width:width}}>
+        <View style={{alignItems:'center',width:width,paddingTop:height*0.15}}>
           <Text style={{fontSize:95,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:25}}>{main_value}</Text>
         </View>
         <View style={{flex:1,backgroundColor:'rgba(21,139,205,1)',width:width,alignItems:'center'}}>
@@ -1039,9 +1054,9 @@ class Tracking extends Component {
               <Text style={{color:'white',fontSize:15}}>{this.state.music_title} {Global.selectedPlaylist!=null?'-':''} {this.state.singer}</Text>
             </View>
             <View style={{width:width,height:28,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <TouchableOpacity onPress={()=>{this._goToPre()}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)" style={{paddingRight:50}}/></TouchableOpacity>
-              {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._playMusic()}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
-              <TouchableOpacity onPress={()=>{this._goToNext()}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)" style={{paddingLeft:50}}/></TouchableOpacity>
+              <TouchableOpacity onPress={()=>{this._goToPre()}} hitSlop={{top:10,left:10,right:10,bottom:10}}  style={{marginRight:50}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>
+              {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._playMusic()}} hitSlop={{top:10,left:10,right:10,bottom:5}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
+              <TouchableOpacity onPress={()=>{this._goToNext()}} hitSlop={{top:10,left:10,right:10,bottom:10}} style={{marginLeft:50}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)" /></TouchableOpacity>
               <TouchableOpacity onPress={()=>{Actions.musiclist()}} style={{position:'absolute',right:20,bottom:9}}>
                 <Image source={require('../../Images/btn_music.png')} style={{width:40,height:40}}/>
               </TouchableOpacity>

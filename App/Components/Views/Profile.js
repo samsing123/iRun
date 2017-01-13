@@ -18,7 +18,8 @@ import {
   Switch,
   Linking,
   Animated,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  WebView
 } from 'react-native';
 import {Actions} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -43,6 +44,76 @@ import Chart from 'react-native-chart';
 var ImagePicker = require('react-native-image-picker');
 import {Bar,StockLine,SmoothLine,Scatterplot,Radar,Tree,Pie} from 'react-native-pathjs-charts';
 import sampleData from './data';
+var day7Data,day30Data,day365Data,allData;
+var testData = [
+                {
+                    "index":1,
+                    "name":"2016-11-19",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":3200
+                },
+                {
+                    "index":2,
+                    "name":"2016-11-20",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":3400
+                },
+                {
+                    "index":3,
+                    "name":"2016-11-21",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":3100
+                },
+                {
+                    "index":4,
+                    "name":"2016-11-22",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":2500
+                },
+                {
+                    "index":5,
+                    "name":"2016-11-23",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":1000
+                },
+                {
+                    "index":6,
+                    "name":"2016-11-24",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":1000
+                },
+                {
+                    "index":7,
+                    "name":"2016-11-25",
+                    "calories":0,
+                    "distance":0,
+                    "duration":0,
+                    "pace":0,
+                    "steps":5000
+                }
+            ];
+var htmlContent30 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: [ { y: "2006", a: 100 }, { y: "2007", a: 75 }, { y: "2008", a: 50 }, { y: "2009", a: 75 }, { y: "2010", a: 50 }, { y: "2011", a: 75 }, { y: "2012", a: 100} ], xkey: "y", ykeys: ["a"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelFormat:function (x) { return x.src.name.split("-")[1]+"/"+ x.src.name.split("-")[2]} }); </script> </body> </html>';
+var htmlContent7 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="bar-example" style="background-color:#f3f3f3;width:inherit;height:140px;"></div> <script type="text/javascript"> Morris.Bar({ element: "bar-example", data: '+JSON.stringify(testData)+', xkey: "name", ykeys: ["steps"], labels:[], axes:"x", grid:false, hideHover:"always",barColors:["#168DD1"] }); </script> </body> </html>';
+var htmlContent365 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: [ { y: "2006", a: 100 }, { y: "2007", a: 75 }, { y: "2008", a: 50 }, { y: "2009", a: 75 }, { y: "2010", a: 50 }, { y: "2011", a: 75 }, { y: "2012", a: 100} ], xkey: "y", ykeys: ["a"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelFormat:function (x) { return x.src.name.split("-")[1]+"/"+ x.src.name.split("-")[2]} }); </script> </body> </html>';
+var htmlContentAll = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: [ { y: "2006", a: 100 }, { y: "2007", a: 75 }, { y: "2008", a: 50 }, { y: "2009", a: 75 }, { y: "2010", a: 50 }, { y: "2011", a: 75 }, { y: "2012", a: 100} ], xkey: "y", ykeys: ["a"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelFormat:function (x) { return x.src.name.split("-")[1]+"/"+ x.src.name.split("-")[2]} }); </script> </body> </html>';
 const dailyData = [
     ['MON', 1],
     ['TUE', 2],
@@ -140,6 +211,9 @@ class Profile extends Component {
       display_title:Global.language.total_distance,
       display_content:'',
       show_graph:'distance',
+      htmlContent7:'',
+      barChartRefresh:false,
+      monthChartRefresh:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -184,9 +258,30 @@ class Profile extends Component {
     //Global.user_profile.run_stat_month.plots[21].distance = 30;
     Global._sendPostRequest(data,'api/run-history',(responseJson)=>{this._getRunHistory(responseJson)});
     Global._fetchImage('api/personal-icon',Global.user_profile.user_id,(v)=>{this._getUserCallback(v)});
+    day7Data = Global.user_profile.run_stat_week.plots;
+    day30Data = this._addShortFormMonth();
+    day365Data = this._changeMonthFormat();
+    allData = Global.user_profile.run_stat_life.plots;
+    htmlContent30 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: '+JSON.stringify(day30Data)+', xkey: "name", ykeys: ["'+this.state.show_graph+'"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelMargin:1,parseTime:false }); </script> </body> </html>';
+    htmlContent365 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: '+JSON.stringify(day365Data)+', xkey: "name", ykeys: ["'+this.state.show_graph+'"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelMargin:1,parseTime:false }); </script> </body> </html>';
+    htmlContentAll = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: '+JSON.stringify(day365Data)+', xkey: "name", ykeys: ["'+this.state.show_graph+'"], pointSize:0, grid:false, axes:"",lineColors:["#168DD1"],xLabelMargin:1,parseTime:false }); </script> </body> </html>';
+    //htmlContent7 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="bar-example" style="background-color:#f3f3f3;width:inherit;height:140px;"></div> <script type="text/javascript"> Morris.Bar({ element: "bar-example", data: '+JSON.stringify(day7Data)+', xkey: "name", ykeys: ["'+this.state.show_graph+'"], labels:[], axes:"x", grid:false, hideHover:"always",barColors:["#168DD1"] }); </script> </body> </html>';
 
-    console.log(Global.user_profile.run_stat_week);
     //Actions.home();
+  }
+
+  _addShortFormMonth(){
+    for(var i=0;i<Global.user_profile.run_stat_month.plots.length;i++){
+      Global.user_profile.run_stat_month.plots[i].name = Global.user_profile.run_stat_month.plots[i].name.split('-')[1]+'/'+Global.user_profile.run_stat_month.plots[i].name.split('-')[2];
+    }
+    return Global.user_profile.run_stat_month.plots;
+  }
+
+  _changeMonthFormat(){
+    for(var i=0;i<Global.user_profile.run_stat_year.plots.length;i++){
+      Global.user_profile.run_stat_year.plots[i].name = Util._monthToEngShortStr(Global.user_profile.run_stat_year.plots[i].name.split('/')[0])+' '+Global.user_profile.run_stat_year.plots[i].name.split('/')[1];
+    }
+    return Global.user_profile.run_stat_year.plots;
   }
 
   _getDateRangeFrom(){
@@ -206,6 +301,7 @@ class Profile extends Component {
   }
 
   _pushDataToBarDataArr(data,type){
+      var tempDateArr = [];
       for(var i=0;i<7;i++){
         var date = new Date(data.plots[i].name);
         switch(date.getDay()){
@@ -218,14 +314,32 @@ class Profile extends Component {
           case 6:sampleData.bar.data[i][0].name='S';break;
         }
         switch(type){
-          case 'Total Distance':sampleData.bar.data[i][0].v = data.plots[i].distance?data.plots[i].distance:0;break;
-          case 'Total Duration':sampleData.bar.data[i][0].v = data.plots[i].duration?data.plots[i].duration:0;break;
-          case 'Avg. Speed':sampleData.bar.data[i][0].v = data.plots[i].pace?data.plots[i].pace:0;break;
-          case 'Total Calories':sampleData.bar.data[i][0].v = data.plots[i].calories?data.plots[i].calories:0;break;
-          case 'Total Steps':sampleData.bar.data[i][0].v = data.plots[i].steps?data.plots[i].steps:0;break;
+          case 'Total Distance':sampleData.bar.data[i][0].v = data.plots[i].distance?data.plots[i].distance:0;
+          var temp = {"name":sampleData.bar.data[i][0].name,"v":sampleData.bar.data[i][0].v};
+          tempDateArr.push(temp);
+          break;
+          case 'Total Duration':sampleData.bar.data[i][0].v = data.plots[i].duration?data.plots[i].duration:0;
+          var temp = {"name":sampleData.bar.data[i][0].name,"v":sampleData.bar.data[i][0].v};
+          tempDateArr.push(temp);
+          break;
+          case 'Avg. Speed':sampleData.bar.data[i][0].v = data.plots[i].pace?data.plots[i].pace:0;
+          var temp = {"name":sampleData.bar.data[i][0].name,"v":sampleData.bar.data[i][0].v};
+          tempDateArr.push(temp);
+          break;
+          case 'Total Calories':sampleData.bar.data[i][0].v = data.plots[i].calories?data.plots[i].calories:0;
+          var temp = {"name":sampleData.bar.data[i][0].name,"v":sampleData.bar.data[i][0].v};
+          tempDateArr.push(temp);
+          break;
+          case 'Total Steps':sampleData.bar.data[i][0].v = data.plots[i].steps?data.plots[i].steps:0;
+          var temp = {"name":sampleData.bar.data[i][0].name,"v":sampleData.bar.data[i][0].v};
+          tempDateArr.push(temp);
+          break;
         }
       }
-      console.log(sampleData.bar.data);
+      htmlContent7 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="bar-example" style="background-color:#f3f3f3;width:inherit;height:140px;"></div> <script type="text/javascript"> Morris.Bar({ element: "bar-example", data: '+JSON.stringify(tempDateArr)+', xkey: "name", ykeys: ["v"], labels:[], axes:"x", grid:false, hideHover:"always",barColors:["#168DD1"],xLabelMargin: 1  }); </script> </body> </html>';
+      this.setState({
+        barChartRefresh:!this.state.barChartRefresh,
+      });
   }
 
   _getRunHistory(response){
@@ -566,6 +680,7 @@ class Profile extends Component {
         run_stat:type,
         isSevenDay:false,
         display_content:this._getValueByType(type),
+        monthChartRefresh:!this.state.monthChartRefresh,
       });
       sampleData.smoothLine.data = [Global.user_profile.run_stat_month.plots];
       break;
@@ -576,6 +691,7 @@ class Profile extends Component {
         run_stat:type,
         isSevenDay:false,
         display_content:this._getValueByType(type),
+        monthChartRefresh:!this.state.monthChartRefresh,
       });
       sampleData.smoothLine.data = [Global.user_profile.run_stat_year.plots];
       break;
@@ -586,6 +702,7 @@ class Profile extends Component {
         run_stat:type,
         isSevenDay:false,
         display_content:this._getValueByType(type),
+        monthChartRefresh:!this.state.monthChartRefresh,
       });
       sampleData.smoothLine.data = [Global.user_profile.run_stat_life.plots];
       break;
@@ -659,7 +776,7 @@ class Profile extends Component {
         run_stat_arr[i] = this.state.display_title;
       }
     }
-    console.log('title:'+name+' vs '+Global.language.total_distance);
+
     switch(name){
       case Global.language.total_distance:content = this.wordShort(this.state.run_stat.distance);chartValue='distance';break;
       case Global.language.total_duration:content = this.state.run_stat.duration;chartValue='duration';break;
@@ -672,8 +789,12 @@ class Profile extends Component {
       display_title:name,
       display_content:content,
       show_graph:chartValue,
+      monthChartRefresh:!this.state.monthChartRefresh
     });
 
+    htmlContent30 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: '+JSON.stringify(day30Data)+', xkey: "name", ykeys: ["'+chartValue+'"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelMargin:0,parseTime:false}); </script> </body> </html>';
+    htmlContent365 = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: '+JSON.stringify(day365Data)+', xkey: "name", ykeys: ["'+chartValue+'"], pointSize:0, grid:false, axes:"x",lineColors:["#168DD1"],xLabelMargin:0,parseTime:false}); </script> </body> </html>';
+    htmlContentAll = '<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body style="background-color:#f3f3f3"> <div id="area-example" style="background-color:#f3f3f3;width:inherit;height:140px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: '+JSON.stringify(allData)+', xkey: "name", ykeys: ["'+chartValue+'"], pointSize:0, grid:false, axes:"",lineColors:["#168DD1"],xLabelMargin:0,parseTime:false}); </script> </body> </html>';
   }
 
   _checkAllDataIsNotZero(arr){
@@ -803,6 +924,16 @@ class Profile extends Component {
     }else{
       profileImage = <Image style={{width:80,height:80,borderRadius:80/2}} source={{uri:this.state.imagePath}}/>;
     }
+    var curveChart;
+
+    if(Global.user_profile.run_stat_year==this.state.run_stat){
+      curveChart = htmlContent365;
+    }else if(Global.user_profile.run_stat_month==this.state.run_stat){
+      curveChart = htmlContent30;
+    }else{
+      curveChart = htmlContentAll;
+    }
+
 
     return (
       <ScrollView>
@@ -864,8 +995,18 @@ class Profile extends Component {
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
           </View>
-          <View style={{position:'absolute',top:50,left:30}}>
-            {!tempCheck?<Bar data={sampleData.bar.data} options={sampleData.bar.options} accessorKey='v' style={{marginLeft:20}}/>:<Text style={{alignSelf:'center'}}>No Data</Text>}
+          <View style={{position:'absolute',top:50,left:-5}}>
+            {this.state.barChartRefresh?<WebView
+              ref="barChart"
+              source={{html:htmlContent7}}
+              style={{width:width,height:160,backgroundColor:'#f3f3f3'}}
+              renderLoading={()=><Text>Loading...</Text>}
+            />:<View><WebView
+              ref="barChart2"
+              source={{html:htmlContent7}}
+              style={{width:width,height:160,backgroundColor:'#f3f3f1'}}
+              renderLoading={()=><Text>Loading...</Text>}
+            /></View>}
           </View>
         </View>:null}
         {this.state.isSevenDay?null:<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
@@ -875,15 +1016,17 @@ class Profile extends Component {
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
           </View>
-          <View style={{position:'absolute',top:50}}>
-          {!tempCheck2?
-            <SmoothLine
-              data={sampleData.smoothLine.data}
-              options={sampleData.smoothLine.options}
-              dateRange={this.dateRangeArr}
-              xKey='index'
-              yKey={this.state.show_graph} />:<Text style={{alignSelf:'center'}}>No Data</Text>
-          }
+          <View style={{position:'absolute',top:50,left:-5}}>
+
+          {this.state.monthChartRefresh?<WebView
+            source={{html:curveChart}}
+            style={{width:width,height:160,backgroundColor:'#f3f3f3'}}
+            renderLoading={()=><Text>Loading...</Text>}
+          />:<View><WebView
+            source={{html:curveChart}}
+            style={{width:width,height:160,backgroundColor:'#f3f3f3'}}
+            renderLoading={()=><Text>Loading...</Text>}
+          /></View>}
           </View>
         </View>}
 
@@ -893,13 +1036,18 @@ class Profile extends Component {
         </View>
         <View style={{width:width-16,height:40,marginTop:4,flexDirection:'row',justifyContent:'space-around'}}>
           <TouchableOpacity onPress={()=>{Actions.runhistory({title:Global.language.running_history})}}>
-            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/2-10,height:40,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>{Global.language.running_history}</Text>
+            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-10,height:40,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'white',fontSize:12,fontWeight:'bold',textAlign:'center'}}>{Global.language.running_history}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this._fitnessTracker()}}>
+            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-10,height:40,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'white',fontSize:12,fontWeight:'bold',textAlign:'center'}}>{Global.language.step_history}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{Actions.personalrecord()}}>
-            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/2-10,height:40,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>{Global.language.personal_record}</Text>
+            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-10,height:40,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'white',fontSize:12,fontWeight:'bold',textAlign:'center'}}>{Global.language.personal_record}</Text>
             </View>
           </TouchableOpacity>
         </View>

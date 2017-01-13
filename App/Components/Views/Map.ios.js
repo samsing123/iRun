@@ -16,7 +16,9 @@ import {
   TextInput,
   Image,
   CameraRoll,
-  Linking
+  Linking,
+  ScrollView,
+  findNodeHandle
 } from 'react-native';
 var Tabs = require('react-native-tabs');
 const FBSDK = require('react-native-fbsdk');
@@ -703,7 +705,6 @@ class Map extends Component {
         },
         error => console.log("Oops, snapshot failed", error)
       );
-
     }
     //Actions.numbercount();
   }
@@ -778,6 +779,24 @@ class Map extends Component {
     CameraRoll.saveToCameraRoll('file://'+this.sharePhoto.contentUrl,'photo').then((uri)=>{return uri;});
   }
 
+  _inputFocused (refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        findNodeHandle(this.refs[refName]),
+        20, //additionalOffset
+        true
+      );
+    }, 50);
+  }
+
+  _inputBlured(){
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollTo({"y":0});
+    }, 50);
+  }
+
   render() {
     //this._checkCurrentState();
     var run_info = <View>
@@ -790,9 +809,10 @@ class Map extends Component {
         </View>
       </TouchableOpacity>
       <View style={{marginTop:20}}>
-        <TextInput placeholder="Note" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})}/>
+        <TextInput value={this.state.note} onFocus={()=>{this._inputFocused('noteInput')}} onBlur={()=>{this._inputBlured()}} placeholder="Note" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})} ref="noteInput"/>
+        {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'absolute',right:width/2-30,bottom:4}}/>:null}
       </View>
-      <View style={{position:'relative',top:15,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+      <View style={{marginTop:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
@@ -815,6 +835,7 @@ class Map extends Component {
 
     return (
       <View style={{flex:1}}>
+        <ScrollView scrollEnabled={false} ref="scrollView">
         <View style={styles.container} ref='mapWithInfo'>
           <View>
           {!this.state.camera_image?<MapView
@@ -845,6 +866,7 @@ class Map extends Component {
           <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
         </TouchableOpacity>:<View/>}
         {run_info}
+        </ScrollView>
       </View>
     );
   }

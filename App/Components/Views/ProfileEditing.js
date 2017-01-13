@@ -100,8 +100,8 @@ const SECTIONS = [
 ];
 var options = {
   title: 'Select Your User Icon',
-  maxWidth:100,
-  maxHeight:100,
+  maxWidth:200,
+  maxHeight:200,
   storageOptions: {
     skipBackup: true,
     path: 'images'
@@ -233,6 +233,7 @@ class ProfileEditing extends Component {
       }
     };
     var temp = Global.user_profile.exercise>1?' days per week':' day per week';
+    Global.tempInterest = Global.user_profile.interest;
     this.setState({
       loading:false,
       height:Global.user_profile.height+' cm',
@@ -240,6 +241,8 @@ class ProfileEditing extends Component {
       gender:Global.user_profile.gender,
       age_range:Global.user_profile.age_range,
       exercise:Global.user_profile.exercise+temp,
+      display_name:Global.user_profile.display_name,
+      email:Global.user_profile.email
     });
     //Actions.home();
   }
@@ -326,35 +329,6 @@ class ProfileEditing extends Component {
   }
 
 
-  _showGenderPicker() {
-      Picker.init({
-          pickerData: ['Male','Female'],
-          selectedValue: [Global.user_profile.gender],
-          pickerConfirmBtnText:'Done',
-          pickerCancelBtnText:'Cancel',
-          pickerBg:[255,255,255,1],
-          pickerToolBarBg:[255,255,255,1],
-          pickerTitleText:'Age Range',
-          onPickerConfirm: pickedValue => {
-              this.setState({
-                age:pickedValue[0],
-                opacity:0
-              });
-          },
-          onPickerCancel: pickedValue => {
-              this.setState({
-                opacity:0
-              });
-          },
-          onPickerSelect: pickedValue => {
-
-          }
-      });
-      Picker.show();
-      this.setState({
-        opacity:0.5
-      });
-  }
   _showAgePicker() {
       Picker.init({
           pickerData: ageArr,
@@ -511,8 +485,14 @@ class ProfileEditing extends Component {
           pickerToolBarBg:[255,255,255,1],
           pickerTitleText:'Gender',
           onPickerConfirm: pickedValue => {
+              var temp = '';
+              if(pickedValue=='Male'){
+                  temp = 'M';
+              }else{
+                  temp = 'F';
+              }
               this.setState({
-                gender:pickedValue[0],
+                gender:temp,
                 opacity:0
               });
           },
@@ -555,7 +535,7 @@ class ProfileEditing extends Component {
           'Content-Type': 'application/json',
         }
       };
-      Global._sendPostRequest(data,'api/personal-info',(v)=>{this._editPersonalCallback(v)});
+      Global._sendPostRequest(data,'api/profile',(v)=>{this._editPersonalCallback(v)});
       profileEdit=false;
       this.setState({
         isEditting:false
@@ -571,8 +551,10 @@ class ProfileEditing extends Component {
         gender : this.state.gender,
         height : this.state.height.split(' ')[0],
         weight : this.state.weight.split(' ')[0],
-        exercise : 1,
-        interest : [],
+        exercise : this.state.exercise.split(' ')[0],
+        interest : Global.tempInterest,
+        email: this.state.email,
+        display_name:this.state.display_name
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -717,15 +699,13 @@ class ProfileEditing extends Component {
     <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
         <View>
           <Text>{Global.language.display_name}</Text>
-          <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}}>
-            <Text>{Global.user_profile.display_name}</Text>
-          </View>
+          <TextInput style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}} placeholder='Display Name' value='123'/>
         </View>
         <View style={{flexDirection:'row',paddingTop:10}}>
           <View style={{flex:0.7}}>
             <Text>{Global.language.email}</Text>
             <View style={{width:width-160,height:20,justifyContent:'center'}}>
-              <Text>{Global.email}</Text>
+              <TextInput placeholder='Add Email' value={Global.email}/>
             </View>
           </View>
           <View style={{flex:0.3}}>
@@ -771,9 +751,9 @@ class ProfileEditing extends Component {
           </View>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={()=>{this._logout();}}>
-        <View style={{marginTop:20,width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
-          <Text style={{fontSize:14,color:'white'}}>{Global.language.logout}</Text>
+      <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0}}>
+        <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
+          <Text style={{fontSize:14,color:'white'}}>123</Text>
         </View>
       </TouchableOpacity>
       </View>;
@@ -787,6 +767,14 @@ class ProfileEditing extends Component {
   _changePushNotification(state){
     Global.pushNotification = state;
     AsyncStorage.setItem('pushNotification',state+'');
+  }
+
+  _checkEmail(){
+    if(Global._vaildateInputBlank(this.state.email,'email')
+    ||Global._vaildateInputFormat(this.state.email,'email','email')){
+      this.setState({email:''});
+      return;
+    }
   }
 
   render() {
@@ -919,21 +907,23 @@ class ProfileEditing extends Component {
           <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:tempHeight,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_profile.png')}>
               <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
                 {profileImage}
-                <TouchableOpacity onPress={()=>{this._imagePick()}}><Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image></TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this._imagePick()}} style={{position:'absolute',right:0,bottom:0}}>
+                  <Image style={{width:20,height:20}} source={require('../../Images/btn_share_camera.png')}></Image>
+                </TouchableOpacity>
               </View>
               <View style={{flex:1}}>
               <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
                   <View>
                     <Text style={styles.textColor}>{Global.language.display_name}</Text>
-                    <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}}>
-                      <Text style={styles.textColor}>{Global.user_profile.display_name}</Text>
+                    <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
+                      <TextInput placeholder='Display Name' value={this.state.display_name} style={{color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({display_name:text})}/>
                     </View>
                   </View>
                   <View style={{flexDirection:'row',paddingTop:10}}>
                     <View style={{flex:0.7}}>
                       <Text style={styles.textColor}>{Global.language.email}</Text>
-                      <View style={{width:width-160,height:20,justifyContent:'center'}}>
-                        <Text style={styles.textColor}>{Global.email}</Text>
+                      <View style={{width:width-160,height:20,justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
+                        <TextInput keyboardType="email-address" ref="email" onSubmitEditing={() => {this.refs['email'].blur();}} onBlur={()=>{this._checkEmail();}} placeholder='Add Email' value={this.state.email} style={{color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({email:text})}/>
                       </View>
                     </View>
                     <View style={{flex:0.3}}>
@@ -950,9 +940,11 @@ class ProfileEditing extends Component {
                     </View>
                   </TouchableOpacity>
                   }
-                  <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1',borderTopWidth:Global.is_facebook?1:0,borderColor:'#f1f1f1',marginTop:Global.is_facebook?40:0}}>
-                    <Text style={styles.textColor}>{Global.language.your_interest}</Text><Text style={styles.textColor}>></Text>
-                  </View>
+                  <TouchableOpacity onPress={()=>{Actions.interest({editing:true,int_arr:Global.user_profile.interest})}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1',borderTopWidth:Global.is_facebook?1:0,borderColor:'#f1f1f1',marginTop:Global.is_facebook?40:0}}>
+                      <Text style={styles.textColor}>{Global.language.your_interest}</Text><Text style={styles.textColor}>></Text>
+                    </View>
+                  </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
                       <Text style={styles.textColor}>{Global.language.gender}</Text><Text style={styles.textColor}>{this.state.gender} ></Text>
@@ -979,8 +971,8 @@ class ProfileEditing extends Component {
                     </View>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={()=>{this._logout();}}>
-                  <View style={{marginTop:20,width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
+                <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0}}>
+                  <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
                     <Text style={{fontSize:14,color:'white'}}>{Global.language.logout}</Text>
                   </View>
                 </TouchableOpacity>

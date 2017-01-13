@@ -189,7 +189,7 @@ class ResetPasswords extends Component {
   }
   _requestCallback(responseJson){
     if(responseJson.status=='success'){
-      Actions.frontpage({type:ActionConst.RESET});
+      Actions.login({type:ActionConst.RESET});
     }else{
       alert(responseJson.response.error);
     }
@@ -206,7 +206,7 @@ class ResetPasswords extends Component {
       return;
     }
     alert('Reset successfully, please login again');
-    Actions.login({type:ActionConst.RESET});
+    //Actions.login({type:ActionConst.RESET});
     this._sendResetPasswordRequest();
   }
   _showDatePicker() {

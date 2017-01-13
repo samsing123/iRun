@@ -82,9 +82,10 @@ function _callback(responseJson){
   }
 }
 function createDateData(){
-    let month = [];
+    let month = [{'Month':['Day']}];
     for(let j = 1;j<13;j++){
         let day = [];
+        day.push('Day');
         if(j === 2){
             for(let k=1;k<30;k++){
                 if(k<10){
@@ -209,16 +210,21 @@ class ForgotPassword extends Component {
   _showDatePicker() {
       Picker.init({
           pickerData: createDateData(),
-          selectedValue: ['1', '1'],
+          selectedValue: ['01', '01'],
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
           pickerToolBarBg:[255,255,255,1],
           pickerTitleText:'Birthday',
           onPickerConfirm: pickedValue => {
-              this.setState({
-                birthday:pickedValue[0]+'/'+pickedValue[1]
-              });
+              if(pickedValue[0]=='Month'||pickedValue[1]=='Day'){
+                alert('Please select a valid Birthday');
+                Picker.show();
+              }else{
+                this.setState({
+                  birthday:pickedValue[0]+'/'+pickedValue[1]
+                });
+              }
           },
           onPickerCancel: pickedValue => {
               console.log('date', pickedValue);

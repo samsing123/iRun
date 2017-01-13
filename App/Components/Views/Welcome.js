@@ -45,8 +45,8 @@ const {
 } = FBSDK;
 var options = {
   title: 'Select Your User Icon',
-  maxWidth:100,
-  maxHeight:100,
+  maxWidth:200,
+  maxHeight:200,
   storageOptions: {
     skipBackup: true,
     path: 'images'

@@ -141,6 +141,8 @@ class RunHistory extends Component {
     };
     Global._sendPostRequest(data,'api/run-history',(responseJson)=>{this._getRunHistory(responseJson)});
     endPage = 8;
+    currentMonth = 0;
+    currentYear = 0;
   }
   _getRunHistory(responseJson){
     Global.run_history = responseJson.response.run;
@@ -315,11 +317,11 @@ class RunHistory extends Component {
         currentMonth = Util._getMonth(run.start_time);
         currentYear = Util._getYear(run.start_time);
         firstTime = false;
-        monthBar = (<View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
+        monthBar = <View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
             <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>{Util._monthToEng(currentMonth)+' '+currentYear}</Text>
           </View>
-        </View>);
+        </View>;
       }
       if(i>=startPage&&i<endPage){
         return(
@@ -387,6 +389,8 @@ class RunHistory extends Component {
     if(e.nativeEvent.layoutMeasurement.height+e.nativeEvent.contentOffset.y>=e.nativeEvent.contentSize.height){
       endPage += 10;
       this.setState({refresh:true});
+      currentMonth=0;
+      currentYear=0;
     }
   }
   openAlert(){
@@ -413,6 +417,8 @@ class RunHistory extends Component {
     var title = run_now_title;
 
     const run_session = this._renderRewardList();
+    currentMonth=0;
+    currentYear=0;
     content = run_session;
     return (
       <View style={styles.container}>

@@ -140,6 +140,7 @@ class Interest extends Component {
     temp.push(findNodeHandle(this.refs.eamil));
     temp.push(findNodeHandle(this.refs.password));
     this._interestSelected = this._interestSelected.bind(this);
+    this._selectInterest();
   }
   /*
   static renderNavigationBar(props){
@@ -226,6 +227,18 @@ class Interest extends Component {
     });
   }
 
+  _selectInterest(){
+    for(var i=0;i<this.props.int_arr.length;i++){
+      switch(this.props.int_arr[i]){
+        case 'lifestyle':this._interestSelected(1);break;
+        case 'food':this._interestSelected(2);break;
+        case 'travel':this._interestSelected(3);break;
+        case 'family':this._interestSelected(4);break;
+        case 'health':this._interestSelected(5);break;
+      }
+    }
+  }
+
   _interestSelected(num){
     switch(num){
       case 1:
@@ -306,6 +319,11 @@ class Interest extends Component {
     }
   }
 
+  _setInterestForProfileEditing(){
+    Global.tempInterest = this.interestArr;
+    Actions.pop();
+  }
+
 
   render() {
     var self = this;
@@ -358,7 +376,7 @@ class Interest extends Component {
           <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
-          <TouchableOpacity onPress={()=>{this._sendEditProfile()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>DONE ></Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{if(this.props.editing){this._setInterestForProfileEditing()}else{this._sendEditProfile()}}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>DONE ></Text></TouchableOpacity>
         </View>
       </View>
     );

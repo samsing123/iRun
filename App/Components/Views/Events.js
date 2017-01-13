@@ -265,8 +265,8 @@ class Events extends Component {
           <View style={{borderRadius:6,paddingTop:10,width:width-10}}>
             {image}
             <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width-10,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
-              <Text style={{fontSize:14,color:'white',padding:8}}>{news.date}</Text>
-              <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{news.title}</Text>
+              <Text style={{fontSize:14,color:'white',padding:8,marginTop:10}}>{news.date}</Text>
+              <Text style={{fontSize:20,color:'white',paddingLeft:8,fontWeight:'bold'}}>{news.title}</Text>
             </View>
           </View>
         </TouchableOpacity>

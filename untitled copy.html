@@ -1,0 +1,63 @@
+<html> 
+	<head> 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  	</head>
+   	<body>
+    	<canvas id="myChart" width="200" height="200"></canvas>
+		<script>
+		var ctx = document.getElementById("myChart");
+		var myChart = new Chart(ctx, {
+		    type: "line",
+		    data: {
+		        labels: ["9/9-15/9","","","","","","","16/9-22/9","","","","","","","23/9-29/9","","","","","","","30/9-4/10","","","","","","","6/10-12/10","","","","","",""],
+		        datasets: [{
+		            label: "",
+		            data: [1,2,3,4,3,2,1,1,2,3,4,3,2,1,1,2,3,4,3,2,1,1,2,3,4,3,2,1,1,2,3,4,3,2,1],
+		            backgroundColor: [
+		                "rgba(22, 141, 209, 1)",
+		                
+		            ],
+		            borderColor: [
+		                "rgba(22,141,209,1)",
+		                
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		    	legend: {
+		            display: false
+		         },
+		        scaleShowVerticalLines: false,
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero:true,
+		                },
+		                display:false
+		            }],
+		            xAxes: [{
+		                gridLines : {
+			                display : false
+			            },
+			            ticks: {
+		                    autoSkip: false,
+		                    maxRotation: 0,
+		                    minRotation: 0,
+		                    beginAtZero:false,
+		                }
+		            }]
+		        },
+		        elements: { 
+		        	point: { 
+		        		radius: 0 
+		        	} 
+		        },
+		        gridLines:{
+		        	offsetGridLines:true
+		        }
+		    }
+		});
+		</script>
+   	</body> 
+  </html>

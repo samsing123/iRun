@@ -17,11 +17,13 @@ import {
   TextInput,
   Image,
   CameraRoll,
-  Linking
+  Linking,
+  ScrollView
 } from 'react-native';
 var Tabs = require('react-native-tabs');
 const FBSDK = require('react-native-fbsdk');
 import ImageCropper from 'react-native-image-crop-picker';
+var AutoExpandingTextInput = require('react-native-auto-expanding-textinput');
 const {
   ShareDialog,
 } = FBSDK;
@@ -387,6 +389,7 @@ class Map extends Component {
       polylineCoords:this.props.path,
       camera_image:false,
     });
+    this.is_saved=false;
 
     //this.getMapImage();
     //this._takeSnapshot();
@@ -652,17 +655,56 @@ class Map extends Component {
     //     return Linking.openURL(url);
     //   }
     // }).catch(err => console.error('An error occurred', err));
-    shareOptions = {
-          title: "Share image to facebook",
-          url: "http://facebook.github.io/react-native/",
-          message:'This is a message!!',
-          subject: "Share Link", //  for email,
-          filePath:this.igUri
-        };
+    if(this.is_saved){
+      shareOptions = {
+            title: "Share image to facebook",
+            url: "http://facebook.github.io/react-native/",
+            message:'This is a message!!',
+            subject: "Share Link", //  for email,
+            filePath:this.publicURL
+      };
+      Share.shareSingle(Object.assign(shareOptions, {
+        "social": "instagram"
+      })).catch(err => console.error('An error occurred', err));
+    }else{
+      RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
+        format: "jpg",
+        quality: 0.8,
+      })
+      .then(
+        uri => {
+          imageUri = uri;
 
-    Share.shareSingle(Object.assign(shareOptions, {
-      "social": "instagram"
-    })).catch(err => console.error('An error occurred', err));
+          this.sharePhoto = {
+            imageUrl: imageUri,// <diff_path_for_ios>
+            userGenerated: false,
+            caption: 'hello'
+          };
+          this.shareLinkContent = {
+            contentType: 'photo',
+            photos: [this.sharePhoto],
+          };
+          var self = this;
+          CameraRoll.saveToCameraRoll(imageUri,"photo").then((uri)=>{
+            self.is_saved = true;
+            self.publicURL = uri;
+            shareOptions = {
+                  title: "Share image to facebook",
+                  url: "http://facebook.github.io/react-native/",
+                  message:'This is a message!!',
+                  subject: "Share Link", //  for email,
+                  filePath:uri
+            };
+            Share.shareSingle(Object.assign(shareOptions, {
+              "social": "instagram"
+            })).catch(err => console.error('An error occurred', err));
+          });
+        },
+        error => console.log("Oops, snapshot failed", error)
+      );
+    }
+
+
   }
 
   _getSnapShot(){
@@ -686,7 +728,7 @@ class Map extends Component {
         camera_image:true,
       });
 
-      setTimeout(() => {this._getMapImageWithInfo()}, 2000);
+      //setTimeout(() => {this._getMapImageWithInfo()}, 2000);
       var commonParameter = {
         hashtag:'hihi'
       };
@@ -712,7 +754,32 @@ class Map extends Component {
     });
   }
   _shareToFacebook(){
-    return ShareDialog.show(this.shareLinkContent);
+    RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
+      format: "jpg",
+      quality: 0.8,
+    })
+    .then(
+      uri => {
+        imageUri = uri;
+
+        this.sharePhoto = {
+          imageUrl: imageUri,// <diff_path_for_ios>
+          userGenerated: false,
+          caption: 'hello'
+        };
+        this.shareLinkContent = {
+          contentType: 'photo',
+          commonParameters: {
+            hashtag: '#'+Global.global_setting.facebook.tags[0]
+          },
+          photos: [this.sharePhoto],
+        };
+        return ShareDialog.show(this.shareLinkContent);
+        //CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl,"photo").then((uri)=>{this.igUri = uri;});
+      },
+      error => console.log("Oops, snapshot failed", error)
+    );
+
     /*
     ShareDialog.canShow(this.shareLinkContent).then(
       function(canShow) {
@@ -770,7 +837,7 @@ class Map extends Component {
     fetch(Global.serverHost+"api/run-photo", options)
     .then((response) => response.json())
     .then((responseJson)=>{
-      Actions.home({type:ActionConst.RESET});
+      Actions.home({type:ActionConst.RESET,tab:'home',isReset:true});
     });
   }
   _imageCallback(base64Str){
@@ -816,7 +883,18 @@ class Map extends Component {
         point:responseJson.response.points
       });
       current_id = responseJson.response.run_id;
-      this._sendFormData(current_id);
+      RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
+        format: "jpg",
+        quality: 0.8,
+      })
+      .then(
+        uri => {
+          imageUri = uri;
+          Global._sendRunImageData(current_id,imageUri);
+          Actions.home({isReset:true,tab:'home',type:'reset'});
+        },
+        error => console.log("Oops, snapshot failed", error)
+      );
     }
     //Actions.numbercount();
   }
@@ -901,8 +979,26 @@ class Map extends Component {
   }
 
   _saveToCameraRoll(){
-    CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl,"photo").then((uri)=>{console.log('new photo image:'+uri);});
-    alert('Photo saved.');
+    if(this.is_saved){
+      alert('Image saved.');
+      return;
+    }
+    RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
+      format: "jpg",
+      quality: 0.8,
+    })
+    .then(
+      uri => {
+        imageUri = uri;
+        var self = this;
+        CameraRoll.saveToCameraRoll(imageUri,"photo").then((uri)=>{
+          self.is_saved=true;
+          self.publicURL=uri;
+          alert('Image saved.');
+        });
+      },
+      error => console.log("Oops, snapshot failed", error)
+    );
   }
   _sCallback(){
     console.log('image stored successfully');
@@ -924,11 +1020,11 @@ class Map extends Component {
           <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{"RUNNING HISTORY>"}</Text>
         </View>
       </TouchableOpacity>
-      <View style={{alignItems:'center',justifyContent:'center',width:width,flexDirection:'row',borderBottomWidth:1,borderColor:'#f3f3f3'}}>
-        {this.state.note==''?<TouchableOpacity onPress={()=>{this.refs.noteInput.focus()}} style={{flexDirection:'row',height:30}}><Image style={{width:12,height:12}} source={require('../../Images/ic_edit.png')}/><Text>Node</Text></TouchableOpacity>:<View/>}
-        <TextInput ref="noteInput" placeholder="Note" value={this.state.note==''?null:this.state.note} style={{width:this.state.note==''?0:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})}/>
+      <View style={{alignItems:'center',justifyContent:'center',width:width,flexDirection:'row'}}>
+        <TextInput onSubmitEditing={() => this.refs['noteInput'].blur()} underlineColorAndroid="rgba(0,0,0,0)" ref="noteInput" placeholder="Note" style={{width:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})} value={this.state.note}/>
+        {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'relative',right:width/2-20}}/>:null}
       </View>
-      <View style={{position:'relative',top:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+      <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
@@ -949,6 +1045,7 @@ class Map extends Component {
 
     return (
       <View style={{flex:1}}>
+      <ScrollView scrollEnabled={false}>
         <View ref="mapInfoImage" style={{backgroundColor:'white'}}>
           <View style={styles.container}>
             {!this.state.camera_image?<MapView
@@ -967,9 +1064,7 @@ class Map extends Component {
                />
             </MapView>:<Image  source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
 
-            {this.state.share?<TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
-              <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
-            </TouchableOpacity>:<View/>}
+
             <View style={styles.buttonContainer}>
               <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
             </View>
@@ -981,9 +1076,12 @@ class Map extends Component {
           </View>
         </View>
 
-
+        {this.state.share?<TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
+          <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
+        </TouchableOpacity>:<View/>}
         {run_info}
 
+      </ScrollView>
       </View>
     );
   }

@@ -216,12 +216,12 @@ class RewardDetail extends Component {
         </View>
       </View>;
       tag = <View style={{paddingBottom:10}}>
-        <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10,paddingTop:30}} ref="title1">{this.state.title}</Text>
-        <View style={{paddingLeft:10}}>
-          <Text style={{fontSize:16}}>{Global.language.expiry_date}   {Util._changeDateFormat(this.state.expiry)}</Text>
+        <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10,paddingTop:20,fontWeight:'bold'}} ref="title1" fontWeight="bold">{this.state.title}</Text>
+        <View style={{paddingLeft:10,paddingTop:10}}>
+          <View style={{flexDirection:'row'}}><Text style={{fontWeight:'bold',fontSize:14}}>{Global.language.expiry_date}</Text><Text style={{fontSize:14,paddingLeft:20}}>{Util._changeDateFormat(this.state.expiry)}</Text></View>
         </View>
         <View style={{flexDirection:'row',paddingLeft:10,paddingTop:10}}>
-          <Image style={{height:16,width:16}} source={{uri:this.state.merchantImage}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12}}>{this.state.merchant_name}</Text>
+          <Image style={{height:16,width:16}} source={{uri:this.state.merchantImage}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12,fontWeight:'bold',paddingLeft:10}}>{this.state.merchant_name}</Text>
         </View>
       </View>;
     }
@@ -267,26 +267,26 @@ class RewardDetail extends Component {
                 {tag}
                 <View style={{marginLeft:10,marginRight:10,height:80,borderBottomWidth:1,borderBottomColor:'#F3F3F3',borderTopWidth:1,borderTopColor:'#F3F3F3',flexDirection:'row'}}>
                   <View style={{flex:0.5}}>
-                    <Text style={{fontSize:16}}>{Global.language.point}</Text>
-                    <View style={{flexDirection:'row'}}>
+                    <Text style={{fontSize:16,fontWeight:'bold'}}>{Global.language.point}</Text>
+                    <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                       <View style={{position:'relative',top:15}}>
                         <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
                       </View>
-                      <Text style={{fontSize:32}}>{this.state.point}</Text>
+                      <Text style={{fontSize:20,paddingLeft:10,fontWeight:'bold',position:'relative',top:9}}>{this.state.point}</Text>
                     </View>
                   </View>
                   <View style={{flex:0.5}}>
-                    <Text style={{fontSize:16}}>{Global.language.quantity}</Text>
+                    <Text style={{fontSize:16,fontWeight:'bold'}}>{Global.language.quantity}</Text>
                     <View style={{flexDirection:'row',paddingTop:15}}>
-                      <TouchableOpacity onPress={()=>{this.minorCurrentNum()}} style={{width:32,height:32}}>
+                      <TouchableOpacity onPress={()=>{this.minorCurrentNum()}} style={{width:16,height:32}}>
                         <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'center',marginTop:3}}>
                           <Text style={{fontSize:12}}>-</Text>
                         </View>
                       </TouchableOpacity>
-                      <View style={{width:50,alignItems:'center',marginRight:16}}>
+                      <View style={{width:50,alignItems:'center'}}>
                         <Text style={{fontSize:16}}>{this.state.current_num}</Text>
                       </View>
-                      <TouchableOpacity onPress={()=>{this.addCurrentNum()}} style={{width:32,height:32}}>
+                      <TouchableOpacity onPress={()=>{this.addCurrentNum()}} style={{width:16,height:32}}>
                         <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'center',marginTop:3}}>
                           <Text style={{fontSize:12}}>+</Text>
                         </View>
@@ -294,14 +294,15 @@ class RewardDetail extends Component {
                     </View>
                   </View>
                 </View>
-
+                <View style={{paddingTop:20}}>
                 <WebView
                   source={{html:this.state.htmlContent}}
                   style={{width:width-30,height:this.state.webViewHeight}}
                   onNavigationStateChange={this._onNavigationStateChange.bind(this)}
                   injectedJavaScript={jscode}
                 />
-                <View style={{borderTopWidth:1,borderTopColor:'#F3F3F3',marginLeft:10,marginRight:10}}>
+                </View>
+                <View style={{marginLeft:10,marginRight:10,paddingTop:20,borderTopWidth:1,borderTopColor:'#F3F3F3'}}>
                   <HTMLView
                     value={this.state.tnc}
                     stylesheet={{style2}}

@@ -31,7 +31,7 @@ class MusicElement extends Component {
   componentDidMount(){
     //for getting the metadata for the media file.... but take long time in ui thread
     //TODO: make this to reading the meta data one by one
-    MediaMeta.get(this.props.path.replace('/sdcard/','/storage/emulated/0/'))
+    MediaMeta.get(this.props.path)
     .then(metadata => {
       var title = metadata.title==null?'<unknown>':metadata.title;
       var artist = metadata.artist==null?'<unknown>':metadata.artist;

@@ -77,6 +77,7 @@ class Intro extends Component {
       is_have_new:false,
       aqi:0,
       eventLoading:true,
+      scrollY:0,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -130,13 +131,18 @@ class Intro extends Component {
           this._getTotalNumberMusicFile(files[i].path);
         }
         if(files[i].isFile()){
-          if(Util._getFileExtension(files[i].name)=='mp3'||Util._getFileExtension(files[i].name)=='m4a'){
+          if(Util._getFileExtension(files[i].name)=='mp3'){
             //console.log(files[i].path);
             Global.totalMusicNumber++;
           }
         }
       }
     }).done();
+  }
+
+  _goToHome(){
+    this._tabChange('home');
+    this.setState({scrollY:621});
   }
 
   _testRunResultPage(){
@@ -238,12 +244,14 @@ class Intro extends Component {
       if(v.status){
         if(v.status=='success'){
           this._saveUserToken(v.response.user_token);
+          Global.user_token = v.response.user_token;
           this._getEventList();
           this._getProfile();
         }else{
           console.log('is first time:'+Global.first_time_fb);
           if(Global.first_time_fb){
             this._saveUserToken(v.response.user_token);
+            Global.user_token = v.response.user_token;
             this._getEventList();
             this._getProfile();
           }else{
@@ -260,9 +268,9 @@ class Intro extends Component {
     });
   }
   async _saveUserToken(user_token){
-    console.log('facebook auto login and save user_token');
-    Global.user_token = user_toekn;
+
     await AsyncStorage.setItem('user_token',user_token);
+    console.log('facebook user token save:'+user_token);
   }
 
   _autoLogin(){
@@ -304,6 +312,7 @@ class Intro extends Component {
         }
       });
     }else{
+      var self = this;
       OneSignal.configure({
           onIdsAvailable: function(device) {
               Global.onesignal_devicetoken = device.userId;
@@ -320,7 +329,11 @@ class Intro extends Component {
                   'Content-Type': 'application/json',
                 }
               };
-              Global._sendPostRequest(data,'api/login',(v)=>{this._getEventList();this._getProfile();console.log(v)});
+              Global._sendPostRequest(data,'api/login',(v)=>{
+                self._getEventList();
+                self._getProfile();
+                console.log(v);
+              });
           },
         onNotificationOpened: function(message, data, isActive) {
 
@@ -379,16 +392,19 @@ class Intro extends Component {
       this._autoLogin();
     }
     Global.eventArr = [];
+    eventArr = [];
 
     AppEventEmitter.addListener('image fetch finish', this._eventTrigger());
     AppEventEmitter.addListener('changeLanguage', ()=>{this.setState({refresh:true})});
     AppEventEmitter.addListener('overlayAlert', ()=>{this._openAlert()});
+    AppEventEmitter.addListener('goToHome',()=>{this._goToHome()});
     if(Platform.OS!='ios'){
       this._getTotalNumberMusicFile('/sdcard/');
     }
     if(this.props.fitnesstracker){
       this.refs.fitnesstrackerAlert.open();
     }
+
 
 
     //this._getProfile();
@@ -403,131 +419,129 @@ class Intro extends Component {
 
   }
 
+  _handleScroll(event) {
+   console.log(event.nativeEvent.contentOffset.y);
+  }
 
   _loadingLandingPage(){
     var aqi = 0;
     var tilte = '';
     var content = '';
-    fetch('http://www.aqhi.gov.hk/en.html')
-    .then((response) => response.text())
+
+    fetch(Global.serverHost+'api/home')
+    .then((response) => response.json())
     .then((responseText) => {
-      aqi = responseText.substring(responseText.lastIndexOf('notSurrogate">')+14,responseText.lastIndexOf('notSurrogate">')+15);
-      this.setState({aqi:aqi});
-      fetch('http://rss.weather.gov.hk/rss/CurrentWeather.xml')
-      .then((response) => response.text())
-      .then((responseText) => {
-        var temperatures=responseText.substring(responseText.lastIndexOf("Air temperature : ")+18,responseText.lastIndexOf(" degrees Celsius"));
-        var uv = responseText.substring(responseText.lastIndexOf("King's Park : ")+14,responseText.lastIndexOf("King's Park : ")+16);
-        var weatherImage = responseText.substring(responseText.lastIndexOf('<img src="')+10,responseText.lastIndexOf('" style="vertical-align: middle;">'));
-        var weatherNumber = weatherImage.substring(weatherImage.lastIndexOf('img/pic')+7,weatherImage.lastIndexOf('.png'));
-        console.log('the weather image number:'+weatherNumber);
-        //<img src="http://rss.weather.gov.hk/img/pic50.png" style="vertical-align: middle;">
-        if(uv.indexOf('<')){
-          uv=uv.substring(0,1);
-        }
-        if(uv=='='){
-          uv=0;
-        }
-        var tumblrList = <View>
-          {this._renderTumblrList()}
-        </View>;
-        var eventList = <View>
-        {this._renderEventList()}
-        </View>;
-        var last_run;
-        if(Global.run_history.length==0){
-            last_run = <View style={{width:width,flexDirection:'row'}}>
-              <View style={{paddingLeft:15,flexDirection:'column'}}>
-                <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
-                <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
-                  <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>No Data</Text>
-                  <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}></Text>
-                </View>
-                <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}></Text>
-              </View>
-            </View>;
-        }else{
+      console.log(responseText);
+      aqi = responseText.response.aqi;
+      var temperatures=responseText.response.temperature+"";
+      temperatures = temperatures.split('.')[0];
+      var uv = Math.round(responseText.response.uvi);
+      var weatherImage = responseText.response.icon;
+      var weatherNumber = weatherImage.substring(weatherImage.lastIndexOf('pic')+3,weatherImage.lastIndexOf('.png'));
+      var bgImage = responseText.response.image;
+      console.log('the weather image number:'+weatherNumber);
+      var msg = responseText.response.message;
+      //<img src="http://rss.weather.gov.hk/img/pic50.png" style="vertical-align: middle;">
+
+      var tumblrList = <View>
+        {this._renderTumblrList()}
+      </View>;
+      var eventList = <View>
+      {this._renderEventList()}
+      </View>;
+      var last_run;
+      if(Global.run_history.length==0){
           last_run = <View style={{width:width,flexDirection:'row'}}>
             <View style={{paddingLeft:15,flexDirection:'column'}}>
               <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
               <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
-                <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>{Global.run_history[0].distance}</Text>
-                <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}>km</Text>
+                <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>No Data</Text>
+                <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}></Text>
               </View>
-              <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}>{Util._dateLastRunFormat2(Global.run_history[0].start_time.split(' ')[0])}</Text>
+              <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}></Text>
             </View>
           </View>;
-        }
+      }else{
+        last_run = <View style={{width:width,flexDirection:'row'}}>
+          <View style={{paddingLeft:15,flexDirection:'column'}}>
+            <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
+            <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
+              <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>{Global.run_history[0].distance}</Text>
+              <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}>km</Text>
+            </View>
+            <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}>{Util._dateLastRunFormat2(Global.run_history[0].start_time.split(' ')[0])}</Text>
+          </View>
+        </View>;
+      }
 
-        var weatherImagePath = Util._getWeatherImage(weatherNumber);
-        var Home = <View style={{height:height-130}}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} pagingEnabled={true}>
-          <View>
-            <Image source={require('../../Images/bg_home.png')} style={{height:height*0.5,width:width}}/>
-            <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
-              <Image source={weatherImagePath} style={{width:130,height:130}} resizeMode={Image.resizeMode.contain}/>
-            </View>
-            <View style={{position:'absolute',left:width*0.52,top:height*0.01,backgroundColor:'rgba(0,0,0,0)'}}>
-              <Text style={{fontSize:100,color:"white"}}>{temperatures}°</Text>
-              <View style={{flexDirection:'row',position:'relative',top:-20}}>
-                <Image source={require('../../Images/ic_uv.png')} style={{width:20,height:20,marginTop:5}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{uv} UV</Text>
-                <Image source={require('../../Images/ic_api.png')} style={{width:20,height:20,marginTop:5,marginLeft:10}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{this.state.aqi} AQI</Text>
-              </View>
-            </View>
-            <View style={{position:'absolute',bottom:0,left:0,backgroundColor:'rgba(0,0,0,0)',height:100}}>
-              <Text style={styles.t1}>EITHER YOU RUN</Text>
-              <Text style={styles.t2}>THE DAY OR</Text>
-              <Text style={styles.t3}>THE DAY RUN YOU</Text>
+      var weatherImagePath = Util._getWeatherImage(weatherNumber);
+      var Home = <View style={{height:height-130}}>
+      <ScrollView contentOffset={{x:0,y:this.state.scrollY}} ref={(scrollView) => { this.homeScroll = scrollView; }} contentContainerStyle={styles.scrollContainer} pagingEnabled={true} onScroll={this._handleScroll} scrollEventThrottle={16}>
+        <View>
+          <Image source={{uri:Global.serverHost+'images/'+bgImage}} style={{height:height*0.5,width:width}}/>
+          <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
+            <Image source={weatherImagePath} style={{width:130,height:130}} resizeMode={Image.resizeMode.contain}/>
+          </View>
+          <View style={{position:'absolute',left:width*0.52,top:height*0.01,backgroundColor:'rgba(0,0,0,0)'}}>
+            <Text style={{fontSize:100,color:"white"}}>{temperatures}°</Text>
+            <View style={{flexDirection:'row',position:'relative',top:-20}}>
+              <Image source={require('../../Images/ic_uv.png')} style={{width:20,height:20,marginTop:5}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{uv} UV</Text>
+              <Image source={require('../../Images/ic_api.png')} style={{width:20,height:20,marginTop:5,marginLeft:10}} resizeMode={Image.resizeMode.contain}></Image><Text style={{color:'white',fontSize:20}}>{aqi} AQI</Text>
             </View>
           </View>
-          {last_run}
-          {eventList}
-          {tumblrList}
-        </ScrollView>
-        </View>;
-        /* detail for last run
-        <View style={{flexDirection:'row',paddingLeft:18,position:'relative',top:-3}}>
-            <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-              <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
-              <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Util._secondToMinuteDisplay(Global.run_history[0].duration,'time')}</Text>
-            </View>
-            <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
-              <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
-              <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].pace_str}</Text>
-            </View>
-            <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
-              <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
-              <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].calories}</Text>
-            </View>
+          <View style={{position:'absolute',bottom:0,left:0,backgroundColor:'rgba(0,0,0,0)',height:100}}>
+            <Text style={styles.t1}>{msg[0]?msg[0]:''}</Text>
+            <Text style={styles.t2}>{msg[1]?msg[1]:''}</Text>
+            <Text style={styles.t3}>{msg[2]?msg[2]:''}</Text>
+
+          </View>
         </View>
-        */
-        var Runs = <Run />;
-        var Event = <Events />;
-        var Reward = <Rewards />;
-        var More = <Mores />;
-        var currentPage = Home;
-        switch(this.props.tab){
-          case 'reward':currentPage = Reward;this._tabChange('reward');break;
-          case 'history':Reward = <Rewards tab='history'/>;currentPage = Reward;this._tabChange('reward');break;
-          case 'home':currentPage = Home;this._tabChange('home');break;
-        }
-        this.setState({
-          home:Home,
-          page:currentPage,
-          run:Runs,
-          events:Event,
-          rewards:Reward,
-          more:More,
-          temperature:temperatures,
-        });
-      })
-      .catch((error) => {
-        console.warn(error);
+        {last_run}
+        {eventList}
+        {tumblrList}
+      </ScrollView>
+      </View>;
+      /* detail for last run
+      <View style={{flexDirection:'row',paddingLeft:18,position:'relative',top:-3}}>
+          <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+            <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
+            <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Util._secondToMinuteDisplay(Global.run_history[0].duration,'time')}</Text>
+          </View>
+          <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
+            <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
+            <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].pace_str}</Text>
+          </View>
+          <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center',paddingLeft:18}}>
+            <Icon name="user" size={22} color="rgba(20,139,205,1)"/>
+            <Text style={{fontSize:16,color:'rgba(155,155,155,1)'}}>{Global.run_history[0].calories}</Text>
+          </View>
+      </View>
+      */
+      var Runs = <Run />;
+      var Event = <Events />;
+      var Reward = <Rewards />;
+      var More = <Mores />;
+      var currentPage = Home;
+      switch(this.props.tab){
+        case 'reward':currentPage = Reward;this._tabChange('reward');break;
+        case 'history':Reward = <Rewards tab='history'/>;currentPage = Reward;this._tabChange('reward');break;
+        case 'home':currentPage = Home;this._tabChange('home');break;
+      }
+      this.setState({
+        home:Home,
+        page:currentPage,
+        run:Runs,
+        events:Event,
+        rewards:Reward,
+        more:More,
+        temperature:temperatures,
       });
     })
     .catch((error) => {
       console.warn(error);
     });
+
+
 
   }
 
@@ -548,7 +562,10 @@ class Intro extends Component {
   _requestCallback(responseJson){
     Global.user_profile = responseJson.response;
     console.log('go to save mobile!!');
-    Global._saveMobileNumber(responseJson.response.mobile_number);
+    if(responseJson.response.mobile_number){
+      Global._saveMobileNumber(responseJson.response.mobile_number);
+    }
+
     let data = {
       method: 'GET',
       headers: {

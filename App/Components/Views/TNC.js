@@ -84,18 +84,8 @@ class TNC extends Component {
   }
   */
   componentDidMount(){
-    console.log('terms:'+Global.global_setting.content.terms);
+    console.log('terms123:'+Global.global_setting.content.terms);
     this._printDetail();
-    var data={
-      method:'POST',
-      body:JSON.stringify({
-        id:this.props.id
-      }),
-      headers:{
-        'Content-Type': 'application/json',
-      }
-    };
-    Global._sendPostRequest(data,'api/inbox-read',()=>this._inboxReadCallback());
   }
   _inboxReadCallback(){
     console.log('this message readed');
@@ -110,9 +100,10 @@ class TNC extends Component {
 
   _printDetail(){
     this.setState({
-      htmlContent:'<html><body><div id="wrapper">'+this.props.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
+      htmlContent:'<html> <head> <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> </head> <body> <div id="area-example" style="background-color:#d8d8d8;width:inherit;height:160px"></div> <script type="text/javascript"> Morris.Area({ element: "area-example", data: [ { y: "2006", a: 100 }, { y: "2007", a: 75 }, { y: "2008", a: 50 }, { y: "2009", a: 75 }, { y: "2010", a: 50 }, { y: "2011", a: 75 }, { y: "2012", a: 100} ], xkey: "y", ykeys: "a", pointSize:0, grid:false, axes:"x" }); </script> </body> </html>',
       date:this.props.date,
     });
+    console.log('detail??');
   }
 
 
@@ -200,7 +191,7 @@ class TNC extends Component {
            {tag}
            <WebView
              source={{html:this.state.htmlContent}}
-             style={{width:width-30,height:this.state.webViewHeight}}
+             style={{width:width,height:this.state.webViewHeight,paddingLeft:20,paddingRight:20}}
              onNavigationStateChange={this._onNavigationStateChange.bind(this)}
              injectedJavaScript={jscode}
            />
@@ -232,8 +223,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
     paddingTop:Global.navbarHeight,
-    paddingLeft:20,
-    paddingRight:20
   },
   scrollContainer:{
     justifyContent: 'center',
@@ -321,6 +310,13 @@ value={this.state.trueSwitchIsOn} />
  <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:18}}>HEALTHY SNACKS</Text>
  <Text style={{color:'rgba(74,74,74,1)',paddingTop:7,paddingLeft:18,width:width-36,fontSize:17}}>Computer screens, dogs, your paycheck: Some things should only come in size XL. But at snack time, smaller really is better. A mere 100 calories can satisfy you until your next meal, but that amount is frustratingly hard to eyeball. You could pay the more than 100 percent markup some companies charge for 100-cal snack packs—or simply keep these delish, nutritionist-approved treats on hand. Click through for 28 delish healthy snacks!</Text>
 </View>
+
+<WebView
+  source={{html:this.state.htmlContent}}
+  style={{width:width,height:40}}
+  onNavigationStateChange={this._onNavigationStateChange.bind(this)}
+  injectedJavaScript={jscode}
+/>
 */
 
 module.exports = TNC;

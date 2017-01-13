@@ -67,7 +67,8 @@ class AppIntros extends Component {
       <AppIntro
       showSkipButton={false}
       showDoneButton={true}
-      onDoneBtnClick={this.doneBtnHandle}>
+      onDoneBtnClick={this.doneBtnHandle}
+      doneBtnLabel="Get Started">
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
             <View style={{position:'absolute',bottom:0,left:20}}>

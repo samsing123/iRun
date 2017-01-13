@@ -237,7 +237,7 @@ class FrontPage extends Component {
         <TNCAlert message='PRIVACY' ref='alert2' callback={()=>{this.goToNext()}} title='PRIVACY POLICY'/>
 
         <View style={{position:'absolute',bottom:0,right:0}}>
-          <TouchableOpacity onPress={()=>{Actions.welcome()}}>
+          <TouchableOpacity onPress={()=>{Actions.verify()}}>
             <Text style={{color:'white',backgroundColor:'rgba(0,0,0,0)'}}>{Global.version}</Text>
           </TouchableOpacity>
         </View>

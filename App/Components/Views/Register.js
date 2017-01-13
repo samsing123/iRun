@@ -64,9 +64,10 @@ function createDateData2(){
     return date;
 };
 function createDateData(){
-    let month = [];
+    let month = [{'Month':['Day']}];
     for(let j = 1;j<13;j++){
         let day = [];
+        day.push('Day');
         if(j === 2){
             for(let k=1;k<30;k++){
                 if(k<10){
@@ -138,9 +139,14 @@ class Register extends Component {
           pickerTitleText:'Birthday',
           pickerTitleStyle:{flex:3},
           onPickerConfirm: pickedValue => {
-              this.setState({
-                birthday:pickedValue[0]+'/'+pickedValue[1]
-              });
+              if(pickedValue[0]=='Month'||pickedValue[1]=='Day'){
+                alert('Please select a valid Birthday');
+                Picker.show();
+              }else{
+                this.setState({
+                  birthday:pickedValue[0]+'/'+pickedValue[1]
+                });
+              }
           },
           onPickerCancel: pickedValue => {
               console.log('date', pickedValue);
@@ -243,16 +249,16 @@ class Register extends Component {
   render() {
     var self = this;
     return (
-      <View>
-      <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
+      <View style={{flex:1}}>
+      <Image source={require('../../Images/bg_onboarding.png')} resizeMode={Image.resizeMode.cover} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
       <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
-        <Image source={require('../../Images/bg_onboarding.png')} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
-        <View style={{paddingTop:height*0.02,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+
+        <View style={{paddingTop:height*0.06,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>REGISTER</H1>
           <Text style={{color:'white'}}>Register with your email address</Text>
           <Text style={{color:'white'}}>before starting.</Text>
         </View>
-        <View style={{paddingTop:height*0.03,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+        <View style={{paddingTop:height*0.01,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
             <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='email' onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
@@ -292,7 +298,7 @@ class Register extends Component {
               </Text>
             </View>
           </View>
-          <View style={{paddingTop:24}}>
+          <View style={{paddingTop:10}}>
             <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
           </View>
           <View style={{paddingTop:5,flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>

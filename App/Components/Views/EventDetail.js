@@ -72,6 +72,7 @@ class EventDetail extends Component {
       date:'',
       arrow:'<',
       videoContent:'<html><iframe align="center" width="'+webviewWidth+'" height="240" src="https://www.youtube.com/embed/ePpPVE-GGJw" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
+      share_icon_pos:208,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -99,6 +100,11 @@ class EventDetail extends Component {
     var tagList = Util._getTag(response.response.share_hashtag);
     var tempContent = {
       contentType: 'link',
+      commonParameters: {
+        hashtag: '#'+Global.global_setting.facebook.tags[0]
+      },
+      contentTitle:response.response.share_title,
+      contentDescription:response.response.share_msg,
       contentUrl: response.response.link,
     };
 
@@ -108,7 +114,7 @@ class EventDetail extends Component {
       date:date,
       shareLinkContent:tempContent,
       video:response.response.video,
-      videoContent:'<html><iframe align="center" width="'+width+'" height="240" src="https://www.youtube.com/embed/'+response.response.video+'" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
+      videoContent:'<html><iframe align="center" width="'+width+'" height="240" src="https://www.youtube.com/embed/'+response.response.video+'+?autoplay=0&controls=0&showinfo=0" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
     });
     console.log('video:'+this.state.video);
     count=5;
@@ -157,16 +163,12 @@ class EventDetail extends Component {
           parallaxHeaderHeight={240}
           stickyHeaderHeight={60}
           onScroll={(e)=>{
-            this.refs.title1.measure((ox, oy, width, height, px, py) => {
-              if(py<=35){
-                this.setState({
-                  top_title:this.state.title
-                });
-              }else{
-                this.setState({
-                  top_title:this.state.category
-                });
-              }
+            var temp = 208 - e.nativeEvent.contentOffset.y;
+            if(temp<5){
+              temp=5;
+            }
+            this.setState({
+              share_icon_pos:temp,
             });
           }}
           renderForeground={() => (
@@ -175,9 +177,7 @@ class EventDetail extends Component {
                 source={{html:this.state.videoContent}}
                 style={{width:width,height:240}}/>:
                 <Image style={{height:240,width:width}} source={{uri:this.props.image}} resizeMode={Image.resizeMode.cover}/>}
-              <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',bottom:-24,right:16,zIndex:100}}>
-                <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
-              </View>
+
            </View>
           )}
           renderStickyHeader={() => (
@@ -186,10 +186,9 @@ class EventDetail extends Component {
             </View>
           )}>
           {content}
+
           <View >
-          <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',top:-32,right:16,zIndex:100}}>
-            <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
-          </View>
+
             <View style={{ width:width,alignItems:'center',justifyContent:'center'}}>
               <View style={{width:width-36}}>
                 {tag}
@@ -206,7 +205,9 @@ class EventDetail extends Component {
         <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
          <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
-
+        {this.state.shareLinkContent.contentUrl?<View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',top:this.state.share_icon_pos,right:16,zIndex:500}}>
+          <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
+        </View>:<View/>}
       </View>
     );
   }

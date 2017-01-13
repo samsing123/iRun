@@ -50,8 +50,8 @@ const {
   GraphRequestManager,
 } = FBSDK;
 var options = {
-  maxWidth:100,
-  maxHeight:100,
+  maxWidth:200,
+  maxHeight:200,
   title: 'Select Your User Icon',
   storageOptions: {
     skipBackup: true,
@@ -59,14 +59,16 @@ var options = {
   }
 };
 var Global = require('../Global');
+var Util = require('../Util');
 let pickerData = [
   ['01','02','03','04','05','06','07','08','09','10','11','12'],
   ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
 ];
 function createDateData(){
-    let month = [];
+    let month = [{'Month':['Day']}];
     for(let j = 1;j<13;j++){
         let day = [];
+        day.push('Day');
         if(j === 2){
             for(let k=1;k<29;k++){
                 if(k<10){
@@ -95,11 +97,13 @@ function createDateData(){
           j='0'+j;
         }
         let _month = {};
+        console.log(day);
         _month[j] = day;
         month.push(_month);
     }
     return month;
 };
+
 class FB_Register extends Component {
   constructor(props){
     super(props);
@@ -128,9 +132,14 @@ class FB_Register extends Component {
           pickerToolBarBg:[255,255,255,1],
           pickerTitleText:'Birthday',
           onPickerConfirm: pickedValue => {
-              this.setState({
-                birthday:pickedValue[0]+'/'+pickedValue[1]
-              });
+              if(pickedValue[0]=='Month'||pickedValue[1]=='Day'){
+                alert('Please select a valid Birthday');
+                Picker.show();
+              }else{
+                this.setState({
+                  birthday:pickedValue[0]+'/'+pickedValue[1]
+                });
+              }
           },
           onPickerCancel: pickedValue => {
               console.log('date', pickedValue);
@@ -293,7 +302,7 @@ class FB_Register extends Component {
             <Text style={{color:'white',fontSize:18,fontWeight:'bold'}}>{this.props.display_name}</Text>
           </View>
         </View>
-        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:24}}>
+        <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:12}}>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
             <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
@@ -327,7 +336,7 @@ class FB_Register extends Component {
               </Text>
             </View>
           </View>
-          <View style={{paddingTop:5}}>
+          <View style={{paddingTop:10}}>
             <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
           </View>
           <View style={{paddingTop:5,flexDirection:'row'}}>

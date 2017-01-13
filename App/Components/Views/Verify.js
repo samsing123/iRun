@@ -40,6 +40,10 @@ var DeviceInfo = require('react-native-device-info');
 const FBSDK = require('react-native-fbsdk');
 var code = '';
 var selected_index = 0;
+var num1Color = '#fff';
+var num2Color = '#fff';
+var num3Color = '#fff';
+var num4Color = '#fff';
 const {
   LoginManager,
   AccessToken,
@@ -63,7 +67,13 @@ class Verify extends Component {
       num2:null,
       num3:null,
       num4:null,
+      num1Color:'#ff0000',
+      num2Color:'#fff',
+      num3Color:'#fff',
+      num4Color:'#fff',
       selected_index:0,
+      selected:'#ff0000',
+      non_selected:'#fff'
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -85,7 +95,6 @@ class Verify extends Component {
   */
 
   codeInput(text){
-
     switch(selected_index){
       case 0:this.setState({num1:text});break;
       case 1:this.setState({num2:text});break;
@@ -93,6 +102,7 @@ class Verify extends Component {
       case 3:this.setState({num4:text});break;
     }
     selected_index++;
+    this._currentSelected(selected_index);
 
     // this.setState({
     //   num1:text[0]==null?0:text[0],
@@ -225,7 +235,7 @@ class Verify extends Component {
   _resendCallback(responseJson){
     console.log('responseJson:'+responseJson);
     if(responseJson.status=='success'){
-      alert('The SMS is resent please check!');
+      alert('The SMS code has been resent. Please check your SMS inbox.');
     }else{
       alert('Please Check the network');
       //alert(responseJson.error);
@@ -474,11 +484,47 @@ class Verify extends Component {
     }
   }
 
+  _currentSelected(index){
+    switch(index){
+      case 0:
+        this.setState({
+          num1Color:'#ff0000',
+          num2Color:'#fff',
+          num3Color:'#fff',
+          num4Color:'#fff',
+        });
+      break;
+      case 1:
+      this.setState({
+        num1Color:'#fff',
+        num2Color:'#ff0000',
+        num3Color:'#fff',
+        num4Color:'#fff',
+      });
+      break;
+      case 2:
+      this.setState({
+        num1Color:'#fff',
+        num2Color:'#fff',
+        num3Color:'#ff0000',
+        num4Color:'#fff',
+      });
+      break;
+      case 3:
+      this.setState({
+        num1Color:'#fff',
+        num2Color:'#fff',
+        num3Color:'#fff',
+        num4Color:'#ff0000',
+      });
+      break;
+    }
+  }
 
   render() {
+
     var self = this;
     var verifyButton;
-    console.log('sms type: '+this.props.smsType);
     if(this.props.smsType == 'reset_password'){
       verifyButton = <View>
         <View style={{paddingTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center',width:width}}>
@@ -501,31 +547,31 @@ class Verify extends Component {
     return (
       <View>
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
-      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
-        <Image source={require('../../Images/bg_onboarding.png')} style={{width:width,height:height,position:'absolute',top:0,left:0}}/>
+      <ScrollView style={styles.container} scrollEnabled={false}>
+
         <View style={{paddingTop:height*0.1,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>VERIFICATION</H1>
           <Text style={{color:'white'}}>We are sending a SMS with a code</Text>
           <Text style={{color:'white'}}>number. Please fill in the form with this</Text>
           <Text style={{color:'white'}}>code</Text>
-          <TextInput ref='inputHolder' autoFocus={true} style={{width:0,height:0,opacity:0}} keyboardType="numeric" onChangeText={(text) => this.codeInput(text)} onSubmitEditing={()=>this.submitCheck()}></TextInput>
+          <TextInput ref='inputHolder' autoFocus={true} style={{width:0,height:0,opacity:0}} keyboardType="numeric" onChangeText={(text) => this.codeInput(text)} onSubmitEditing={()=>this.submitCheck()} maxLength={1}></TextInput>
         </View>
         <View style={{paddingTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center',width:width,backgroundColor:'rgba(0,0,0,0)'}}>
-          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=0;}} style={{borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,alignItems:'center',justifyContent:'center'}}>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=0;this._currentSelected(selected_index);}} style={{borderWidth:1,borderColor:this.state.num1Color,borderRadius:4,width:50,height:50,alignItems:'center',justifyContent:'center'}}>
             <Text style={{fontSize:30,color:"#fff"}}>{this.state.num1?this.state.num1:0}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=1;}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=1;this._currentSelected(selected_index);}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:this.state.num2Color,borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
             <Text style={{fontSize:30,color:"#fff"}}>{this.state.num2?this.state.num2:0}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=2;}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=2;this._currentSelected(selected_index);}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:this.state.num3Color,borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
             <Text style={{fontSize:30,color:"#fff"}}>{this.state.num3?this.state.num3:0}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=3;}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
+          <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=3;this._currentSelected(selected_index);}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:this.state.num4Color,borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
             <Text style={{fontSize:30,color:"#fff"}}>{this.state.num4?this.state.num4:0}</Text>
           </TouchableOpacity>
         </View>
         {verifyButton}
-      </InputScrollView>
+      </ScrollView>
       </View>
     );
   }

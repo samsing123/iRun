@@ -39,6 +39,8 @@ const {
   ShareDialog,
 } = FBSDK;
 
+var Global = require('../Global');
+
 var testingFeed={
   "FeedList":[
     {
@@ -52,6 +54,7 @@ var count = 0;
 class FeedDetail extends Component {
   constructor(props){
     super(props);
+
     this.state={
       trueSwitchIsOn: false,
       category:'FOOD',
@@ -61,10 +64,15 @@ class FeedDetail extends Component {
       webViewHeight:2000,
       shareLinkContent:{
         contentType: 'link',
+        contentTitle:'title',
+        commonParameters: {
+          hashtag: '#'+Global.global_setting.facebook.tags[0]
+        },
         contentUrl: this.props.url
       },
       canScroll:false,
       arrow:'<',
+      share_icon_pos:208,
       htmlContent:"<p><a href=\"http:\/\/foreverneilyoung.tumblr.com\/ post\/6522738445\" target=\"_blank\">foreverneilyoung<\/a>: <\/p>\n<blockquote>\n<p><a href=\"http:\/\/watchmojo.tumblr.com\/ post\/6521201320\" target=\"_blank\">watchmojo<\/a>:<\/p>\n <blockquote>\n<p>Neil Young\u2019s live album \u201cA Treasure\ u201d is available today. To celebrate, we take a look at the life and career of the Canadian singer-songwriter. <\/p>\n<\/blockquote>\n<p>Neil 101 for you new fans out there.<\/p>\n<\/blockquote>\n<p><strong>If you don't know\/appreciate Neil Young's impressive body of work, this will help<\/strong><\/p><p><a href=\"http:\/\/foreverneilyoung.tumblr.com\/ post\/6522738445\" target=\"_blank\">foreverneilyoung<\/a>: <\/p>\n<blockquote>\n<p><a href=\"http:\/\/watchmojo.tumblr.com\/ post\/6521201320\" target=\"_blank\">watchmojo<\/a>:<\/p>\n <blockquote>\n<p>Neil Young\u2019s live album \u201cA Treasure\ u201d is available today. To celebrate, we take a look at the life and career of the Canadian singer-songwriter. <\/p>\n<\/blockquote>\n<p>Neil 101 for you new fans out there.<\/p>\n<\/blockquote>\n<p><strong>If you don't know\/appreciate Neil Young's impressive body of work, this will help<\/strong><\/p>",
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
@@ -81,6 +89,8 @@ class FeedDetail extends Component {
   */
   componentDidMount(){
     count=0;
+    console.log(this.props.content);
+
   }
   _onNavigationStateChange(navState) {
     count++;
@@ -99,10 +109,10 @@ class FeedDetail extends Component {
     var widthT = 0;
     var heightT = 0;
 
-    if(count<5){
+    if(count<3){
       if(Platform.OS!='ios'){
         content = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:height/2}}>
-          <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
+          <Spinner isVisible={true} size={80} type='Circle'/>
         </View>;
       }else{
         facebookBtn =
@@ -131,25 +141,19 @@ class FeedDetail extends Component {
           parallaxHeaderHeight={240}
           stickyHeaderHeight={60}
           onScroll={(e)=>{
-            this.refs.title1.measure((ox, oy, width, height, px, py) => {
-              if(py<=50){
-                this.setState({
-                  top_title:this.state.title
-                });
-              }else{
-                this.setState({
-                  top_title:this.state.category
-                });
-              }
+            var temp = 208 - e.nativeEvent.contentOffset.y;
+            if(temp<5){
+              temp=5;
+            }
+            this.setState({
+              share_icon_pos:temp,
             });
           }}
           renderForeground={() => (
            <View style={{ height: 240,width:width, flex: 1}}>
 
               <Image style={{height:240,width:width}} source={{uri:this.props.image}} />
-              <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',bottom:-24,right:16,zIndex:100}}>
-                <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
-              </View>
+
            </View>
           )}
           renderStickyHeader={() => (
@@ -160,7 +164,6 @@ class FeedDetail extends Component {
           )}>
           {content}
           <View style={{zIndex:101}}>
-            {facebookBtn}
             <View style={{ width:width,alignItems:'center',justifyContent:'center'}}>
               <View style={{width:width-36}}>
                 {tag}
@@ -181,6 +184,9 @@ class FeedDetail extends Component {
         <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
          <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
+        <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',top:this.state.share_icon_pos,right:16,zIndex:100}}>
+          <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
+        </View>
       </View>
     );
   }

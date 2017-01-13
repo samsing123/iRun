@@ -154,13 +154,13 @@ class RedeemSummary extends Component {
     if(Global.currentReward.type!=0){
       content = <View/>;
     }else{
-      content = <View>
+      content = <View style={{borderBottomWidth:1,borderBottomColor:'#F3F3F3'}}>
         <View style={{paddingTop:10,paddingLeft:20}}>
-          <Text style={{fontSize:14}}>Recipient Name</Text>
+          <Text style={{fontSize:14,fontWeight:'bold'}}>Recipient Name</Text>
           <Text style={{fontSize:18}}>{Global.currentReward.recipient_name}</Text>
         </View>
-        <View style={{paddingTop:10,paddingLeft:20}}>
-          <Text style={{fontSize:14}}>Recipient Postal Address</Text>
+        <View style={{paddingTop:10,paddingLeft:20,paddingBottom:20}}>
+          <Text style={{fontSize:14,fontWeight:'bold'}}>Recipient Postal Address</Text>
           <Text style={{fontSize:18}}>{Global.currentReward.address+', '+Global.currentReward.district}</Text>
         </View>
       </View>;
@@ -189,35 +189,35 @@ class RedeemSummary extends Component {
             </View>
           )}>
           <View style={{paddingTop:20,paddingLeft:20}}>
-            <Text style={{fontSize:24}}>{Global.currentReward.title}</Text>
-            <Text style={{fontSize:16}}>{Global.language.expiry_date}   {Util._changeDateFormat(Global.currentReward.expiry_date)}</Text>
+            <Text style={{fontSize:24,fontWeight:'bold'}}>{Global.currentReward.title}</Text>
+            <View style={{flexDirection:'row'}}><Text style={{fontWeight:'bold',fontSize:14}}>{Global.language.expiry_date}</Text><Text style={{fontSize:14,paddingLeft:20}}>{Util._changeDateFormat(Global.currentReward.expiry_date)}</Text></View>
             <View style={{flexDirection:'row',paddingTop:10}}>
-              <Image style={{height:16,width:16}} source={{uri:Global.currentReward.logo}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12}}>{Global.currentReward.company_name}</Text>
+              <Image style={{height:16,width:16}} source={{uri:Global.currentReward.logo}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12,fontWeight:'bold',paddingLeft:10}}>{Global.currentReward.company_name}</Text>
             </View>
           </View>
           <View style={{marginTop:10,marginLeft:20,marginRight:20,height:70,borderBottomWidth:1,borderBottomColor:'#F3F3F3',borderTopWidth:1,borderTopColor:'#F3F3F3',flexDirection:'row'}}>
             <View style={{flex:0.5}}>
-              <Text style={{fontSize:16}}>{Global.language.point}</Text>
+              <Text style={{fontSize:16,fontWeight:'bold'}}>{Global.language.point}</Text>
               <View style={{flexDirection:'row'}}>
                 <View style={{position:'relative',top:5}}>
-                  <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
+                  <Image style={{width:18,height:18,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
                 </View>
-                <Text style={{fontSize:20}}>{Global.currentReward.point}</Text>
+                <Text style={{fontSize:17,fontWeight:'bold',position:'relative',top:2,paddingLeft:10}}>{Global.currentReward.point}</Text>
               </View>
             </View>
             <View style={{flex:0.5}}>
-              <Text style={{fontSize:16}}>{Global.language.total_point}</Text>
+              <Text style={{fontSize:16,fontWeight:'bold'}}>{Global.language.total_point}</Text>
               <View style={{flexDirection:'row'}}>
-                <View style={{position:'relative',top:15}}>
-                  <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
+                <View style={{position:'relative',top:5}}>
+                  <Image style={{width:18,height:18,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
                 </View>
-                <Text style={{fontSize:32}}>{Global.currentReward.total_point}</Text>
+                <Text style={{fontSize:17,fontWeight:'bold',position:'relative',top:2,paddingLeft:10}}>{Global.currentReward.total_point}</Text>
               </View>
             </View>
           </View>
           {content}
 
-          <View style={{borderTopWidth:1,borderTopColor:'#F3F3F3',marginLeft:20,marginRight:20}}>
+          <View style={{marginLeft:20,marginRight:20,marginTop:20}}>
             <HTMLView
               value={Global.currentReward.tnc}
               stylesheet={{style2}}
