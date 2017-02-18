@@ -26,6 +26,7 @@ var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 var Global = require('../Global');
 import MusicElement from './MusicElement';
+import MusicFiles from 'react-native-get-music-files';
 var Spinner = require('react-native-spinkit');
 var totalMapTime = 0;
 var totalMusicNumber = 0;
@@ -48,7 +49,6 @@ class MusicList extends Component {
   componentDidMount(){
     //this._getFileRecursively('/sdcard/');
     offset=10;
-    console.log("Music number:"+Global.totalMusicNumber);
     tempArr = [];
     if(Global.totalMusicNumber==0){
       this.setState({
@@ -56,10 +56,8 @@ class MusicList extends Component {
         refresh:false,
       });
     }else{
-      this._getFileRecursively('/sdcard/');
+      this._getFileRecursively('/sdcard/Music/');
     }
-
-
   }
 
   _getTotalNumberMusicFile(path){

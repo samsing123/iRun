@@ -144,6 +144,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-get-music-files')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-code-push')
     compile project(':react-native-svg')

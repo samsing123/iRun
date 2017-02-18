@@ -173,8 +173,8 @@ class Tracking extends Component {
       }
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
-    GoogleAnalytics.trackScreenView('Home');
-    GoogleAnalytics.trackEvent('testcategory', 'testaction');
+    GoogleAnalytics.trackScreenView('Tracking');
+    GoogleAnalytics.trackEvent('Tracking Run', 'Start Run');
     this._loadingProgress = this._loadingProgress.bind(this);
     this._startKmTimer();
   }
@@ -265,8 +265,11 @@ class Tracking extends Component {
   componentWillMount(){
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: ()=> true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+           return gestureState.dx != 0 && gestureState.dy != 0;
+      },
       onPanResponderGrant: (e,gs)=>{
+        console.log(gs.dx+' '+gs.dy);
         var temp = {
           x:gs.dx,
           y:gs.dy,
@@ -353,7 +356,7 @@ class Tracking extends Component {
             cur_lat = location.latitude;
             cur_lng = location.longitude;
             acceleration = location.speed;
-            if(acceleration<30&&acceleration>0){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
+            if(acceleration>=2){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
               //is walking or not
               if(previousLats!=0&&previousLngs!=0){
                 this._calDistance(previousLats,previousLngs,location.latitude,location.longitude);
@@ -362,6 +365,8 @@ class Tracking extends Component {
               this._positionUpdate(location.latitude,location.longitude);
               previousLats = location.latitude;
               previousLngs = location.longitude;
+              var trackStr = location.latitude+' '+location.longitude;
+              GoogleAnalytics.trackEvent('CurrentPosition', trackStr);
             }else{
 
             }
@@ -475,7 +480,7 @@ class Tracking extends Component {
             cur_lat = location.latitude;
             cur_lng = location.longitude;
             acceleration = location.speed;
-            if(acceleration>30&&acceleration<0){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
+            if(acceleration>=2){ //acceleration>=walkingFilter change the if condition to this to use accelerator to check user
               //is walking or not
 
               if(previousLats!=0&&previousLngs!=0){
@@ -485,6 +490,8 @@ class Tracking extends Component {
               this._positionUpdate(location.latitude,location.longitude);
               previousLats = location.latitude;
               previousLngs = location.longitude;
+              var trackStr = location.latitude+' '+location.longitude;
+              GoogleAnalytics.trackEvent('CurrentPosition', trackStr);
             }
         }
     );
@@ -648,12 +655,13 @@ class Tracking extends Component {
   }
 
   _endRun(){
-    var polyline = Polyline.encode(polylineArr);
+    var polyline = Polyline.encode(Global.polylineArr);
     Location.stopUpdatingLocation();
     if(subscription!=null){
       subscription.remove();
       subscription=null;
     }
+    console.log(polyline);
     pathArr = Global.pathArr;
     Actions.map({
       path:pathArr,
@@ -992,7 +1000,6 @@ class Tracking extends Component {
 
     var left_icon = null;
     var right_icon = null;
-    console.log('check index of:'+this._getIconFromValue(left_value));
     switch(this._getIconFromValue(left_value)){
       case 'time':left_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:35,height:35,tintColor:'white'}} source={require('../../Images/ic_duration.png')} />
       break;
@@ -1011,6 +1018,7 @@ class Tracking extends Component {
     }
 
     return (
+
 
       <View style={styles.container} {...this._panResponder.panHandlers}>
       <MapView

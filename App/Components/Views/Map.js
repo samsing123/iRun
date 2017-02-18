@@ -18,7 +18,8 @@ import {
   Image,
   CameraRoll,
   Linking,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 var Tabs = require('react-native-tabs');
 const FBSDK = require('react-native-fbsdk');
@@ -774,7 +775,35 @@ class Map extends Component {
           },
           photos: [this.sharePhoto],
         };
-        return ShareDialog.show(this.shareLinkContent);
+        ShareDialog.show(this.shareLinkContent).then(function(result){
+          console.log(result);
+        }).catch((error) => {
+          console.log(error);
+          Alert.alert(
+            'No facebook app deteced',
+            'You need to install facebook app before you share image',
+            [
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+              {text: 'OK', onPress: () => Linking.openURL('https://play.google.com/store/apps/details?id=com.facebook.katana')},
+            ],
+          );
+        });
+        /*
+        ShareDialog.canShow(this.shareLinkContent).then(
+          function(canShow) {
+            if (canShow) {
+              
+            }
+          }
+        ).then(
+          function(result) {
+            
+          },
+          function(error) {
+            Linking.openURL('https://play.google.com/store/apps/details?id=com.facebook.katana');
+          }
+        );
+        */
         //CameraRoll.saveToCameraRoll(this.sharePhoto.imageUrl,"photo").then((uri)=>{this.igUri = uri;});
       },
       error => console.log("Oops, snapshot failed", error)
@@ -879,9 +908,16 @@ class Map extends Component {
   }
   _registerCallback(responseJson){
     if(responseJson.status='success'){
-      this.setState({
-        point:responseJson.response.points
-      });
+      if(typeof responseJson.response.points !== 'undefined'){
+        this.setState({
+          point:responseJson.response.points
+        });
+      }else{
+        this.setState({
+          point:0
+        });
+      }
+      
       current_id = responseJson.response.run_id;
       RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
         format: "jpg",

@@ -248,6 +248,13 @@ class Profile extends Component {
   _requestCallback(responseJson){
     Global.user_profile = responseJson.response;
 
+    for(var key in Global.user_profile){
+      if(Global.user_profile[key]===null){
+        Global.user_profile[key] = '';
+      }
+      
+    }
+
     let data = {
       method: 'GET',
       headers: {

@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from "react";
-import {Navigator, Text, View, BackAndroid, ToastAndroid,StatusBar,TouchableOpacity,AsyncStorage,Image,Dimensions} from "react-native";
+import {Navigator, Text, View, BackAndroid, ToastAndroid,StatusBar,TouchableOpacity,AsyncStorage,Image,Dimensions,Alert} from "react-native";
 import {Scene, Router, Schema, Actions, Animations, TabBar,Modal} from "react-native-router-flux";
 import AppEventEmitter from "../Services/AppEventEmitter";
 import SideMenu from "./Controls/SideMenu";
@@ -409,8 +409,15 @@ export default class RootRouter extends Component {
                 return true;
             }
             catch (err) {
-                BackAndroid.exitApp();
-                return true;
+              Alert.alert(
+                'You are going to quit the app',
+                'Are you sure?',
+                [
+                  {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                  {text: 'OK', onPress: () => BackAndroid.exitApp()},
+                ],
+              );
+              return true;
             }
         });
 

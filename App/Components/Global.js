@@ -279,7 +279,7 @@ var status_bar = null;
   />;
 var navbarHeight = Platform.OS === 'ios' ? 64 : 54;
 var Global = {
-    version:'v1.1.21', // v1.2.1
+    version:'v1.1.23', // v1.2.1
     isLogin:false,
     serverHost:serverHost,
     serverDomain:'',

@@ -17,7 +17,8 @@ import {
   Dimensions,
   AsyncStorage,
   DeviceEventEmitter,
-  Switch
+  Switch,
+  Alert
 } from 'react-native';
 import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -399,7 +400,7 @@ class Intro extends Component {
     AppEventEmitter.addListener('overlayAlert', ()=>{this._openAlert()});
     AppEventEmitter.addListener('goToHome',()=>{this._goToHome()});
     if(Platform.OS!='ios'){
-      this._getTotalNumberMusicFile('/sdcard/');
+      this._getTotalNumberMusicFile('/sdcard/Music/');
     }
     if(this.props.fitnesstracker){
       this.refs.fitnesstrackerAlert.open();
@@ -659,6 +660,7 @@ class Intro extends Component {
           <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t5c}}>{Global.language.more}</Text></View>
       </Tabs>
     }
+    
 
     return (
       <View style={styles.container}>
@@ -668,6 +670,7 @@ class Intro extends Component {
         <AvailiblePointAlert ref={(alert) => { this.pointAlert = alert; }} style={{backgroundColor:'white'}}/>
         <FitnessAlert ref="fitnesstrackerAlert" style={{backgroundColor:'white'}} agree={()=>{this._fitnessTrackerAgree()}} cancel={()=>{this._fitnessTrackerCancel()}}/>
       </View>
+      
     );
   }
 }

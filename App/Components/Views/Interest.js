@@ -140,7 +140,10 @@ class Interest extends Component {
     temp.push(findNodeHandle(this.refs.eamil));
     temp.push(findNodeHandle(this.refs.password));
     this._interestSelected = this._interestSelected.bind(this);
-    this._selectInterest();
+    if(typeof this.props.int_arr !== 'undefined'){
+      this._selectInterest();
+    }
+    
   }
   /*
   static renderNavigationBar(props){

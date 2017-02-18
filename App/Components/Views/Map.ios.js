@@ -31,6 +31,7 @@ import CustomCallout from './CustomCallout';
 const { width, height } = Dimensions.get('window');
 import {Actions,ActionConst} from "react-native-router-flux";
 import ImageCropper from 'react-native-image-crop-picker';
+import GoogleAnalytics from 'react-native-google-analytics-bridge';
 
 const ASPECT_RATIO = width / height;
 const LATITUDE = 22.2595474;
@@ -179,6 +180,7 @@ class Map extends Component {
       polylineCoords:this.props.path,
       camera_image:false,
     });
+    GoogleAnalytics.trackEvent('EndRun',this.props.polyline);
     this.takeSnapshot();
     //this._sendEndRunRequest();
     //this.getMapImage();
@@ -299,6 +301,8 @@ class Map extends Component {
     this.getDirections().then((result) => {
       var lineCoordinates = this._createRouteCoordinates(result);
       var string = JSON.stringify(lineCoordinates);
+      GoogleAnalytics.setTrackerId('UA-84489321-1');
+      GoogleAnalytics.trackEvent('EngRun', lineCoordinates);
       this.setState({polylineCoords:lineCoordinates});
     });
 
