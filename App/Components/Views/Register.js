@@ -18,7 +18,10 @@ import {
   ScrollView,
   findNodeHandle,
   Switch,
-  AsyncStorage
+  AsyncStorage,
+  TouchableWithoutFeedback,
+  BackAndroid,
+  Keyboard
 } from 'react-native';
 import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -29,6 +32,8 @@ import {Header,Button,H1,Input,Content} from 'native-base';
 import KeyboardHandler from '../Controls/KeyboardHandler';
 import InputScrollView from '../Controls/InputScrollView';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
+
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -46,8 +51,8 @@ const {
 var Global = require('../Global');
 import Picker from 'react-native-picker';
 let pickerData = [
-  ['01','02','03','04','05','06','07','08','09','10','11','12'],
-  ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
+  ['Month','01','02','03','04','05','06','07','08','09','10','11','12'],
+  ['Day','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
 ];
 function createDateData2(){
     let date = [];
@@ -122,6 +127,7 @@ class Register extends Component {
       mobile_no:'',
       birthday:'Birthday(mm/dd)',
       birthday_data:['01','01'],
+      isLoading:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -130,7 +136,7 @@ class Register extends Component {
 
   _showDatePicker() {
       Picker.init({
-          pickerData: createDateData(),
+          pickerData: pickerData,
           selectedValue: this.state.birthday_data,
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
@@ -157,6 +163,11 @@ class Register extends Component {
       });
       Picker.show();
   }
+  _hideDatePicker(){
+    Picker.hide();
+  }
+
+
   componentDidMount(){
     temp.push(findNodeHandle(this.refs.eamil));
     temp.push(findNodeHandle(this.refs.password));
@@ -194,6 +205,8 @@ class Register extends Component {
     if(Global._vaildateSelectBlank(this.state.birthday,'birthday')){
       return;
     }
+
+    this.setState({isLoading:true});
     this._sendRegisterRequest();
   }
 
@@ -233,6 +246,7 @@ class Register extends Component {
       Actions.verify({smsType:'register'});
     }else{
       alert(responseJson.response.error);
+      this.setState({isLoading:false});
     }
   }
   async _saveLoginInformation(){
@@ -246,9 +260,32 @@ class Register extends Component {
       }
   }
 
+  componentWillMount(){
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+  }
+
+  componentWillUnmount(){
+    this.keyboardDidShowListener.remove();
+  }
+
+  _keyboardDidShow(){
+    Picker.hide();
+  }
+
   render() {
     var self = this;
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+        try {
+          Picker.hide();
+          return true;
+        }
+        catch (err) {
+          Action.pop();
+          return true;
+        }
+    });
     return (
+      <TouchableWithoutFeedback onPress={()=>{this._hideDatePicker()}}>
       <View style={{flex:1}}>
       <Image source={require('../../Images/bg_onboarding.png')} resizeMode={Image.resizeMode.cover} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
       <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
@@ -283,7 +320,9 @@ class Register extends Component {
                 checkboxStyle={{width:16,height:16,tintColor:'white'}}
                 checked={this.state.checked}
                 onChange={(checked) => this.setState({checked:checked})}
+                
               />
+              <TouchableWithoutFeedback>
               <View style={{flexDirection:'column',marginLeft:5}}>
                 <View style={{flexDirection:'row',width:width-40}}>
                   <Text style={{color:'white',fontSize:10}}>
@@ -291,6 +330,7 @@ class Register extends Component {
                   </Text>
                 </View>
               </View>
+              </TouchableWithoutFeedback>
             </View>
             <View style={{flexDirection:'row',width:width-40,position:'relative',top:-5}}>
               <Text style={{color:'white',fontSize:10}}>
@@ -306,7 +346,16 @@ class Register extends Component {
           </View>
         </View>
       </InputScrollView>
+      <OrientationLoadingOverlay
+          visible={this.state.isLoading}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading..."
+          />
       </View>
+      
+      </TouchableWithoutFeedback>
     );
   }
 }

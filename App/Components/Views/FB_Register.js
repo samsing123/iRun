@@ -18,7 +18,10 @@ import {
   ScrollView,
   findNodeHandle,
   Platform,
-  Switch
+  Switch,
+  TouchableWithoutFeedback,
+  Keyboard,
+  BackAndroid
 } from 'react-native';
 import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -61,8 +64,8 @@ var options = {
 var Global = require('../Global');
 var Util = require('../Util');
 let pickerData = [
-  ['01','02','03','04','05','06','07','08','09','10','11','12'],
-  ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
+  ['Month','01','02','03','04','05','06','07','08','09','10','11','12'],
+  ['Day','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
 ];
 function createDateData(){
     let month = [{'Month':['Day']}];
@@ -124,7 +127,7 @@ class FB_Register extends Component {
   }
   _showDatePicker() {
       Picker.init({
-          pickerData: createDateData(),
+          pickerData: pickerData,
           selectedValue: ['01', '01'],
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
@@ -212,6 +215,18 @@ class FB_Register extends Component {
      });
   }
 
+  componentWillMount(){
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+  }
+
+  componentWillUnmount(){
+    this.keyboardDidShowListener.remove();
+  }
+
+  _keyboardDidShow(){
+    Picker.hide();
+  }
+
   _vaildateFormSubmit(){
     if(Global._vaildateInputBlank(this.state.display_name,'display name')
     ||Global._vaildateInputFormat(this.state.display_name,'display name','chinese+english',20,3)){
@@ -271,11 +286,25 @@ class FB_Register extends Component {
     return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
   }
   */
+  _hideDatePicker(){
+    Picker.hide();
+  }
+
 
   render() {
     var self = this;
     var photoImage;
     var flex = 0;
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+        try {
+          Picker.hide();
+          return true;
+        }
+        catch (err) {
+          Action.pop();
+          return true;
+        }
+    });
     if(Platform.OS=='ios'){
       flex = 1;
     }

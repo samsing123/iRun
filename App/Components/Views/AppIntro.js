@@ -68,7 +68,7 @@ class AppIntros extends Component {
       showSkipButton={false}
       showDoneButton={true}
       onDoneBtnClick={this.doneBtnHandle}
-      doneBtnLabel="Get Started">
+      doneBtnLabel="">
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
             <View style={{position:'absolute',bottom:0,left:20}}>
@@ -118,9 +118,14 @@ class AppIntros extends Component {
             <View style={{paddingTop:40}}>
               <Text style={{fontSize:24,alignSelf:'center',color:'white'}}>EVENTS</Text>
               <Text style={{fontSize:14,alignSelf:'center',paddingLeft:15,color:'white'}}>Join our "iRun for Love" event to give the society a helping hand!</Text>
+              <View style={{backgroundColor:'#148BCD',alignItems:'center',position:'absolute',bottom:-100}}>
+                <Text>Get Started</Text>
+              </View>
             </View>
+            
           </View>
         </View>
+        
       </AppIntro>
     );
   }

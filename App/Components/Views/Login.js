@@ -51,6 +51,7 @@ var DeviceInfo = require('react-native-device-info');
 var auth_token = '';
 var device_id = DeviceInfo.getUniqueID();
 import OneSignal from 'react-native-onesignal'; // Import package from node modules
+
 function _responseInfoCallback(error: ?Object, result: ?Object) {
 
   if (error) {
@@ -269,7 +270,11 @@ class Login extends Component {
     ||Global._vaildateInputFormat(this.state.password,'password','num+alpha+spec',12,6)){
       return;
     }
-    this._sendLoginRequest();
+    try {
+      this._sendLoginRequest();
+    } catch(error) {
+      tracker.trackException(error.message, false);
+    }
   }
   loginWithFacebook(){
     LoginManager.logInWithReadPermissions(['public_profile','email']).then(
@@ -305,48 +310,51 @@ class Login extends Component {
       }
     );
   }
+
+ 
+
   render() {
     var self = this;
     return (
-      <View style={{flex:1}}>
-      <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
-      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false} >
+        <View style={{flex:1}}>
+        <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
+        <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false} >
 
-        <View style={{paddingTop:height*0.2,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
-          <H1 style={{color:"white",fontWeight:'bold'}}>{Global.language.login}</H1>
-          <Text style={{color:'white'}}>Login with facebook or your email address</Text>
-          <Text style={{color:'white'}}>before starting.</Text>
+          <View style={{paddingTop:height*0.2,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+            <H1 style={{color:"white",fontWeight:'bold'}}>{Global.language.login}</H1>
+            <Text style={{color:'white'}}>Login with facebook or your email address</Text>
+            <Text style={{color:'white'}}>before starting.</Text>
+          </View>
+          <View style={{paddingTop:height*0.05,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+            <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
+              <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="email" onChangeText={(text) => this.setState({email:text})}></TextInput>
+            </View>
+            <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10,backgroundColor:'rgba(0,0,0,0)'}}>
+              <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Password" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({password:text})}></TextInput>
+            </View>
+
+            <View style={{paddingTop:20,backgroundColor:'rgba(0,0,0,0)'}}>
+              <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN</Text></Button>
+            </View>
+            <View style={{width:width,paddingTop:10}}>
+              <TouchableOpacity onPress={()=>{Actions.forgotpassword()}} style={{width:width,alignItems:'center',justifyContent:'center'}}><Text style={{textDecorationLine:'underline',color:"white"}}>Forgotten your password?</Text></TouchableOpacity>
+            </View>
+            <View style={{width:width,alignItems:'center',paddingTop:30,paddingBottom:30}}>
+              <Text style={{color:'white'}}>OR</Text>
+            </View>
+            <View style={{paddingTop:12,backgroundColor:'rgba(0,0,0,0)'}}>
+              <Button onPress={()=>{self.loginWithFacebook()}} style={{backgroundColor:'rgba(70,109,215,1)',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN WITH FACEBOOK</Text></Button>
+            </View>
+
+          </View>
+
+        </InputScrollView>
+        <TouchableOpacity style={{position:'absolute',bottom:0}} onPress={()=>{Actions.pop()}}>
+          <View style={{backgroundColor:'#148BCD',width:width,height:40,alignItems:'center',justifyContent:'center'}}>
+            <Text style={{color:'white'}}>Dont have an Account? Register</Text>
+          </View>
+        </TouchableOpacity>
         </View>
-        <View style={{paddingTop:height*0.05,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
-          <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="email" onChangeText={(text) => this.setState({email:text})}></TextInput>
-          </View>
-          <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10,backgroundColor:'rgba(0,0,0,0)'}}>
-            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Password" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({password:text})}></TextInput>
-          </View>
-
-          <View style={{paddingTop:20,backgroundColor:'rgba(0,0,0,0)'}}>
-            <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN</Text></Button>
-          </View>
-          <View style={{width:width,paddingTop:10}}>
-            <TouchableOpacity onPress={()=>{Actions.forgotpassword()}} style={{width:width,alignItems:'center',justifyContent:'center'}}><Text style={{textDecorationLine:'underline',color:"white"}}>Forgotten your password?</Text></TouchableOpacity>
-          </View>
-          <View style={{width:width,alignItems:'center',paddingTop:30,paddingBottom:30}}>
-            <Text style={{color:'white'}}>OR</Text>
-          </View>
-          <View style={{paddingTop:12,backgroundColor:'rgba(0,0,0,0)'}}>
-            <Button onPress={()=>{self.loginWithFacebook()}} style={{backgroundColor:'rgba(70,109,215,1)',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN WITH FACEBOOK</Text></Button>
-          </View>
-
-        </View>
-
-      </InputScrollView>
-      <TouchableOpacity style={{position:'absolute',bottom:0}} onPress={()=>{Actions.pop()}}>
-        <View style={{backgroundColor:'#148BCD',width:width,height:40,alignItems:'center',justifyContent:'center'}}>
-          <Text style={{color:'white'}}>Dont have an Account? Register</Text>
-        </View>
-      </TouchableOpacity>
-      </View>
     );
   }
 }

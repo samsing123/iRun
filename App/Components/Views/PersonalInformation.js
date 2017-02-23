@@ -39,14 +39,18 @@ function createAgeRange(){
 }
 let ageArr = ['below 15','15-20','20-25','25-30','30-35','35-40','40-45','45-50','50-55','55-60','60 or above'];
 let userWeight = [];
-for(var i=40;i<140;i++){
+userWeight.push('below 30 KG');
+for(var i=30;i<101;i++){
   userWeight.push(i+' KG');
 }
+userWeight.push('above 100 KG');
 
 let userHeight = [];
-for(var i=150;i<251;i++){
+userHeight.push('below 110 CM');
+for(var i=110;i<201;i++){
   userHeight.push(i+' CM');
 }
+userHeight.push('above 200 CM');
 
 class PersonalInformation extends Component {
   constructor(props){

@@ -179,8 +179,8 @@ class Intro extends Component {
         })}} key={i} style={{borderRadius:4,paddingBottom:2,alignItems:'center',justifyContent:'center'}}>
           <Image source={{uri:news.image}} style={{borderRadius:4,height:230,width:width}} shouldComponentUpdate={()=>{return false;}}/>
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
-            <Text style={{fontSize:14,color:'white',padding:8}}>{news.tag}</Text>
-            <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{Util._removeSymbol(news.title)}</Text>
+            <Text style={{fontSize:14,color:'white',padding:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.tag}</Text>
+            <Text style={{fontSize:20,color:'white',paddingLeft:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{Util._removeSymbol(news.title)}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -205,8 +205,8 @@ class Intro extends Component {
         )}} key={i}>
           {image}
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
-            <Text style={{fontSize:14,color:'white',padding:8}}>{news.date}</Text>
-            <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{news.title}</Text>
+            <Text style={{fontSize:14,color:'white',padding:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.date}</Text>
+            <Text style={{fontSize:20,color:'white',paddingLeft:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.title}</Text>
           </View>
         </TouchableOpacity>
       )
@@ -688,25 +688,25 @@ const styles = StyleSheet.create({
   },
   t1:{
     fontSize:30,
-    height:32,
+    height:40,
     fontWeight:'bold',
     color:'white',
   },
   t2:{
     fontSize:30,
-    height:32,
+    height:40,
     fontWeight:'bold',
     color:'white',
     position:'relative',
-    top:-10,
+    top:0,
   },
   t3:{
     fontSize:30,
-    height:32,
+    height:40,
     fontWeight:'bold',
     color:'white',
     position:'relative',
-    top:-20
+    top:10
   },
 
   welcome: {
