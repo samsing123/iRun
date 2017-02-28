@@ -977,10 +977,6 @@ class Tracking extends Component {
         followsUserLocation={true}
       >
       </MapView>
-        <View style={{position:'relative',top:0,left:0}}>
-          <Text>position: {cur_lat}-{cur_lng} </Text>
-          <Text>acceleration:{acceleration}</Text>
-        </View>
 
         <View style={{alignItems:'center',width:width}}>
           <Text style={{fontSize:115,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:35}}>{main_value}</Text>

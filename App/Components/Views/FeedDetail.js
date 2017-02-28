@@ -51,6 +51,8 @@ var testingFeed={
   ]
 };
 var count = 0;
+
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 class FeedDetail extends Component {
   constructor(props){
     super(props);
@@ -101,6 +103,29 @@ class FeedDetail extends Component {
     }
 
   }
+
+  onSwipeLeft(gestureState) {
+    alert('You swiped left!');
+  }
+
+  onSwipe(gestureName, gestureState) {
+    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    this.setState({gestureName: gestureName});
+    switch (gestureName) {
+      case SWIPE_UP:
+        alert('You swiped up!');
+        break;
+      case SWIPE_DOWN:
+        alert('You swiped down!');
+        break;
+      case SWIPE_LEFT:
+        alert('You swiped left!');
+        break;
+      case SWIPE_RIGHT:
+        alert('You swiped right!');
+        break;
+    }
+  }
   render() {
     var self = this;
     var content=<View/>;
@@ -128,7 +153,9 @@ class FeedDetail extends Component {
       tag = <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,paddingTop:18,fontWeight:'bold'}}>{this.props.tag}</Text>;
     }
     return (
-      <View style={styles.container}>
+      <GestureRecognizer
+      onSwipe={(direction, state) => this.onSwipe(direction, state)}
+      style={styles.container}>
         <StatusBar
            backgroundColor="rgba(0,0,0,0)"
            barStyle="light-content"
@@ -187,7 +214,7 @@ class FeedDetail extends Component {
         <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',top:this.state.share_icon_pos,right:16,zIndex:100}}>
           <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
         </View>
-      </View>
+      </GestureRecognizer>
     );
   }
 }

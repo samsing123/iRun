@@ -426,7 +426,9 @@ export default class RootRouter extends Component {
         // });
         // this maybe casuse the blank page in getting the error from the api
         // this cause the initial page will not refresh when the loading is run once
-
+        //is_first
+        //is_login
+        //is_frontpage
         const scenes = Actions.create(
             <Scene key="scene">
                 <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>

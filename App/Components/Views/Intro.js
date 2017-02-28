@@ -177,7 +177,11 @@ class Intro extends Component {
           tag:news.tag,
           url:news.url
         })}} key={i} style={{borderRadius:4,paddingBottom:2,alignItems:'center',justifyContent:'center'}}>
-          <Image source={{uri:news.image}} style={{borderRadius:4,height:230,width:width}} shouldComponentUpdate={()=>{return false;}}/>
+
+          <Image source={{uri:news.image}} style={{borderRadius:4,height:230,width:width}} shouldComponentUpdate={()=>{return false;}}>
+            <Image source={require('../../Images/gradient.png')} style={{height:230,width:width}}/>
+          </Image>
+
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
             <Text style={{fontSize:14,color:'white',padding:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.tag}</Text>
             <Text style={{fontSize:20,color:'white',paddingLeft:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{Util._removeSymbol(news.title)}</Text>
@@ -190,7 +194,10 @@ class Intro extends Component {
     return Global.eventArr.map(function(news, i){
       var image;
       if(news.image!=''){
-        image = <Image source={{uri:news.image}} style={{height:230,width:width}} shouldComponentUpdate={()=>{return false;}} />
+        image =
+        <Image source={{uri:news.image}} style={{height:230,width:width}} shouldComponentUpdate={()=>{return false;}}>
+          <Image source={require('../../Images/gradient.png')} style={{height:230,width:width}}/>
+        </Image>
       }else{
         image = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
           <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
@@ -452,16 +459,7 @@ class Intro extends Component {
       </View>;
       var last_run;
       if(Global.run_history.length==0){
-          last_run = <View style={{width:width,flexDirection:'row'}}>
-            <View style={{paddingLeft:15,flexDirection:'column'}}>
-              <Text style={{paddingTop:15,fontSize:14,color:'rgba(155,155,155,1)'}}>LAST RUN</Text>
-              <View style={{flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
-                <Text style={{fontSize:48,color:'rgba(155,155,155,1)',position:'relative',top:-10}}>No Data</Text>
-                <Text style={{fontSize:20,color:'rgba(155,155,155,1)',paddingLeft:4,paddingTop:18}}></Text>
-              </View>
-              <Text style={{fontSize:14,color:'rgba(155,155,155,1)',position:'relative',top:-17}}></Text>
-            </View>
-          </View>;
+          last_run = <View></View>;
       }else{
         last_run = <View style={{width:width,flexDirection:'row'}}>
           <View style={{paddingLeft:15,flexDirection:'column'}}>
@@ -660,7 +658,7 @@ class Intro extends Component {
           <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image><Text style={{fontSize:8,color:this.state.t5c}}>{Global.language.more}</Text></View>
       </Tabs>
     }
-    
+
 
     return (
       <View style={styles.container}>
@@ -670,7 +668,7 @@ class Intro extends Component {
         <AvailiblePointAlert ref={(alert) => { this.pointAlert = alert; }} style={{backgroundColor:'white'}}/>
         <FitnessAlert ref="fitnesstrackerAlert" style={{backgroundColor:'white'}} agree={()=>{this._fitnessTrackerAgree()}} cancel={()=>{this._fitnessTrackerCancel()}}/>
       </View>
-      
+
     );
   }
 }

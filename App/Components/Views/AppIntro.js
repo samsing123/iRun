@@ -1,17 +1,60 @@
 import React, { Component } from 'react';
-import { AppRegistry, Alert,View,Text,StyleSheet,Dimensions,Image } from 'react-native';
+import { AppRegistry, Alert,View,Text,StyleSheet,Dimensions,Image,TouchableOpacity } from 'react-native';
 import AppIntro from 'react-native-app-intro';
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 import {Actions} from "react-native-router-flux";
+import ImageSequence from 'react-native-image-sequence';
+
+const images = [
+  require('../../Images/running_image/normal_female_00000.png'),
+  require('../../Images/running_image/normal_female_00001.png'),
+  require('../../Images/running_image/normal_female_00002.png'),
+  require('../../Images/running_image/normal_female_00003.png'),
+  require('../../Images/running_image/normal_female_00004.png'),
+  require('../../Images/running_image/normal_female_00005.png'),
+  require('../../Images/running_image/normal_female_00006.png'),
+  require('../../Images/running_image/normal_female_00007.png'),
+  require('../../Images/running_image/normal_female_00008.png'),
+  require('../../Images/running_image/normal_female_00009.png'),
+
+  require('../../Images/running_image/normal_female_00010.png'),
+  require('../../Images/running_image/normal_female_00011.png'),
+  require('../../Images/running_image/normal_female_00012.png'),
+  require('../../Images/running_image/normal_female_00013.png'),
+  require('../../Images/running_image/normal_female_00014.png'),
+  require('../../Images/running_image/normal_female_00015.png'),
+  require('../../Images/running_image/normal_female_00016.png'),
+  require('../../Images/running_image/normal_female_00017.png'),
+  require('../../Images/running_image/normal_female_00018.png'),
+  require('../../Images/running_image/normal_female_00019.png'),
+
+  require('../../Images/running_image/normal_female_00020.png'),
+  require('../../Images/running_image/normal_female_00021.png'),
+  require('../../Images/running_image/normal_female_00022.png'),
+  require('../../Images/running_image/normal_female_00023.png'),
+  require('../../Images/running_image/normal_female_00024.png'),
+  require('../../Images/running_image/normal_female_00025.png'),
+];
 
 
 class AppIntros extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      showDot:true,
+      nextBtn:'>',
+      imageLeft:0
+    }
+  }
   onSkipBtnHandle = (index) => {
     Alert.alert('Skip');
     console.log(index);
   }
   doneBtnHandle = () => {
+    Actions.frontpage();
+  }
+  getStarted(){
     Actions.frontpage();
   }
   nextBtnHandle = (index) => {
@@ -20,6 +63,13 @@ class AppIntros extends Component {
   }
   onSlideChangeHandle = (index, total) => {
     console.log(index, total);
+  }
+  _renderGetStarted(){
+    if(!this.state.showDot){
+      return <TouchableOpacity onPress={()=>{this.getStarted()}} style={{backgroundColor:'#148BCD',alignItems:'center',position:'absolute',bottom:50,width:width}}>
+        <Text style={{color:'#ffffff',fontSize:24,fontWeight:'bold'}}>Get Started</Text>
+      </TouchableOpacity>;
+    }
   }
   render() {
     const pageArray = [{
@@ -64,16 +114,22 @@ class AppIntros extends Component {
       level: 10,
     }];
     return (
+      <View>
+      <ImageSequence
+        images={images}
+        startFrameIndex={0}
+        style={{width: 150, height: 150,position:'absolute',top:height*0.25,left:this.state.imageLeft}} />
       <AppIntro
       showSkipButton={false}
       showDoneButton={true}
       onDoneBtnClick={this.doneBtnHandle}
-      doneBtnLabel="">
+      showDots={this.state.showDot}
+      nextBtnLabel={this.state.nextBtn}
+      doneBtnLabel=""
+      onSlideChange={(index,total)=>{this.setState({imageLeft:index*40});if(index==3){this.setState({showDot:false,nextBtn:''})}}}>
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
-            <View style={{position:'absolute',bottom:0,left:20}}>
-              <Image source={require('../../Images/run_female.png')} style={{width:40,height:80}}/>
-            </View>
+
           </View>
           <View style={{height:height*0.5,backgroundColor:'#148BCD',alignItems:'center'}}>
             <View style={{paddingTop:40}}>
@@ -84,9 +140,7 @@ class AppIntros extends Component {
         </View>
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
-            <View style={{position:'absolute',bottom:0,left:60}}>
-              <Image source={require('../../Images/run_female.png')} style={{width:40,height:80}}/>
-            </View>
+
           </View>
           <View style={{height:height*0.5,backgroundColor:'#148BCD',alignItems:'center'}}>
             <View style={{paddingTop:40}}>
@@ -97,9 +151,7 @@ class AppIntros extends Component {
         </View>
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
-            <View style={{position:'absolute',bottom:0,left:100}}>
-              <Image source={require('../../Images/run_female.png')} style={{width:40,height:80}}/>
-            </View>
+
           </View>
           <View style={{height:height*0.5,backgroundColor:'#148BCD',alignItems:'center'}}>
             <View style={{paddingTop:40}}>
@@ -110,23 +162,20 @@ class AppIntros extends Component {
         </View>
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
-            <View style={{position:'absolute',bottom:0,left:140}}>
-              <Image source={require('../../Images/run_female.png')} style={{width:40,height:80}}/>
-            </View>
+
           </View>
           <View style={{height:height*0.5,backgroundColor:'#148BCD',alignItems:'center'}}>
             <View style={{paddingTop:40}}>
               <Text style={{fontSize:24,alignSelf:'center',color:'white'}}>EVENTS</Text>
               <Text style={{fontSize:14,alignSelf:'center',paddingLeft:15,color:'white'}}>Join our "iRun for Love" event to give the society a helping hand!</Text>
-              <View style={{backgroundColor:'#148BCD',alignItems:'center',position:'absolute',bottom:-100}}>
-                <Text>Get Started</Text>
-              </View>
+
             </View>
-            
           </View>
         </View>
-        
+
       </AppIntro>
+      {this._renderGetStarted()}
+      </View>
     );
   }
 }

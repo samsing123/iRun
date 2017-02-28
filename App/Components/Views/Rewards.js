@@ -503,12 +503,12 @@ class Rewards extends Component {
       <View style={styles.container}>
         {title}
 
-        {this.state.is_run_now?<View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
+        {this.state.is_run_now?<TouchableOpacity onPress={()=>{this.openAlert()}} style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
             <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>{Global.language.avail_point}</Text>
-            <TouchableOpacity onPress={()=>{this.openAlert()}} style={{paddingLeft:10}} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+            <View style={{paddingLeft:10}} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
               <Image source={require('../../Images/iBtn.png')} style={{width:16,height:16}}/>
-            </TouchableOpacity>
+            </View>
           </View>
           <View style={{flexDirection:'row'}}>
             <View style={{position:'relative',top:2}}>
@@ -518,7 +518,7 @@ class Rewards extends Component {
               {this.state.availPoint}
             </Text>
           </View>
-        </View>:<View/>}
+        </TouchableOpacity>:<View/>}
 
         <View style={{height:height-225,width:width}}>
           <ScrollView componentDidMount={()=>{this.scrollTo({x:0,y:0,animated:true})}} ref={(scrollView)=>{_scrollView = scrollView}}>

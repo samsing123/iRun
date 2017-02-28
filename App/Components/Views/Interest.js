@@ -143,7 +143,7 @@ class Interest extends Component {
     if(typeof this.props.int_arr !== 'undefined'){
       this._selectInterest();
     }
-    
+
   }
   /*
   static renderNavigationBar(props){
@@ -257,6 +257,7 @@ class Interest extends Component {
           t1:styles.selectedBack,
         });
         this.interestArr.push('lifestyle');
+
       }
       break;
       case 2:
@@ -324,6 +325,7 @@ class Interest extends Component {
 
   _setInterestForProfileEditing(){
     Global.tempInterest = this.interestArr;
+    Global.user_profile.interest = this.interestArr;
     Actions.pop();
   }
 

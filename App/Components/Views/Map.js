@@ -792,12 +792,12 @@ class Map extends Component {
         ShareDialog.canShow(this.shareLinkContent).then(
           function(canShow) {
             if (canShow) {
-              
+
             }
           }
         ).then(
           function(result) {
-            
+
           },
           function(error) {
             Linking.openURL('https://play.google.com/store/apps/details?id=com.facebook.katana');
@@ -917,7 +917,7 @@ class Map extends Component {
           point:0
         });
       }
-      
+
       current_id = responseJson.response.run_id;
       RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
         format: "jpg",
@@ -1057,7 +1057,7 @@ class Map extends Component {
         </View>
       </TouchableOpacity>
       <View style={{alignItems:'center',justifyContent:'center',width:width,flexDirection:'row'}}>
-        <TextInput onSubmitEditing={() => this.refs['noteInput'].blur()} underlineColorAndroid="rgba(0,0,0,0)" ref="noteInput" placeholder="Note" style={{width:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})} value={this.state.note}/>
+        <TextInput onSubmitEditing={() => this.refs['noteInput'].blur()} underlineColorAndroid="rgba(0,0,0,0)" ref="noteInput" placeholder="NOTES" style={{width:width,fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center'}} onChangeText={(text) => this.setState({note:text})} value={this.state.note}/>
         {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'relative',right:width/2-20}}/>:null}
       </View>
       <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>

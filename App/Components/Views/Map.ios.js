@@ -813,7 +813,7 @@ class Map extends Component {
         </View>
       </TouchableOpacity>
       <View style={{marginTop:20}}>
-        <TextInput value={this.state.note} onFocus={()=>{this._inputFocused('noteInput')}} onBlur={()=>{this._inputBlured()}} placeholder="Note" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})} ref="noteInput"/>
+        <TextInput value={this.state.note} onFocus={()=>{this._inputFocused('noteInput')}} onBlur={()=>{this._inputBlured()}} placeholder="NOTES" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})} ref="noteInput"/>
         {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'absolute',right:width/2-30,bottom:4}}/>:null}
       </View>
       <View style={{marginTop:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>

@@ -32,6 +32,7 @@ import {Header,Button,H1,Input,Content} from 'native-base';
 import KeyboardHandler from '../Controls/KeyboardHandler';
 import InputScrollView from '../Controls/InputScrollView';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -119,6 +120,7 @@ class FB_Register extends Component {
       mobile_no:'',
       imagePath:'',
       birthday:'Birthday(mm/dd)',
+      isLoading:false,
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -244,6 +246,7 @@ class FB_Register extends Component {
         return;
       }
     }
+    this.setState({isLoading:true});
     this._sendFBRegister();
 
   }
@@ -274,6 +277,7 @@ class FB_Register extends Component {
   }
   _callback(responseJson){
     console.log(responseJson);
+    this.setState({isLoading:false});
     if(responseJson.status=='success'){
       Global.display_name = this.state.display_name;
       Actions.verify({photo:this.state.imagePath,isFacebook:true});
@@ -373,6 +377,13 @@ class FB_Register extends Component {
           </View>
         </View>
       </InputScrollView>
+      <OrientationLoadingOverlay
+          visible={this.state.isLoading}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
+          message="Loading..."
+          />
       </View>
     );
   }

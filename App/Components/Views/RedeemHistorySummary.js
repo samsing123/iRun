@@ -229,6 +229,7 @@ class RedeemHistorySummary extends Component {
           contentBackgroundColor="white"
           parallaxHeaderHeight={240}
           stickyHeaderHeight={60}
+          style={{position:'relative',top:Global.navbarHeight}}
           onScroll={(e)=>{
 
           }}

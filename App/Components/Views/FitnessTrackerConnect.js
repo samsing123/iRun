@@ -315,11 +315,11 @@ class FitnessTrackerConnect extends Component {
             redirect_uri: Global.fitbit_redirect,
             expires_in: '31536000',
             state:JSON.stringify({
-              mobile_number:Global.tempMobileNumber,
-              lang:Global.language.lang
+              user_id:Global.user_profile.user_id,
             }),
           });
     Linking.openURL('https://www.fitbit.com/oauth2/authorize?'+data);
+
   }
   _jwAuth(){
     var data = qs.stringify({

@@ -43,8 +43,7 @@ class FitnessTracker extends Component {
               redirect_uri: Global.fitbit_redirect,
               expires_in: '31536000',
               state:JSON.stringify({
-                mobile_number:Global.user_profile.mobile_number,
-                device_id:DeviceInfo.getUniqueID(),
+                user_id:Global.user_profile.user_id
               }),
             });
       Linking.openURL('https://www.fitbit.com/oauth2/authorize?'+data);

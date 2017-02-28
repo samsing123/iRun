@@ -195,7 +195,12 @@ class Setting extends Component {
     });
   }
 
+  _updateUserIcon(){
+    this.setState({imagePath:Global.user_icon});
+  }
+
   componentDidMount(){
+    AppEventEmitter.addListener('changeIcon',()=>{this._updateUserIcon()});
     if(Global.language.languagename!='ENG'){
       this.setState({
         language:'chi',
@@ -605,6 +610,7 @@ class Setting extends Component {
   _changeLanguage(){
     Global.language = Global.language.languagename=='ENG'?TC:ENG;
     AppEventEmitter.emit('changeLanguage');
+
     Actions.refresh({title:Global.language.setting});
     if(this.state.language=='eng'){
       this.setState({

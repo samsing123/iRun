@@ -23,6 +23,38 @@ import GoogleAnalytics from 'react-native-google-analytics-bridge';
 import Swiper from 'react-native-swiper';
 import {H1} from 'native-base';
 import Triangle from 'react-native-triangle';
+import ImageSequence from 'react-native-image-sequence';
+
+const images = [
+  require('../../Images/running_image/normal_female_00000.png'),
+  require('../../Images/running_image/normal_female_00001.png'),
+  require('../../Images/running_image/normal_female_00002.png'),
+  require('../../Images/running_image/normal_female_00003.png'),
+  require('../../Images/running_image/normal_female_00004.png'),
+  require('../../Images/running_image/normal_female_00005.png'),
+  require('../../Images/running_image/normal_female_00006.png'),
+  require('../../Images/running_image/normal_female_00007.png'),
+  require('../../Images/running_image/normal_female_00008.png'),
+  require('../../Images/running_image/normal_female_00009.png'),
+
+  require('../../Images/running_image/normal_female_00010.png'),
+  require('../../Images/running_image/normal_female_00011.png'),
+  require('../../Images/running_image/normal_female_00012.png'),
+  require('../../Images/running_image/normal_female_00013.png'),
+  require('../../Images/running_image/normal_female_00014.png'),
+  require('../../Images/running_image/normal_female_00015.png'),
+  require('../../Images/running_image/normal_female_00016.png'),
+  require('../../Images/running_image/normal_female_00017.png'),
+  require('../../Images/running_image/normal_female_00018.png'),
+  require('../../Images/running_image/normal_female_00019.png'),
+
+  require('../../Images/running_image/normal_female_00020.png'),
+  require('../../Images/running_image/normal_female_00021.png'),
+  require('../../Images/running_image/normal_female_00022.png'),
+  require('../../Images/running_image/normal_female_00023.png'),
+  require('../../Images/running_image/normal_female_00024.png'),
+  require('../../Images/running_image/normal_female_00025.png'),
+];
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -39,18 +71,18 @@ function createAgeRange(){
 }
 let ageArr = ['below 15','15-20','20-25','25-30','30-35','35-40','40-45','45-50','50-55','55-60','60 or above'];
 let userWeight = [];
-userWeight.push('below 30 KG');
+userWeight.push('29 KG');
 for(var i=30;i<101;i++){
   userWeight.push(i+' KG');
 }
-userWeight.push('above 100 KG');
+userWeight.push('101 KG');
 
 let userHeight = [];
-userHeight.push('below 110 CM');
+userHeight.push('109 CM');
 for(var i=110;i<201;i++){
   userHeight.push(i+' CM');
 }
-userHeight.push('above 200 CM');
+userHeight.push('201 CM');
 
 class PersonalInformation extends Component {
   constructor(props){
@@ -84,17 +116,7 @@ class PersonalInformation extends Component {
             />
         ))}
     </Picker>;
-    this.userHeightEle = <Picker
-        selectedValue={this.state.userHeight+' CM'}
-        onValueChange={(value) => this.setState({userHeight:value.split(' ')[0]})}>
-        {userHeight.map((i,r) => (
-            <PickerItem
-                key={i}
-                value={i}
-                label={i}
-            />
-        ))}
-    </Picker>;
+
   }
   _showAgePicker() {
       Pickers.init({
@@ -306,27 +328,59 @@ class PersonalInformation extends Component {
       case 3:
       content=<Picker
           selectedValue={this.state.userHeight+' CM'}
-          onValueChange={(value) => this.setState({userHeight:value.split(' ')[0]})}>
-          {userHeight.map((i,r) => (
-              <PickerItem
+          onValueChange={(value) => {
+            this.setState({userHeight:value.split(' ')[0]})
+          }}>
+          {userHeight.map((i,r) => {
+            switch(i.split(' ')[0]){
+              case '109':
+              return <PickerItem
+                  key={i}
+                  value={i}
+                  label={'below 110 CM'}
+              />;
+              case '201':
+              return <PickerItem
+                  key={i}
+                  value={i}
+                  label={'above 200 CM'}
+              />;
+              default:
+              return <PickerItem
                   key={i}
                   value={i}
                   label={i}
-              />
-          ))}
+              />;
+            }
+          })}
       </Picker>;
       break;
       case 4:
       content=<Picker
           selectedValue={this.state.userWeight+' KG'}
-          onValueChange={(value) => {console.log('picker value:'+value);this.setState({userWeight:value.split(' ')[0]})}}>
-          {userWeight.map((i,r) => (
-              <PickerItem
+          onValueChange={(value) => {this.setState({userWeight:value.split(' ')[0]})}}>
+          {userWeight.map((i,r) => {
+            switch(i.split(' ')[0]){
+              case '29':
+              return <PickerItem
+                  key={i}
+                  value={i}
+                  label={'below 30 KG'}
+              />;
+              case '101':
+              return <PickerItem
+                  key={i}
+                  value={i}
+                  label={'above 100 KG'}
+              />;
+              default:
+              return <PickerItem
                   key={i}
                   value={i}
                   label={i}
-              />
-          ))}
+              />;
+            }
+          })}
       </Picker>;
       break;
     }
@@ -358,7 +412,10 @@ class PersonalInformation extends Component {
           <Text style={{color:"#686868"}}>about yourself.</Text>
         </View>
         <View style={{paddingTop:height*0.08}}>
-          {genderImage}
+        <ImageSequence
+          images={images}
+          startFrameIndex={0}
+          style={{width: 150, height: 150}} />
         </View>
         {self.renderView(this.state.pageNumber)}
         {self.renderContent(this.state.pageNumber)}

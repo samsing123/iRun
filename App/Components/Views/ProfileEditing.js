@@ -181,6 +181,7 @@ class ProfileEditing extends Component {
         // You can display the image using either data...
         const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
         Global.user_icon = 'data:image/jpeg;base64,' + response.data;
+        AppEventEmitter.emit('changeIcon');
         // or a reference to the platform specific asset location
         if (Platform.OS === 'ios') {
           const source = {uri: response.uri.replace('file://', ''), isStatic: true};

@@ -238,6 +238,7 @@ class Register extends Component {
     Global._sendPostRequest(data,'api/register',(v)=>this._registerCallback(v));
   }
   _registerCallback(responseJson){
+    this.setState({isLoading:false});
     if(responseJson.status=='success'){
       //alert('Register Success');
       Global.mobile_no = this.state.mobile_no;
@@ -246,7 +247,7 @@ class Register extends Component {
       Actions.verify({smsType:'register'});
     }else{
       alert(responseJson.response.error);
-      this.setState({isLoading:false});
+
     }
   }
   async _saveLoginInformation(){
@@ -320,7 +321,7 @@ class Register extends Component {
                 checkboxStyle={{width:16,height:16,tintColor:'white'}}
                 checked={this.state.checked}
                 onChange={(checked) => this.setState({checked:checked})}
-                
+
               />
               <TouchableWithoutFeedback>
               <View style={{flexDirection:'column',marginLeft:5}}>
@@ -354,7 +355,7 @@ class Register extends Component {
           message="Loading..."
           />
       </View>
-      
+
       </TouchableWithoutFeedback>
     );
   }
