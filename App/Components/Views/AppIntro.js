@@ -118,7 +118,7 @@ class AppIntros extends Component {
       <ImageSequence
         images={images}
         startFrameIndex={0}
-        style={{width: 150, height: 150,position:'absolute',top:height*0.25,left:this.state.imageLeft}} />
+        style={{width: 250, height: 250,position:'absolute',top:height*0.05,left:this.state.imageLeft}} />
       <AppIntro
       showSkipButton={false}
       showDoneButton={true}
@@ -126,7 +126,7 @@ class AppIntros extends Component {
       showDots={this.state.showDot}
       nextBtnLabel={this.state.nextBtn}
       doneBtnLabel=""
-      onSlideChange={(index,total)=>{this.setState({imageLeft:index*40});if(index==3){this.setState({showDot:false,nextBtn:''})}}}>
+      onSlideChange={(index,total)=>{if(index==3){this.setState({showDot:false,nextBtn:''})}}}>
         <View style={{flex:1}}>
           <View style={{height:height*0.5}}>
 
