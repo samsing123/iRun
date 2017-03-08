@@ -983,7 +983,7 @@ class Tracking extends Component {
         </View>
         <View style={{flex:1,backgroundColor:'rgba(21,139,205,1)',width:width,alignItems:'center'}}>
           <View style={{paddingTop:15}}>
-            <Text style={{color:'white',fontWeight:'bold',fontSize:24}}>{main_unit}</Text>
+            <Text style={{color:'white',fontWeight:'300',fontSize:24}}>{main_unit}</Text>
           </View>
           <View style={{width:width,paddingTop:30,flexDirection:'row'}}>
               <TouchableOpacity onPress={()=>{this._changeContentDisplay('left')}}>

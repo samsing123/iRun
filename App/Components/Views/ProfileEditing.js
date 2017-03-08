@@ -948,7 +948,7 @@ class ProfileEditing extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                      <Text style={styles.textColor}>{Global.language.gender}</Text><Text style={styles.textColor}>{this.state.gender} ></Text>
+                      <Text style={styles.textColor}>{Global.language.gender}</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showAgePicker()}}>

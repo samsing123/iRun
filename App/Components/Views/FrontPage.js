@@ -220,10 +220,10 @@ class FrontPage extends Component {
       <View style={styles.container}>
         <Image style={styles.slide1} source={require('../../Images/img_reg.png')} resizeMode={Image.resizeMode.cover}>
         </Image>
-        <View style={{position:'absolute',top:116,justifyContent:'center',alignItems:'center',width:width}}>
+        <View style={{position:'absolute',top:250,justifyContent:'center',alignItems:'center',width:width}}>
 
-          <Image source={require('../../Images/img_applogo.png')} style={{width:125,height:75,marginTop:20}} resizeMode={Image.resizeMode.contain}/>
-          <View style={{paddingTop:180}}>
+          <Image source={require('../../Images/img_applogo.png')} style={{width:167,height:100,marginTop:5}} resizeMode={Image.resizeMode.contain}/>
+          <View style={{paddingTop:60}}>
             <Button onPress={()=>{this.openTNCAlert('fb')}} style={{backgroundColor:'#395797',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER WITH FACEBOOK</Text></Button>
           </View>
           <View style={{paddingTop:14}}>

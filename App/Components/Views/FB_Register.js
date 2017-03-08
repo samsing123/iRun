@@ -33,7 +33,7 @@ import KeyboardHandler from '../Controls/KeyboardHandler';
 import InputScrollView from '../Controls/InputScrollView';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
-
+var DismissKeyboard = require('dismissKeyboard');
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 var privacyText = "By creating an account, you agree to AXA's";
@@ -277,13 +277,18 @@ class FB_Register extends Component {
   }
   _callback(responseJson){
     console.log(responseJson);
+    console.log("isLoading",this.state.isLoading)
     this.setState({isLoading:false});
+    
     if(responseJson.status=='success'){
       Global.display_name = this.state.display_name;
       Actions.verify({photo:this.state.imagePath,isFacebook:true});
     }else{
-      alert(responseJson.response.error);
+      console.log("isLoading error")
+      setTimeout(()=>alert(responseJson.response.error), 500)
+      
     }
+    
   }
   /*
   static renderNavigationBar(props){
@@ -294,7 +299,17 @@ class FB_Register extends Component {
     Picker.hide();
   }
 
-
+  _renderLoading() {
+    return (<OrientationLoadingOverlay
+      visible={true}
+      color="white"
+      indicatorSize="large"
+      messageFontSize={24}
+      message="Loading..."
+      />)
+  }
+  
+   
   render() {
     var self = this;
     var photoImage;
@@ -313,17 +328,19 @@ class FB_Register extends Component {
       flex = 1;
     }
     if(this.state.imagePath!=''){
-      photoImage = <View>
+      photoImage = (<View>
         <View style={{width:100,height:100}}>
           <Image style={{width:100,height:100,borderRadius:100/2}} source={{uri:this.state.imagePath}} />
           <TouchableOpacity style={{position:'absolute',bottom:0,right:0}} onPress={()=>{this._imagePick()}}>
             <Image style={{width:24,height:24}} source={require('../../Images/btn_share_camera.png')}/>
           </TouchableOpacity>
         </View>
-      </View>
+      </View>)
     }
     return (
+      <TouchableWithoutFeedback onPress={()=>{this._hideDatePicker();DismissKeyboard()}}>
       <View>
+      {(this.state.isLoading)?this._renderLoading():console.log()}
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
       <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
         <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
@@ -337,7 +354,7 @@ class FB_Register extends Component {
         </View>
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:12}}>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput placeholderTextColor="white" placeholder="Display Name" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+            <TextInput placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name(8-20 characters)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
             <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
@@ -377,17 +394,14 @@ class FB_Register extends Component {
           </View>
         </View>
       </InputScrollView>
-      <OrientationLoadingOverlay
-          visible={this.state.isLoading}
-          color="white"
-          indicatorSize="large"
-          messageFontSize={24}
-          message="Loading..."
-          />
+      
       </View>
+    </TouchableWithoutFeedback>
     );
   }
 }
+
+  
 
 const styles = StyleSheet.create({
   container: {

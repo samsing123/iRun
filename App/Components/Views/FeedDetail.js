@@ -154,7 +154,6 @@ class FeedDetail extends Component {
     }
     return (
       <GestureRecognizer
-      onSwipe={(direction, state) => this.onSwipe(direction, state)}
       style={styles.container}>
         <StatusBar
            backgroundColor="rgba(0,0,0,0)"

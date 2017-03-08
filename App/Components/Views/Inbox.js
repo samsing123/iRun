@@ -498,6 +498,9 @@ class Inbox extends Component {
     return Global.inbox_list.map(function(msg, i){
       var bgColor = 'rgba(255,0,0,1)';
       var isDelete = self._findInArray(i);
+      console.log("message time",msg.msg_time)
+      console.log("message time",msg.msg_time.slice(0,10))
+      console.log("message time",msg.msg_time.slice(12,22))
       if(msg.is_read){
         bgColor = 'rgba(0,0,0,0)';
       }
@@ -517,12 +520,12 @@ class Inbox extends Component {
           <View key={i} style={{flexDirection:'row'}}>
             {deletebtn}
             <TouchableOpacity onPress={()=>{self.setState({refresh:true});AppEventEmitter.emit('inbox.get');Global.inbox_list[i].is_read=true;Actions.inboxmessage({image:msg.image,title:msg.heading,id:msg.id,desc:msg.description,hasImage:true,msg_time:msg.msg_time})}}>
-              <View style={{width:width,height:240,borderRadius:4,marginBottom:5}}>
+              <View style={{width:width-10,height:240, marginLeft:5,marginRight:5,borderBottomRightRadius:4,borderTopRightRadius:4,marginBottom:5}}>
                 <Image style={{width:width,height:240,borderRadius:4,position:'absolute',top:0}} source={{uri:msg.image}}/>
-                <View refs="messageBackground" style={{flexDirection:'row',borderRadius:8,width:width,height:100,backgroundColor:'rgba(103,103,103,0.8)',alignItems:'flex-start',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
+                <View refs="messageBackground" style={{flexDirection:'row',borderRadius:8,borderBottomRightRadius:8,borderTopRightRadius:8,width:width,height:100,backgroundColor:'rgba(103,103,103,0.8)',alignItems:'flex-start',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
                   <View style={{width:6,height:240,backgroundColor:bgColor,position:'relative',top:-5,borderRadius:4}}/>
                   <View style={{width:width,paddingLeft:4}}>
-                    <Text style={{fontSize:16,color:'white'}}>{msg.msg_time}</Text>
+                    <Text style={{fontSize:16,color:'white'}}>{msg.msg_time.slice(0,10)} | {msg.msg_time.slice(12,22)}</Text>
                     <Text style={{fontSize:24,color:'white',fontWeight:'bold'}}>{Util._getTextWithEllipsis(msg.heading,80)}</Text>
                   </View>
                 </View>
@@ -544,11 +547,11 @@ class Inbox extends Component {
           <View key={i} style={{flexDirection:'row'}}>
             {deletebtn}
             <TouchableOpacity style={{flexDirection:'row'}} key={i} onPress={()=>{self.setState({refresh:true});Global.inbox_list[i].is_read=true;Actions.inboxmessage({image:msg.image,title:msg.heading,id:msg.id,desc:msg.description,hasImage:true,msg_time:msg.msg_time})}}>
-              <View style={{width:width,height:100,borderRadius:4,marginBottom:5}}>
-                <View style={{flexDirection:'row',borderRadius:4,width:width,height:100,backgroundColor:'rgba(103,103,103,0.8)',alignItems:'flex-start',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
+              <View style={{width:width-10,height:100,marginLeft:5,marginBottom:5,marginRight:5,borderBottomRightRadius:4,borderTopRightRadius:4}}>
+                <View style={{flexDirection:'row',borderRadius:4,borderBottomRightRadius:4,borderTopRightRadius:4,width:width,height:100,backgroundColor:'rgba(103,103,103,0.8)',alignItems:'flex-start',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
                   <View style={{width:6,height:100,backgroundColor:bgColor,position:'relative',top:-5,borderRadius:4}}/>
                   <View style={{width:width,paddingLeft:4}}>
-                    <Text style={{fontSize:16,color:'white'}}>{msg.msg_time}</Text>
+                    <Text style={{fontSize:16,color:'white'}}>{msg.msg_time.slice(0,10)} | {msg.msg_time.slice(12,22)}</Text>
                     <Text style={{fontSize:24,color:'white',fontWeight:'bold'}}>{Util._getTextWithEllipsis(msg.heading,80)}</Text>
                   </View>
                 </View>
@@ -610,16 +613,16 @@ class Inbox extends Component {
     if(!this.state.isDelete){
       deleteBar = <View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'flex-end'}}>
           <TouchableOpacity onPress={()=>{this.setState({isDelete:true})}}>
-            <Text style={{fontSize:17,paddingRight:30,color:'#268BC4'}}>DELETE</Text>
+            <Text style={{fontSize:17,paddingRight:30,color:'#268BC4',fontWeight: 'bold'}}>DELETE</Text>
           </TouchableOpacity>
         </View>;
     }else{
       deleteBar = <View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <TouchableOpacity onPress={()=>{this._deleteAll()}}>
-            <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>DELETE ALL</Text>
+            <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4',fontWeight: 'bold'}}>DELETE ALL</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this._sendDeleteRequest()}}>
-            <Text style={{fontSize:17,paddingRight:30,color:'#268BC4'}}>DONE</Text>
+            <Text style={{fontSize:17,paddingRight:30,color:'grey',fontWeight: 'bold'}}>DONE</Text>
           </TouchableOpacity>
         </View>;
     }

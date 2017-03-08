@@ -69,12 +69,12 @@ class TNCAlert extends Component {
   render() {
     var accpetBtn;
     if(this.state.notRead){
-      accpetBtn = <View style={{backgroundColor:'grey',height:50,width:120,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
+      accpetBtn = <View style={{backgroundColor:'grey',height:50,width:139,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
           <Text style={{color:'white',fontSize:12}}>{Global.language.accept}</Text>
         </View>;
     }else{
       accpetBtn = <TouchableOpacity onPress={()=>{this.accept()}} style={{alignItems:'center',justifyContent:'center'}}>
-        <View style={{backgroundColor:'#1A8BCF',height:50,width:120,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
+        <View style={{backgroundColor:'#1A8BCF',height:50,width:139,borderRadius:6,justifyContent:'center',alignItems:'center'}}>
           <Text style={{color:'white',fontSize:12}}>{Global.language.accept}</Text>
         </View>
       </TouchableOpacity>;
@@ -95,7 +95,7 @@ class TNCAlert extends Component {
         </View>
         <View style={{width:300,position:'absolute',bottom:20,justifyContent:'space-around',flexDirection:'row'}}>
           <TouchableOpacity onPress={()=>{this.close()}} style={{alignItems:'center',justifyContent:'center'}}>
-            <View style={{backgroundColor:'#FFFFFF',height:50,width:120,borderRadius:6,justifyContent:'center',alignItems:'center',borderWidth:1,borderColor:'#1A8BCF'}}>
+            <View style={{backgroundColor:'#FFFFFF',height:50,width:139,borderRadius:6,justifyContent:'center',alignItems:'center',borderWidth:1,borderColor:'#1A8BCF'}}>
               <Text style={{color:'#1A8BCF',fontSize:12}}>{Global.language.decline}</Text>
             </View>
           </TouchableOpacity>

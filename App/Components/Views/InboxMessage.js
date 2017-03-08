@@ -141,7 +141,7 @@ class InboxMessage extends Component {
         </View>
       </View>;
       tag = <View style={{paddingBottom:10}}>
-      <Text style={{color:'rgba(74,74,74,1)',fontSize:14,paddingTop:5,paddingLeft:10,fontWeight:'bold'}}>{this.state.msg_time}</Text>
+      <Text style={{color:'rgba(74,74,74,1)',fontSize:14,paddingTop:5,paddingLeft:10,fontWeight:'bold'}}>{this.state.msg_time.slice(0,10)} | {this.state.msg_time.slice(12,22)}</Text>
       <Text style={{color:'rgba(74,74,74,1)',fontSize:20,paddingTop:5,paddingLeft:10,fontWeight:'bold'}} ref="title1">{this.state.title}</Text>
       </View>;
     }

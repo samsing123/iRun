@@ -1061,8 +1061,8 @@ class Map extends Component {
         {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'relative',right:width/2-20}}/>:null}
       </View>
       <View style={{marginTop:10,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
-        <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
-        <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:170,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:170,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
     </View>;
     if(this.state.share){
@@ -1082,7 +1082,7 @@ class Map extends Component {
     return (
       <View style={{flex:1}}>
       <ScrollView scrollEnabled={false}>
-        <View ref="mapInfoImage" style={{backgroundColor:'white'}}>
+        <View ref="mapInfoImage" style={{backgroundColor:'white',borderTopColor:'#48d1cc',borderStyle:'solid',borderTopWidth:1,marginTop:Global.navbarHeight}}>
           <View style={styles.container}>
             {!this.state.camera_image?<MapView
               ref="map"
@@ -1102,13 +1102,13 @@ class Map extends Component {
 
 
             <View style={styles.buttonContainer}>
-              <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
+              <Text style={{fontSize:60,color:'rgba(0,73,147,1)',fontWeight:'bold'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)',fontWeight:'bold'}}>{this.props.distance_unit}</Text></Text>
             </View>
           </View>
           <View ref="mapInfoImage2" style={{backgroundColor:'rgba(22,141,208,1)',flexDirection:'row',height:53,width:width,alignItems:'center',justifyContent:'space-around'}}>
-            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.time_formatted}</Text></View>
-            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.speed}</Text></View>
-            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white',paddingHorizontal:15}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.time_formatted}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white',paddingHorizontal:20}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.speed}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white',paddingHorizontal:15}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
           </View>
         </View>
 
@@ -1128,12 +1128,11 @@ const styles = StyleSheet.create({
 
     justifyContent: 'flex-end',
     alignItems: 'center',
-    height:height/2,
+    height:height/2-50
   },
   map: {
     ...StyleSheet.absoluteFillObject,
     height:(height/2)-Global.navbarHeight,
-    marginTop:Global.navbarHeight
   },
   bubble: {
     backgroundColor: 'rgba(255,255,255,0.7)',

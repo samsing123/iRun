@@ -30,7 +30,7 @@ import GoogleAnalytics from 'react-native-google-analytics-bridge';
 import Swiper from 'react-native-swiper';
 import CheckBox from 'react-native-checkbox';
 import {Header,Button,H1,Input} from 'native-base';
-
+var navbarHeight = Platform.OS === 'ios' ? 64 : 54;//edit
 var temp = [];
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -314,6 +314,7 @@ class Login extends Component {
  
 
   render() {
+	  console.log("page?")
     var self = this;
     return (
         <View style={{flex:1}}>

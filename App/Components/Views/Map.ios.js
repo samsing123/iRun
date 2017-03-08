@@ -816,9 +816,9 @@ class Map extends Component {
         <TextInput value={this.state.note} onFocus={()=>{this._inputFocused('noteInput')}} onBlur={()=>{this._inputBlured()}} placeholder="NOTES" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})} ref="noteInput"/>
         {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'absolute',right:width/2-30,bottom:4}}/>:null}
       </View>
-      <View style={{marginTop:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
-        <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
-        <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:160,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
+      <View style={{marginTop:30,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+        <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:170,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:170,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
     </View>;
     if(this.state.share){
@@ -841,29 +841,31 @@ class Map extends Component {
       <View style={{flex:1}}>
         <ScrollView scrollEnabled={false} ref="scrollView">
         <View style={styles.container} ref='mapWithInfo'>
-          <View>
-          {!this.state.camera_image?<MapView
-            ref="map"
-            style={styles.map}
-            region={this.state.region}
-            showsUserLocation={true}
-            followsUserLocation={true}
-            onRegionChange={region => this.onRegionChange(region)}
-          >
-            <MapView.Polyline
-              coordinates={this.state.polylineCoords}
-              strokeWidth={5}
-              strokeColor="blue"
-             />
-          </MapView>:<Image source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
-            <View style={styles.buttonContainer}>
-              <Text style={{fontSize:60,color:'rgba(0,73,147,1)'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)'}}>{this.props.distance_unit}</Text></Text>
-            </View>
+          <View style={{borderTopColor:'#48d1cc',borderStyle:'solid',borderTopWidth:1, marginTop:Global.navbarHeight+20}}>
+            {!this.state.camera_image?
+              <MapView
+                ref="map"
+                style={styles.map}
+                region={this.state.region}
+                showsUserLocation={true}
+                followsUserLocation={true}
+                onRegionChange={region => this.onRegionChange(region)}
+              >
+                <MapView.Polyline
+                  coordinates={this.state.polylineCoords}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              </MapView>:
+              <Image source={{uri:this.state.img_data}} style={{width:width,height:(height/2)-Global.navbarHeight}}/>}
+              <View style={styles.buttonContainer}>
+                <Text style={{fontSize:60,color:'rgba(0,73,147,1)',fontWeight:'bold'}}>{this.props.display_distance}<Text style={{fontSize:19.2,color:'rgba(0,73,147,1)',fontWeight:'bold'}}>{this.props.distance_unit}</Text></Text>
+              </View>
           </View>
-          <View style={{backgroundColor:'rgba(22,141,208,1)',flexDirection:'row',height:53,width:width,alignItems:'center',justifyContent:'space-around'}}>
-            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.time_formatted}</Text></View>
-            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.speed}</Text></View>
-            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white'}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
+          <View style={{backgroundColor:'rgba(22,141,208,1)',flexDirection:'row',height:80,width:width,alignItems:'center',justifyContent:'space-around'}}>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white',paddingHorizontal:15}} source={require('../../Images/ic_duration.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.time_formatted}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white',paddingHorizontal:20}} source={require('../../Images/ic_avgspeed.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.speed}</Text></View>
+            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}><Image style={{width:17,height:17,tintColor:'white',paddingHorizontal:15}} source={require('../../Images/ic_cal.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'white',fontSize:17,fontWeight:'bold'}}>{this.props.cal}</Text></View>
           </View>
         </View>
         {this.state.share?<TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
@@ -880,17 +882,16 @@ class Map extends Component {
 
 const styles = StyleSheet.create({
   container: {
-
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    height:height/2,
-    backgroundColor:'rgba(0,0,0,0)',
-    marginTop:Global.navbarHeight
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    height:14*height/21,
+    backgroundColor:'rgba(0, 0, 0, 0)',
+    marginTop:Global.navbarHeight-80
   },
   map: {
     ...StyleSheet.absoluteFillObject,
     height:(height/2)-Global.navbarHeight,
-    marginTop:Global.navbarHeight
+    marginTop:Global.navbarHeight + 100
   },
   bubble: {
     backgroundColor: 'rgba(255,255,255,0.7)',
