@@ -126,10 +126,10 @@ class Setting extends Component {
       p4:styles.period_non_selected,
       p4t:styles.period_text_non,
       language:'eng',
-      language_eng:styles.language_selected,
-      language_eng_text:styles.language_text_selected,
-      language_chi:styles.language_non_selected,
-      language_chi_text:styles.language_text_non_selected,
+      language_eng:styles.language_non_selected,
+      language_eng_text:styles.language_text_non_selected,
+      language_chi:styles.language_selected,
+      language_chi_text:styles.language_text_selected,
       isEditting:false,
       isRunSetting:this.props.isRunSetting?true:false,
       height:Global.user_profile.height,
@@ -204,18 +204,18 @@ class Setting extends Component {
     if(Global.language.languagename!='ENG'){
       this.setState({
         language:'chi',
-        language_eng:styles.language_non_selected,
-        language_eng_text:styles.language_text_non_selected,
-        language_chi:styles.language_selected,
-        language_chi_text:styles.language_text_selected,
-      });
-    }else{
-      this.setState({
-        language:'eng',
         language_eng:styles.language_selected,
         language_eng_text:styles.language_text_selected,
         language_chi:styles.language_non_selected,
         language_chi_text:styles.language_text_non_selected,
+      });
+    }else{
+      this.setState({
+        language:'eng',
+        language_eng:styles.language_non_selected,
+        language_eng_text:styles.language_text_non_selected,
+        language_chi:styles.language_selected,
+        language_chi_text:styles.language_text_selected,
       });
     }
   }
@@ -615,18 +615,18 @@ class Setting extends Component {
     if(this.state.language=='eng'){
       this.setState({
         language:'chi',
-        language_eng:styles.language_non_selected,
-        language_eng_text:styles.language_text_non_selected,
-        language_chi:styles.language_selected,
-        language_chi_text:styles.language_text_selected,
-      });
-    }else{
-      this.setState({
-        language:'eng',
         language_eng:styles.language_selected,
         language_eng_text:styles.language_text_selected,
         language_chi:styles.language_non_selected,
         language_chi_text:styles.language_text_non_selected,
+      });
+    }else{
+      this.setState({
+        language:'eng',
+        language_eng:styles.language_non_selected,
+        language_eng_text:styles.language_text_non_selected,
+        language_chi:styles.language_selected,
+        language_chi_text:styles.language_text_selected,
       });
     }
     this._saveLanguage();

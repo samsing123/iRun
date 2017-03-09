@@ -96,10 +96,10 @@ class Mores extends Component {
 
     return (
       <View style={styles.container}>
-        <Image style={{height:150,width:width,backgroundColor:'black'}} source={require('../../Images/bg_more.png')}>
+        <Image style={{height:210,width:width,backgroundColor:'black'}} source={require('../../Images/bg_more.png')}>
 
         </Image>
-        <View style={{height:height-185,paddingLeft:10,paddingRight:10,width:width,paddingTop:20}}>
+        <View style={{height:height-185,paddingLeft:10,paddingRight:10,width:width,paddingTop:5}}>
           <TouchableOpacity onPress={()=>{Actions.profile({title:Global.language.profile})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
               <Image source={require('../../Images/btn_profile.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
@@ -118,7 +118,7 @@ class Mores extends Component {
               <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.setting}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.frontpage({type:ActionConst.RESET})}}>
+          <TouchableOpacity onPress={()=>{Actions.personalinformation({type:ActionConst.RESET})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
               <Text style={{fontSize:14,padding:15,marginLeft:20}}>Back To FontPage (For Testing)</Text>
             </View>

@@ -438,7 +438,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="personalinformation"  component={PersonalInformation} title="personalinformation" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="intro2" component={Intro2} title="Page2"/>
-                <Scene renderRightButton={createRightButton} key="map" component={Map} title="RESULT"/>
+                <Scene renderRightButton={createRightButton} key="map" component={Map} title="RESULT" />
                 <Scene renderRightButton={createRightButton} key="photo" component={Photo} title="Photo"/>
                 <Scene renderRightButton={createRightButton} key="verify" component={Verify} title="Verify" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="welcome" component={Welcome} title="Welcome" hideNavBar={true}/>

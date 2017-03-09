@@ -558,16 +558,16 @@ class Verify extends Component {
         </View>
         <View style={{paddingTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center',width:width,backgroundColor:'rgba(0,0,0,0)'}}>
           <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=0;this._currentSelected(selected_index);}} style={{borderWidth:1,borderColor:this.state.num1Color,borderRadius:4,width:50,height:50,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num1?this.state.num1:0}</Text>
+            <Text style={{fontSize:30,color:"#fff",opacity:this.state.num1?1:0.7}}>{this.state.num1?this.state.num1:0}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=1;this._currentSelected(selected_index);}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:this.state.num2Color,borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num2?this.state.num2:0}</Text>
+            <Text style={{fontSize:30,color:"#fff",opacity:this.state.num2?1:0.7}}>{this.state.num2?this.state.num2:0}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=2;this._currentSelected(selected_index);}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:this.state.num3Color,borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num3?this.state.num3:0}</Text>
+            <Text style={{fontSize:30,color:"#fff",opacity:this.state.num3?1:0.7}}>{this.state.num3?this.state.num3:0}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this.refs.inputHolder.focus();selected_index=3;this._currentSelected(selected_index);}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:this.state.num4Color,borderRadius:4,width:50,height:50,marginLeft:20,alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:30,color:"#fff"}}>{this.state.num4?this.state.num4:0}</Text>
+            <Text style={{fontSize:30,color:"#fff",opacity:this.state.num4?1:0.7}}>{this.state.num4?this.state.num4:0}</Text>
           </TouchableOpacity>
         </View>
         {verifyButton}

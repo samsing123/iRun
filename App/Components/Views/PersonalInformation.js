@@ -430,10 +430,12 @@ const styles = StyleSheet.create({
     fontSize:14,
     position:'relative',
     top:5,
+    fontWeight:'bold'
   },
   non_selected:{
     color:'#E0E0E0',
     fontSize:14,
+    fontWeight:'bold'
   },
   container: {
     flex: 1,

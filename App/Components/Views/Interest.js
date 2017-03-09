@@ -266,13 +266,13 @@ class Interest extends Component {
           t2s:false,
           t2:styles.non_selectedBack,
         });
-        Util._removeA(this.interestArr,'health');
+        Util._removeA(this.interestArr,'food');
       }else{
         this.setState({
           t2s:true,
           t2:styles.selectedBack,
         });
-        this.interestArr.push('health');
+        this.interestArr.push('food');
       }
       break;
       case 3:
@@ -281,13 +281,13 @@ class Interest extends Component {
           t3s:false,
           t3:styles.non_selectedBack,
         });
-        Util._removeA(this.interestArr,'food');
+        Util._removeA(this.interestArr,'travel');
       }else{
         this.setState({
           t3s:true,
           t3:styles.selectedBack,
         });
-        this.interestArr.push('food');
+        this.interestArr.push('travel');
       }
       break;
       case 4:
@@ -296,13 +296,13 @@ class Interest extends Component {
           t4s:false,
           t4:styles.non_selectedBack,
         });
-        Util._removeA(this.interestArr,'travel');
+        Util._removeA(this.interestArr,'health');
       }else{
         this.setState({
           t4s:true,
           t4:styles.selectedBack,
         });
-        this.interestArr.push('travel');
+        this.interestArr.push('health');
       }
       break;
       case 5:
@@ -311,13 +311,13 @@ class Interest extends Component {
           t5s:false,
           t5:styles.non_selectedBack,
         });
-        Util._removeA(this.interestArr,'sports');
+        Util._removeA(this.interestArr,'sport');
       }else{
         this.setState({
           t5s:true,
           t5:styles.selectedBack,
         });
-        this.interestArr.push('sports');
+        this.interestArr.push('sport');
       }
       break;
     }
@@ -352,36 +352,36 @@ class Interest extends Component {
 
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t2}></View>
-              <Text style={styles.selected}>HEALTH</Text>
+              <Text style={styles.selected}>FOOD</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this._interestSelected(3)}} style={{marginTop:3}}>
             <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t3}></View>
-              <Text style={styles.selected}>FOOD</Text>
+              <Text style={styles.selected}>TRAVEL</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this._interestSelected(4)}} style={{marginTop:3}}>
             <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t4}></View>
-              <Text style={styles.selected}>TRAVEL</Text>
+              <Text style={styles.selected}>HEALTH</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this._interestSelected(5)}} style={{marginTop:3}}>
             <View style={{height:70,justifyContent:'center',alignItems:'center',width:width,paddingTop:5}}>
               <Image source={{uri:'http://media.gettyimages.com/photos/foot-of-mother-and-baby-lying-on-carpet-picture-id498277077?s=170667a'}} style={styles.interestImage}/>
               <View style={this.state.t5}></View>
-              <Text style={styles.selected}>SPORTS</Text>
+              <Text style={styles.selected}>SPORT</Text>
             </View>
           </TouchableOpacity>
         </View>
         <View style={{position:'absolute',bottom:26,paddingLeft:28,flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.back}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
-          <TouchableOpacity onPress={()=>{if(this.props.editing){this._setInterestForProfileEditing()}else{this._sendEditProfile()}}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>DONE ></Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{if(this.props.editing){this._setInterestForProfileEditing()}else{this._sendEditProfile()}}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>DONE ></Text></TouchableOpacity>
         </View>
       </View>
     );

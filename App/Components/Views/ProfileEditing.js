@@ -907,9 +907,9 @@ class ProfileEditing extends Component {
         <View style={styles.container}>
           <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:tempHeight,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_profile.png')}>
               <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
+                <TouchableOpacity onPress={()=>{this._imagePick()}} >
                 {profileImage}
-                <TouchableOpacity onPress={()=>{this._imagePick()}} style={{position:'absolute',right:0,bottom:0}}>
-                  <Image style={{width:20,height:20}} source={require('../../Images/btn_share_camera.png')}></Image>
+                  <Image style={{width:20,height:20,position:'absolute',right:0,bottom:0}} source={require('../../Images/btn_share_camera.png')}></Image>
                 </TouchableOpacity>
               </View>
               <View style={{flex:1}}>

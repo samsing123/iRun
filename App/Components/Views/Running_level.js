@@ -119,7 +119,7 @@ class Running_level extends Component {
       value: 0,
       back:'< BACK',
       next:'NEXT >',
-      run_level:'Light',
+      run_level:'LIGHT',
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -188,13 +188,13 @@ class Running_level extends Component {
   _levelSelect(num){
     var level = '';
     switch(num){
-      case 0:level='Light';break;
-      case 1:level='Light';break;
-      case 2:level='Medium';break;
-      case 3:level='Medium';break;
-      case 4:level='Medium';break;
-      case 5:level='Heavy';break;
-      case 6:level='Heavy';break;
+      case 0:level='LIGHT';break;
+      case 1:level='LIGHT';break;
+      case 2:level='MEDIUM';break;
+      case 3:level='MEDIUM';break;
+      case 4:level='MEDIUM';break;
+      case 5:level='HEAVY';break;
+      case 6:level='HEAVY';break;
     }
     this.setState({
       value:num,
@@ -205,13 +205,13 @@ class Running_level extends Component {
   _levelScroll(num){
     var level = '';
     switch(num){
-      case 0:level='Light';break;
-      case 1:level='Light';break;
-      case 2:level='Medium';break;
-      case 3:level='Medium';break;
-      case 4:level='Medium';break;
-      case 5:level='Heavy';break;
-      case 6:level='Heavy';break;
+      case 0:level='LIGHT';break;
+      case 1:level='LIGHT';break;
+      case 2:level='MEDIUM';break;
+      case 3:level='MEDIUM';break;
+      case 4:level='MEDIUM';break;
+      case 5:level='HEAVY';break;
+      case 6:level='HEAVY';break;
     }
     this.setState({
       value:num,
@@ -225,7 +225,7 @@ class Running_level extends Component {
       <View style={styles.container}>
         <View style={{paddingTop:height*0.1,width:width,alignItems:'center'}}>
           <H1 style={{color:"grey",fontWeight:'bold'}}>HOW OFTEN YOU</H1>
-          <H1 style={{color:"grey",fontWeight:'bold'}}>EXERCISE PER WEEK</H1>
+          <H1 style={{color:"grey",fontWeight:'bold'}}>EXERCISE PER WEEK ?</H1>
         </View>
         <View style={{paddingTop:44,width:width,alignItems:'center',justifyContent:'center'}}>
           <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_level}</Text>
@@ -253,7 +253,7 @@ class Running_level extends Component {
           onValueChange={(value) => this._levelScroll(value)}/>
         </View>
         <View style={{position:'absolute',bottom:26,paddingLeft:28,flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.back}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
           <TouchableOpacity onPress={()=>{
@@ -264,7 +264,7 @@ class Running_level extends Component {
               weight:this.props.weight,
               run:this.state.value+1,
             })
-          }}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.next}</Text></TouchableOpacity>
+          }}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>{this.state.next}</Text></TouchableOpacity>
         </View>
       </View>
     );

@@ -322,7 +322,7 @@ class Events extends Component {
     return (
       <View style={styles.container}>
         <View style={{height:height-130}}>
-          <ScrollView componentDidMount={()=>{this.scrollTo(0)}} ref={(scrollView)=>{_scrollView = scrollView}}>
+          <ScrollView  componentDidMount={()=>{this.scrollTo(0)}} ref={(scrollView)=>{_scrollView = scrollView}}>
             {content}
           </ScrollView>
         </View>
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    backgroundColor: '#FFFFFF',
+    //backgroundColor: '#FFFFFF',
     paddingTop:navbarHeight
   },
   scrollContainer:{

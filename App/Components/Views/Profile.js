@@ -945,7 +945,7 @@ class Profile extends Component {
     return (
       <ScrollView>
       <View style={styles.container}>
-        <Image source={require('../../Images/bg_setting.png')} style={{width:width,height:150,justifyContent:'center',alignItems:'center',borderBottomWidth:1}}>
+        <Image source={require('../../Images/bg_setting.png')} style={{width:width,height:170,justifyContent:'center',alignItems:'center',borderBottomWidth:1}}>
           <TouchableOpacity onPress={()=>{Actions.setting()}}>
             <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
               {profileImage}

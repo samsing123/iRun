@@ -732,7 +732,7 @@ class Map extends Component {
       width: width,
       height: (height/2)-Global.navbarHeight,
       cropping: true,
-      includeBase64:true
+      includeBase64:true,
     }).then(image => {
       saved = false;
       savedUri = '';
@@ -804,7 +804,7 @@ class Map extends Component {
   render() {
     //this._checkCurrentState();
     var run_info = <View>
-      <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:14}}>
+      <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:10}}>
         <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
       </View>
       <TouchableOpacity onPress={()=>{Actions.runhistory()}}>
@@ -812,11 +812,11 @@ class Map extends Component {
           <Text style={{fontSize:15,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>RUNNING HISTORY></Text>
         </View>
       </TouchableOpacity>
-      <View style={{marginTop:20}}>
+      <View style={{marginTop:15}}>
         <TextInput value={this.state.note} onFocus={()=>{this._inputFocused('noteInput')}} onBlur={()=>{this._inputBlured()}} placeholder="NOTES" style={{fontSize:12,color:'rgba(103,103,103,1)',textAlign:'center',width:width,height:15}} onChangeText={(text) => this.setState({note:text})} ref="noteInput"/>
         {this.state.note==''?<Image source={require('../../Images/ic_edit.png')} style={{width:12,height:12,position:'absolute',right:width/2-30,bottom:4}}/>:null}
       </View>
-      <View style={{marginTop:30,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
+      <View style={{marginTop:20,width:width,alignItems:'center',justifyContent:'space-around',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>{this._changeToShare()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:170,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>SHARE</Text></View></TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._doneRunEnd()}}><View style={{backgroundColor:'rgba(20,139,205,1)',height:40,width:170,alignItems:'center',justifyContent:'center',borderRadius:4}}><Text style={{color:'white',fontSize:12,fontWeight:'bold'}}>DONE</Text></View></TouchableOpacity>
       </View>
