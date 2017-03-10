@@ -82,6 +82,7 @@ class AppIntros extends Component {
       backgroundColor: '#fa931d',
       fontColor: '#fff',
       level: 10,
+      fontWeight:'bold'
     }, {
       title: 'SHARE',
       description: 'Description 2',
@@ -91,6 +92,7 @@ class AppIntros extends Component {
       },
       backgroundColor: '#a4b602',
       fontColor: '#fff',
+      fontWeight:'bold',
       level: 10,
     },{
       title: 'REWARDS',
@@ -102,12 +104,14 @@ class AppIntros extends Component {
       backgroundColor: '#a4b602',
       fontColor: '#fff',
       level: 10,
+      fontWeight:'bold'
     },{
       title: 'EVENTS',
       description: 'Description 2',
       imgStyle: {
         height: 93 * 2.5,
         width: 103 * 2.5,
+        fontWeight:'bold'
       },
       backgroundColor: '#a4b602',
       fontColor: '#fff',
@@ -118,7 +122,7 @@ class AppIntros extends Component {
       <ImageSequence
         images={images}
         startFrameIndex={0}
-        style={{width: 250, height: 250,position:'absolute',top:height*0.05,left:this.state.imageLeft}} />
+        style={{width: 150, height: 150,position:'absolute',top:height*0.3,left:this.state.imageLeft}} />
       <AppIntro
       showSkipButton={false}
       showDoneButton={true}
@@ -134,7 +138,7 @@ class AppIntros extends Component {
           <View style={{height:height*0.5,backgroundColor:'#148BCD',alignItems:'center'}}>
             <View style={{paddingTop:40}}>
               <Text style={{fontSize:24,alignSelf:'center',color:'white'}}>FEED</Text>
-              <Text style={{fontSize:14,alignSelf:'center',color:'white'}}>customized news feed to fityourrun status</Text>
+              <Text style={{fontSize:14,alignSelf:'center',color:'white'}}>customized news feed to fit your run status</Text>
             </View>
           </View>
         </View>

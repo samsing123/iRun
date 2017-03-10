@@ -652,15 +652,15 @@ class Intro extends Component {
     }else{
       content = <Tabs selected={this.state.page} style={{backgroundColor:'white'}} onSelect={el=>this._tabChange(el.props.name)}>
           <View name="home" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_home.png')} style={{width:24,height:24,tintColor:this.state.t1c}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:8,color:this.state.t1c,fontWeight:(this.state.t1c=='#349AD4')?'bold':''}}>{Global.language.home}</Text></View>
+          <Text style={{fontSize:8,color:this.state.t1c,fontWeight:(this.state.t1c=='#349AD4')?'bold':'100'}}>{Global.language.home}</Text></View>
           <View name="event" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_event.png')} style={{width:24,height:24,tintColor:this.state.t2c}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:8,color:this.state.t2c,fontWeight:(this.state.t2c=='#349AD4')?'bold':''}}>{Global.language.events}</Text></View>
+          <Text style={{fontSize:8,color:this.state.t2c,fontWeight:(this.state.t2c=='#349AD4')?'bold':'100'}}>{Global.language.events}</Text></View>
           <View name="run" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_run.png')} style={{width:24,height:24,tintColor:this.state.t3c}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:8,color:this.state.t3c,fontWeight:(this.state.t3c=='#349AD4')?'bold':''}}>{Global.language.run}</Text></View>
+          <Text style={{fontSize:8,color:this.state.t3c,fontWeight:(this.state.t3c=='#349AD4')?'bold':'100'}}>{Global.language.run}</Text></View>
           <View name="reward" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_reward.png')} style={{width:24,height:24,tintColor:this.state.t4c}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:8,color:this.state.t4c,fontWeight:(this.state.t4c=='#349AD4')?'bold':''}}>{Global.language.reward}</Text></View>
+          <Text style={{fontSize:8,color:this.state.t4c,fontWeight:(this.state.t4c=='#349AD4')?'bold':'100'}}>{Global.language.reward}</Text></View>
           <View name="more" style={{flexDirection:'column',alignItems:'center'}}><Image source={require('../../Images/btn_more.png')} style={{width:24,height:24,tintColor:this.state.t5c}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:8,color:this.state.t5c,fontWeight:(this.state.t5c=='#349AD4')?'bold':''}}>{Global.language.more}</Text></View>
+          <Text style={{fontSize:8,color:this.state.t5c,fontWeight:(this.state.t5c=='#349AD4')?'bold':'100'}}>{Global.language.more}</Text></View>
       </Tabs>
     }
 

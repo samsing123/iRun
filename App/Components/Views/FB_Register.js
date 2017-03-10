@@ -343,7 +343,7 @@ class FB_Register extends Component {
       {(this.state.isLoading)?this._renderLoading():console.log()}
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
       <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
-        <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
+        <View style={{paddingTop:height*0.13,width:width,alignItems:'center'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>ALMOST THERE</H1>
           <View style={{paddingTop:20}}>
             {photoImage}
@@ -354,7 +354,7 @@ class FB_Register extends Component {
         </View>
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:12}}>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name(8-20 characters)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+            <TextInput minLength={8} maxLength={20} placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name (8-20 characters)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
             <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>

@@ -1082,7 +1082,7 @@ class Map extends Component {
     return (
       <View style={{flex:1}}>
       <ScrollView scrollEnabled={false}>
-        <View ref="mapInfoImage" style={{backgroundColor:'white',borderTopColor:'#48d1cc',borderStyle:'solid',borderTopWidth:1,marginTop:Global.navbarHeight}}>
+        <View ref="mapInfoImage" style={{backgroundColor:'white',borderTopColor:'rgba(20,139,205,1)',borderStyle:'solid',borderTopWidth:1,marginTop:Global.navbarHeight}}>
           <View style={styles.container}>
             {!this.state.camera_image?<MapView
               ref="map"

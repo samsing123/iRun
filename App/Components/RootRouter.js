@@ -434,8 +434,8 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>
                 <Scene key="home" component={Home} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}/>
                 <Scene renderRightButton={createRightButton} key="frontpage" component={FrontPage} title="FrontPage" hideNavBar={true} initial={is_frontpage}/>
-                <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={true}/>
-                <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={true}/>
+                <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="personalinformation"  component={PersonalInformation} title="personalinformation" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="intro2" component={Intro2} title="Page2"/>
                 <Scene renderRightButton={createRightButton} key="map" component={Map} title="RESULT" />
@@ -443,7 +443,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="verify" component={Verify} title="Verify" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="welcome" component={Welcome} title="Welcome" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="feeddetail" component={FeedDetail} title="FeedDetail" hideNavBar={true}/>
-                <Scene renderRightButton={createRightButton} key="fb_register" component={FB_Register} title="FB Register" hideNavBar={true}/>
+                <Scene renderRightButton={createRightButton} key="fb_register" component={FB_Register} title="FB Register" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="running_level" component={Running_level} title="Running Level" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="interest" component={Interest} title="Interest" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="run" component={Run} title="Run"/>

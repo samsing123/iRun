@@ -118,7 +118,7 @@ class Mores extends Component {
               <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.setting}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.personalinformation({type:ActionConst.RESET})}}>
+          <TouchableOpacity onPress={()=>{Actions.appintro({type:ActionConst.RESET})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
               <Text style={{fontSize:14,padding:15,marginLeft:20}}>Back To FontPage (For Testing)</Text>
             </View>

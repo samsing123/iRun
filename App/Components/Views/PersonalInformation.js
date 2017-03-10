@@ -285,13 +285,13 @@ class PersonalInformation extends Component {
     if(number<4){
       next = <View style={{position:'absolute',bottom:30,right:30}}>
         <TouchableOpacity onPress={()=>{this.setState({pageNumber:number+1})}}>
-          <Text style={{color:'#56B3F3'}}>NEXT ></Text>
+          <Text style={{color:'#56B3F3',fontWeight:'bold'}}>NEXT ></Text>
         </TouchableOpacity>
       </View>
     }else{
       next = <View style={{position:'absolute',bottom:30,right:30}}>
         <TouchableOpacity onPress={()=>{Actions.running_level({gender:this.state.gender,ageArr:this.state.ageArr,height:this.state.userHeight,weight:this.state.userWeight})}}>
-          <Text style={{color:'#56B3F3'}}>FINISH</Text>
+          <Text style={{color:'#56B3F3',fontWeight:'bold'}}>FINISH</Text>
         </TouchableOpacity>
       </View>
     }

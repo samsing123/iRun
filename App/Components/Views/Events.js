@@ -337,7 +337,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    //backgroundColor: '#FFFFFF',
+    width:width,
+    height:height,
+    backgroundColor: '#F4F6F9',
     paddingTop:navbarHeight
   },
   scrollContainer:{

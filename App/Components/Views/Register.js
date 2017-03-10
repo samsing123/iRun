@@ -297,7 +297,7 @@ class Register extends Component {
       <Image source={require('../../Images/bg_onboarding.png')} resizeMode={Image.resizeMode.cover} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
       <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
 
-        <View style={{paddingTop:height*0.12,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+        <View style={{paddingTop:height*0.13,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>REGISTER</H1>
           <Text style={{color:'white'}}>Register with your email address</Text>
           <Text style={{color:'white'}}>before starting.</Text>
@@ -313,7 +313,7 @@ class Register extends Component {
             <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="ConfirmPassword" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({confirm_password:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput placeholderTextColor="white" placeholder="Display Name(8-20 characters)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+            <TextInput placeholderTextColor="white" placeholder="Display Name (8-20 characters)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
             <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
