@@ -323,7 +323,7 @@ class Interest extends Component {
     }
   }
 
-  _setInterestForProfileEditing(){
+  _setInterestForProfileEditing(){ //add this function to store the interestData into local
     Global.tempInterest = this.interestArr;
     Global.user_profile.interest = this.interestArr;
     Actions.pop();

@@ -331,11 +331,15 @@ class Tracking extends Component {
   componentWillUnmount(){
     clearInterval(timer);
     clearInterval(musicTimer);
+
     if(subscription!=null){
       subscription.remove();
       subscription=null;
     }
     iTunes.pause();
+    // add this for clear the music timer when user is leaving this page
+    musicTimer = null;
+    iTunes = null;
   }
 
   resetListener(){
@@ -392,8 +396,8 @@ class Tracking extends Component {
       musicTimer = setInterval(()=>{
         musicDuration++;
         console.log('music time:'+musicDuration);
-        if(Global.iosPlayList && 
-          Global.iosPlayList.length > 0 && 
+        if(Global.iosPlayList &&
+          Global.iosPlayList.length > 0 &&
           Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
           if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
             Global.currentPlayingIndex = -1; // reset the playing pointer to first track
@@ -407,6 +411,7 @@ class Tracking extends Component {
   }
   _pauseMusicTimer(){
     clearInterval(musicTimer);
+
   }
   _resumeMusicTimer(){
     this.startMusicTimer();
@@ -697,12 +702,12 @@ class Tracking extends Component {
   }
   _resumeRun(){
     if (Global.iosPlayList.length>0)
-      this._playMusic();
-    this.setState({
-      opacity:this.state.opacity==0?0.8:0,
-      canPress:true
-    });
-    this._resumeTimer();
+      //this._playMusic();
+      this.setState({
+        opacity:this.state.opacity==0?0.8:0,
+        canPress:true
+      });
+      this._resumeTimer();
   }
 
   _clickToPause(){
@@ -1076,8 +1081,8 @@ class Tracking extends Component {
               <TouchableOpacity onPress={()=>{this._goToPre()}} hitSlop={{top:10,left:10,right:10,bottom:10}}  style={{marginRight:50}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>
               {
                 this.state.is_playing?
-                  <TouchableOpacity 
-                    onPress={()=>{this._pauseMusic()}} 
+                  <TouchableOpacity
+                    onPress={()=>{this._pauseMusic()}}
                     hitSlop={{top:10,left:10,right:10,bottom:10}}>
                     <Icon name="pause" size={13} color="rgba(255,255,255,1)"/>
                   </TouchableOpacity>:
