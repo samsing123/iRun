@@ -21,7 +21,8 @@ import {
   Switch,
   TouchableWithoutFeedback,
   Keyboard,
-  BackAndroid
+  BackAndroid,
+  StatusBar
 } from 'react-native';
 import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -290,6 +291,11 @@ class FB_Register extends Component {
     }
     
   }
+  _checkLength() {
+    if (this.state.display_name.length < 8) {
+      alert("Display name length at least 8 characters")
+    }
+  } 
   /*
   static renderNavigationBar(props){
     return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
@@ -338,12 +344,16 @@ class FB_Register extends Component {
       </View>)
     }
     return (
+      
       <TouchableWithoutFeedback onPress={()=>{this._hideDatePicker();DismissKeyboard()}}>
       <View>
       {(this.state.isLoading)?this._renderLoading():console.log()}
       <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
+      <TouchableOpacity onPress={()=>{Actions.frontpage();console.log("pressed back")}} style={{zIndex:3,alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+         <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
+      </TouchableOpacity>
       <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
-        <View style={{paddingTop:height*0.13,width:width,alignItems:'center'}}>
+        <View style={{paddingTop:height*0.12,width:width,alignItems:'center'}}>
           <H1 style={{color:"white",fontWeight:'bold'}}>ALMOST THERE</H1>
           <View style={{paddingTop:20}}>
             {photoImage}
@@ -354,16 +364,16 @@ class FB_Register extends Component {
         </View>
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:12}}>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput minLength={8} maxLength={20} placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name (8-20 characters)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+            <TextInput minLength={8} maxLength={20} placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name (8-20 characters)" onBlur={()=>this._checkLength()} style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})} onBlur={()=>this._checkLength()}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+            <TextInput onFocus={()=>this._checkLength()} maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:14}}>{this.state.birthday}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._showDatePicker();this._checkLength()}}><Text style={{color:'white',fontSize:14}}>{this.state.birthday}</Text></TouchableOpacity>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
+            <TextInput keyboardType="email-address" placeholderTextColor="white" onFocus={()=>this._checkLength()} placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
           <View style={{width:width-64,marginTop:16}}>
             <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>
@@ -387,7 +397,7 @@ class FB_Register extends Component {
             </View>
           </View>
           <View style={{paddingTop:10}}>
-            <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
+            <Button onPress={()=>{this._vaildateFormSubmit();this._checkLength()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
           </View>
           <View style={{paddingTop:5,flexDirection:'row'}}>
             <Text style={{color:"white"}}>Already a member? </Text><TouchableOpacity onPress={()=>{Actions.login({type:ActionConst.REPLACE})}}><Text style={{textDecorationLine:'underline',color:"white"}}>Sign In</Text></TouchableOpacity>

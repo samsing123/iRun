@@ -79,10 +79,12 @@ class Intro extends Component {
       aqi:0,
       eventLoading:true,
       scrollY:0,
+      testComponentDidMount: false
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
+    console.log('landing home', "constructor")
 
   }
 
@@ -183,13 +185,14 @@ class Intro extends Component {
           </Image>
 
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
-            <Text style={{fontSize:14,color:'white',padding:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.tag}</Text>
-            <Text style={{fontSize:20,color:'white',paddingLeft:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{Util._removeSymbol(news.title)}</Text>
+            <Text style={{fontSize:14,color:'white',padding:8,}}>{news.tag}</Text>
+            <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{Util._removeSymbol(news.title)}</Text>
           </View>
         </TouchableOpacity>
       );
     });
   }
+  //removed shadow,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'
   _renderEventList(){
     return Global.eventArr.map(function(news, i){
       var image;
@@ -212,8 +215,8 @@ class Intro extends Component {
         )}} key={i}>
           {image}
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
-            <Text style={{fontSize:14,color:'white',padding:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.date}</Text>
-            <Text style={{fontSize:20,color:'white',paddingLeft:8,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'}}>{news.title}</Text>
+            <Text style={{fontSize:14,color:'white',padding:8}}>{news.date}</Text>
+            <Text style={{fontSize:20,color:'white',paddingLeft:8}}>{news.title}</Text>
           </View>
         </TouchableOpacity>
       )
@@ -389,14 +392,19 @@ class Intro extends Component {
     this.refs.fitnesstrackerAlert.close();
   }
 
+
   componentDidMount(){
+    this.state.testComponentDidMount = true;
+    console.log("landing home", "componentDidMount"); 
     if(this.props.isReset){
       this.props.isReset = false;
       Actions.home({type:'reset',title:'HOME1'});
     }
     if(Global.is_facebook&&!Global.first_time_fb){
+      console.log("landing home", "_facebookAutoLogin");      
       this._facebookAutoLogin();
     }else{
+      console.log("landing home", "_autoLogin");
       this._autoLogin();
     }
     Global.eventArr = [];
@@ -475,7 +483,11 @@ class Intro extends Component {
 
       var weatherImagePath = Util._getWeatherImage(weatherNumber);
       var Home = <View style={{height:height-130}}>
-      <ScrollView contentOffset={{x:0,y:this.state.scrollY}} ref={(scrollView) => { this.homeScroll = scrollView; }} contentContainerStyle={styles.scrollContainer} pagingEnabled={true} onScroll={this._handleScroll} scrollEventThrottle={16}>
+      <ScrollView contentOffset={{x:0,y:this.state.scrollY}} 
+        ref={(scrollView) => { this.homeScroll = scrollView; }} 
+        contentContainerStyle={styles.scrollContainer} 
+        pagingEnabled={true} onScroll={this._handleScroll} 
+        scrollEventThrottle={16}>
         <View>
           <Image source={{uri:Global.serverHost+'images/'+bgImage}} style={{height:height*0.5,width:width}}/>
           <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
@@ -521,6 +533,7 @@ class Intro extends Component {
       var Reward = <Rewards />;
       var More = <Mores />;
       var currentPage = Home;
+      console.log("landing page", this.props.tab);
       switch(this.props.tab){
         case 'reward':currentPage = Reward;this._tabChange('reward');break;
         case 'history':Reward = <Rewards tab='history'/>;currentPage = Reward;this._tabChange('reward');break;
@@ -539,9 +552,6 @@ class Intro extends Component {
     .catch((error) => {
       console.warn(error);
     });
-
-
-
   }
 
   _getProfile(){

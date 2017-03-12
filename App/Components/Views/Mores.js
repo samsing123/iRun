@@ -100,7 +100,7 @@ class Mores extends Component {
 
         </Image>
         <View style={{height:height-185,paddingLeft:10,paddingRight:10,width:width,paddingTop:5}}>
-          <TouchableOpacity onPress={()=>{Actions.profile({title:Global.language.profile})}}>
+          <TouchableOpacity onPress={()=>{Actions.profile({title:Global.language.profile.toUpperCase()})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
               <Image source={require('../../Images/btn_profile.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
               <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.profile}</Text>

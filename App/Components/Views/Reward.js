@@ -77,6 +77,7 @@ class Events extends Component {
       opacity:0,
       scrollValue:0,
     }
+    console.log("enter Reward")
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');

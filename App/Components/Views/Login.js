@@ -319,6 +319,9 @@ class Login extends Component {
     return (
         <View style={{flex:1}}>
         <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/bg_onboarding.png')} />
+          <TouchableOpacity onPress={()=>{Actions.frontpage();console.log("pressed back")}} style={{zIndex:3,alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+            <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
+          </TouchableOpacity>
         <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false} >
 
           <View style={{paddingTop:height*0.2,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
@@ -343,7 +346,7 @@ class Login extends Component {
             <View style={{width:width,alignItems:'center',paddingTop:30,paddingBottom:30}}>
               <Text style={{color:'white'}}>OR</Text>
             </View>
-            <View style={{paddingTop:12,backgroundColor:'rgba(0,0,0,0)'}}>
+            <View style={{paddingTop:4,backgroundColor:'rgba(0,0,0,0)'}}>
               <Button onPress={()=>{self.loginWithFacebook()}} style={{backgroundColor:'rgba(70,109,215,1)',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN WITH FACEBOOK</Text></Button>
             </View>
 
@@ -351,7 +354,7 @@ class Login extends Component {
 
         </InputScrollView>
         <TouchableOpacity style={{position:'absolute',bottom:0}} onPress={()=>{Actions.pop()}}>
-          <View style={{backgroundColor:'#148BCD',width:width,height:40,alignItems:'center',justifyContent:'center'}}>
+          <View style={{backgroundColor:'#148BCD',paddingTop:8,width:width,height:40,alignItems:'center',justifyContent:'center'}}>
             <Text style={{color:'white'}}>Dont have an Account? Register</Text>
           </View>
         </TouchableOpacity>

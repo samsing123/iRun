@@ -779,6 +779,7 @@ class ProfileEditing extends Component {
   }
 
   render() {
+    console.log("profile editing...")
     var self = this;
     BackAndroid.addEventListener('hardwareBackPress', () => {
         try {
@@ -917,14 +918,14 @@ class ProfileEditing extends Component {
                   <View>
                     <Text style={styles.textColor}>{Global.language.display_name}</Text>
                     <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
-                      <TextInput placeholder='Display Name' value={this.state.display_name} style={{color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({display_name:text})}/>
+                      <TextInput placeholder='Display Name' value={this.state.display_name} style={{color:'white', width:width-50,height:30,}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({display_name:text})}/>
                     </View>
                   </View>
                   <View style={{flexDirection:'row',paddingTop:10}}>
                     <View style={{flex:0.7}}>
                       <Text style={styles.textColor}>{Global.language.email}</Text>
                       <View style={{width:width-160,height:20,justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
-                        <TextInput keyboardType="email-address" ref="email" onSubmitEditing={() => {this.refs['email'].blur();}} onBlur={()=>{this._checkEmail();}} placeholder='Add Email' value={this.state.email} style={{color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({email:text})}/>
+                        <TextInput keyboardType="email-address" ref="email" onSubmitEditing={() => {this.refs['email'].blur();}} onBlur={()=>{this._checkEmail();}} placeholder='Add Email' value={this.state.email} style={{width:width-160,height:20,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({email:text})}/>
                       </View>
                     </View>
                     <View style={{flex:0.3}}>

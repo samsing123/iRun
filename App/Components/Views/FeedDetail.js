@@ -153,7 +153,7 @@ class FeedDetail extends Component {
       tag = <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,paddingTop:18,fontWeight:'bold'}}>{this.props.tag}</Text>;
     }
     return (
-      <GestureRecognizer
+      <View
       style={styles.container}>
         <StatusBar
            backgroundColor="rgba(0,0,0,0)"
@@ -213,7 +213,7 @@ class FeedDetail extends Component {
         <View style={{backgroundColor:'rgba(0,0,0,0)',position:'absolute',top:this.state.share_icon_pos,right:16,zIndex:100}}>
           <TouchableOpacity onPress={()=>{this._shareToFacebook()}} transparent={true}><Image style={{width:56,height:56}} source={require('../../Images/ic_share.png')}/></TouchableOpacity>
         </View>
-      </GestureRecognizer>
+      </View>
     );
   }
 }

@@ -322,7 +322,8 @@ class Run extends Component {
 
   render() {
     var self = this;
-    const run_now = <View style={{width:width,height:height-185}}>
+    const run_now = (
+    <View style={{width:width,height:height-185}}>
       <Image style={{width:width,height:height-185}} source={require('../../Images/bg_runnow.png')} resizeMode={Image.resizeMode.cover} />
       <View style={{position:'absolute',top:46,left:0,backgroundColor:'rgba(0,0,0,0)',height:200}}>
         <Text style={styles.t1}>{this.state.t1}</Text>
@@ -346,7 +347,8 @@ class Run extends Component {
           </TouchableOpacity>
         </View>
       </View>
-    </View>;
+    </View>);
+
     const run_session = <Image source={require('../../Images/bg_run.png')} style={{width:width,height:height-185,backgroundColor:'white',alignItems:'center'}}>
       <View style={{width:width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0)',paddingTop:24}}>
         <Text style={{fontSize:24,fontWeight:'bold',color:'white'}}>SET UP A GOAL FOR THIS</Text>
@@ -360,7 +362,7 @@ class Run extends Component {
           </View>
           <View>
           <Image style={{height:15,width:15,tintColor:'white',position:'relative',top:15}} 
- source={require('../../Images/btn_next.png')} resizeMode={Image.resizeMode.contain}></Image>
+            source={require('../../Images/btn_next.png')} resizeMode={Image.resizeMode.contain}></Image>
           </View>
         </View>
       </TouchableOpacity>
@@ -374,7 +376,7 @@ class Run extends Component {
           </View>
           <View>
           <Image style={{height:15,width:15,tintColor:'white',position:'relative',top:15}} 
- source={require('../../Images/btn_next.png')} resizeMode={Image.resizeMode.contain}></Image>
+            source={require('../../Images/btn_next.png')} resizeMode={Image.resizeMode.contain}></Image>
           </View>
         </View>
       </TouchableOpacity>
@@ -563,15 +565,25 @@ class Run extends Component {
       <View style={{height:100,width:width,backgroundColor:'white'}}/>
     </ScrollView>;
 
-    const run_now_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
-      <View style={{borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)',fontWeight: 'bold'}}>{Global.language.run_now}</Text></View>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_now:false,is_run_plan:false})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_session}</Text></TouchableOpacity>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_plan:true})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>RUN PLAN</Text></TouchableOpacity>
+    const run_now_title = 
+    <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
+      <View style={{width:width*0.5-20, borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)',fontWeight: 'bold'}}>{Global.language.run_now}</Text></View>
+      <TouchableOpacity style={{width:width*0.5-20,alignItems:'center',justifyContent:'center'}} 
+        onPress={()=>{this.setState({is_run_now:false,is_run_plan:false})}} 
+        hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}>
+          <Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_session}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={{width:0}} onPress={()=>{this.setState({is_run_plan:true})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>RUN PLAN</Text></TouchableOpacity>
     </View>;
-    const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_now:true,is_run_plan:false})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_now}</Text></TouchableOpacity>
-      <View style={{borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)',fontWeight: 'bold'}}>{Global.language.run_session}</Text></View>
-      <TouchableOpacity onPress={()=>{this.setState({is_run_plan:true})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>RUN PLAN</Text></TouchableOpacity>
+    const run_session_title = 
+    <View style={{width:width, height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
+      <TouchableOpacity style={{width:width*0.5-20,alignItems:'center',justifyContent:'center'}} 
+        onPress={()=>{this.setState({is_run_now:true,is_run_plan:false})}} 
+        hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}>
+          <Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_now}</Text>
+      </TouchableOpacity>
+      <View style={{width:width*0.5-20, borderBottomWidth:4,borderBottomColor:'rgba(227,1,58,1)',height:55,alignItems:'center',justifyContent:'center'}}><Text style={{color:'rgba(227,1,58,1)',fontWeight: 'bold'}}>{Global.language.run_session}</Text></View>
+      <TouchableOpacity style={{width:0}} onPress={()=>{this.setState({is_run_plan:true})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>RUN PLAN</Text></TouchableOpacity>
     </View>;
     const run_plan_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:20,paddingRight:20}}>
       <TouchableOpacity onPress={()=>{this.setState({is_run_now:true,is_run_plan:false})}} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}><Text style={{color:'rgba(155,155,155,1)'}}>{Global.language.run_now}</Text></TouchableOpacity>

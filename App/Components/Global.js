@@ -12,7 +12,7 @@ import {Platform,StatusBar,TouchableOpacity,Image,Dimensions,AsyncStorage} from 
 import AppEventEmitter from "../Services/AppEventEmitter";
 function createLeftButton() {
       return (
-          <TouchableOpacity onPress={()=>{Actions.inbox()}}>
+          <TouchableOpacity onPress={()=>{if (Actions)Actions.inbox()}}>
                 <Image source={require('../Images/btn_email_not.png')} style={{width:30,height:20}} resizeMode={Image.resizeMode.contain}/>
           </TouchableOpacity>
       );
@@ -272,11 +272,11 @@ async function _saveMobileNumber(number){
     }
 }
 var status_bar = null;
- var no_status_bar = <StatusBar
-    backgroundColor="rgba(0,0,0,0)"
-    barStyle="light-content"
-    translucent={true}
-  />;
+var no_status_bar = <StatusBar
+  backgroundColor="rgba(0,0,0,0)"
+  barStyle="light-content"
+  translucent={true}
+/>;
 var navbarHeight = Platform.OS === 'ios' ? 64 : 54;
 var Global = {
     version:'v1.1.25', // v1.2.1

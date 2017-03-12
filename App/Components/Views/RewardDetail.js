@@ -228,7 +228,7 @@ class RewardDetail extends Component {
     return (
       <View style={styles.container}>
 
-        {Global.no_status_bar}
+        {Global.status_bar}
 
          <ParallaxScrollView
           backgroundColor="white"
@@ -345,7 +345,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-  },
+ 		paddingTop:navbarHeight
+ },
   modal3: {
     height: 300,
     width: 300

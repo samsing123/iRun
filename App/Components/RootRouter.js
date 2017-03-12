@@ -53,6 +53,7 @@ import redeemhistorysummary from './Views/RedeemHistorySummary';
 import profileediting from './Views/ProfileEditing';
 import runplansetting from './Views/RunPlanSetting';
 import eventform from './Views/EventForm';
+import tmp from './Views/Tmp';
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -75,7 +76,7 @@ var rewardArr = [];
 var createRightButton = function() {
       return (
           <View>
-                <Image source={require('../Images/img_axalogo.png')} style={{width:30,height:30,position:'relative',right:-4}} resizeMode={Image.resizeMode.contain}/>
+                <Image source={require('../Images/img_axalogo.png')} style={{width:30,height:30,position:'relative',right:-4,top:-8}} resizeMode={Image.resizeMode.contain}/>
           </View>
       );
 }
@@ -394,6 +395,11 @@ export default class RootRouter extends Component {
     shouldComponentUpdate(){
       return this.state.shouldUpdate;
     }
+    _renderTitle(title) {
+      return(
+        <View><Text style={{color:"red"}}></Text></View>
+      );
+    }
     /*'CircleFlip', 'Bounce', 'Wave', 'WanderingCubes', 'Pulse', 'ChasingDots', 'ThreeBounce', 'Circle', '9CubeGrid', 'WordPress', 'FadingCircle', 'FadingCircleAlt', 'Arc', 'ArcAlt'*/
     render() {
         if(this.state.loading||this.state.eventLoading){
@@ -420,6 +426,7 @@ export default class RootRouter extends Component {
               return true;
             }
         });
+        
 
         // this.setState({
         //   shouldUpdate:false
@@ -432,10 +439,13 @@ export default class RootRouter extends Component {
         const scenes = Actions.create(
             <Scene key="scene">
                 <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>
-                <Scene key="home" component={Home} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}/>
+                <Scene key="home" component={Home} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}>
+                </Scene>
+                <Scene key="tmp" component={tmp} />
+                
                 <Scene renderRightButton={createRightButton} key="frontpage" component={FrontPage} title="FrontPage" hideNavBar={true} initial={is_frontpage}/>
-                <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={false}/>
-                <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={true}/>
+                <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="personalinformation"  component={PersonalInformation} title="personalinformation" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="intro2" component={Intro2} title="Page2"/>
                 <Scene renderRightButton={createRightButton} key="map" component={Map} title="RESULT" />
@@ -443,7 +453,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="verify" component={Verify} title="Verify" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="welcome" component={Welcome} title="Welcome" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="feeddetail" component={FeedDetail} title="FeedDetail" hideNavBar={true}/>
-                <Scene renderRightButton={createRightButton} key="fb_register" component={FB_Register} title="FB Register" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="fb_register" component={FB_Register} title="FB Register" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="running_level" component={Running_level} title="Running Level" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="interest" component={Interest} title="Interest" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="run" component={Run} title="Run"/>
@@ -455,7 +465,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="eventdetail" component={eventDetail} title="Event" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="profile" component={profile} title="PROFILE" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="setting" component={setting} title="SETTING" hideNavBar={false}/>
-                <Scene renderRightButton={createRightButton}key="rewarddetail" component={rewarddetail} title="REWARDDetail" hideNavBar={true}/>
+                <Scene renderRightButton={createRightButton}key="rewarddetail" component={rewarddetail} title="REWARDDetail" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="redeemform" component={redeemform} title="REDEMPTION FORM" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton}key="redeemsummary" component={redeemsummary} title="CONFIRMATION" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="inbox" component={inbox} title="INBOX" hideNavBar={false}/>
@@ -481,7 +491,7 @@ export default class RootRouter extends Component {
             </Scene>
         );
         return(
-            <Router hideNavBar={false} scenes={scenes}>
+            <Router hideNavBar={false} scenes={scenes} titleStyle={{marginTop:5}}>
 
             </Router>
         )

@@ -392,7 +392,9 @@ class Tracking extends Component {
       musicTimer = setInterval(()=>{
         musicDuration++;
         console.log('music time:'+musicDuration);
-        if(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
+        if(Global.iosPlayList && 
+          Global.iosPlayList.length > 0 && 
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
           if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
             Global.currentPlayingIndex = -1; // reset the playing pointer to first track
           }
@@ -656,6 +658,7 @@ class Tracking extends Component {
 
   _endRun(){
     var polyline = Polyline.encode(Global.polylineArr);
+    //this._pauseMusic();
     Location.stopUpdatingLocation();
     if(subscription!=null){
       subscription.remove();
@@ -693,6 +696,8 @@ class Tracking extends Component {
     });
   }
   _resumeRun(){
+    if (Global.iosPlayList.length>0)
+      this._playMusic();
     this.setState({
       opacity:this.state.opacity==0?0.8:0,
       canPress:true
@@ -701,7 +706,9 @@ class Tracking extends Component {
   }
 
   _clickToPause(){
+    console.log("clicked to pause");
     this._pauseTimer();
+    this._pauseMusic();
     this.setState({
       opacity:this.state.opacity==0?0.8:0,
       canPress:false
@@ -878,10 +885,18 @@ class Tracking extends Component {
       return (
         <View style={{width:width,height:height,position:'absolute',top:0,left:0,opacity:this.state.opacity,backgroundColor:'white'}}>
           <View style={{flexDirection:'row',width:width,alignItems:'center',justifyContent:'space-around',height:82,position:'absolute',bottom:111}}>
-            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_location.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._endRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_stop.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._resumeRun()}}><Image style={{width:82,height:82}} source={require('../../Images/btn_play.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
-            <TouchableOpacity onPress={()=>{this._openCamera()}}><Image style={{width:48,height:48}} source={require('../../Images/btn_cam.png')} resizeMode={Image.resizeMode.contain}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._openRealTimeMap()}}>
+              <Image style={{width:48,height:48}} source={require('../../Images/btn_location.png')} resizeMode={Image.resizeMode.contain}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._endRun()}}>
+              <Image style={{width:82,height:82}} source={require('../../Images/btn_stop.png')} resizeMode={Image.resizeMode.contain}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._resumeRun()}}>
+              <Image style={{width:82,height:82}} source={require('../../Images/btn_play.png')} resizeMode={Image.resizeMode.contain}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._openCamera()}}>
+              <Image style={{width:48,height:48}} source={require('../../Images/btn_cam.png')} resizeMode={Image.resizeMode.contain}/>
+            </TouchableOpacity>
           </View>
         </View>
       )
@@ -1018,8 +1033,6 @@ class Tracking extends Component {
     }
 
     return (
-
-
       <View style={styles.container} {...this._panResponder.panHandlers}>
       <MapView
         liteMode
@@ -1028,9 +1041,9 @@ class Tracking extends Component {
         followsUserLocation={true}
       >
       </MapView>
-        <View style={{alignItems:'center',width:width,paddingTop:height*0.15}}>
+      <View style={{alignItems:'center',width:width,paddingTop:height*0.15}}>
           <Text style={{fontSize:95,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:25}}>{main_value}</Text>
-        </View>
+      </View>
         <View style={{flex:1,backgroundColor:'rgba(21,139,205,1)',width:width,alignItems:'center'}}>
           <View style={{paddingTop:15}}>
             <Text style={{color:'white',fontWeight:'bold',fontSize:24}}>{main_unit}</Text>
@@ -1050,7 +1063,9 @@ class Tracking extends Component {
               </TouchableOpacity>
           </View>
           <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:30}}>
-            <TouchableOpacity onPress={()=>{this._clickToPause()}}><Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={require('../../Images/btn_runpause.png')}/></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._clickToPause()}}>
+              <Image style={{width:width/3,height:120}} resizeMode={Image.resizeMode.contain} source={require('../../Images/btn_runpause.png')}/>
+            </TouchableOpacity>
             {/*this._loadingProgress()*/}
           </View>
           <View style={{width:width,backgroundColor:'rgba(155,155,155,0.86)',height:56,position:'absolute',bottom:0,flexDirection:'column'}}>
@@ -1059,7 +1074,17 @@ class Tracking extends Component {
             </View>
             <View style={{width:width,height:28,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
               <TouchableOpacity onPress={()=>{this._goToPre()}} hitSlop={{top:10,left:10,right:10,bottom:10}}  style={{marginRight:50}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>
-              {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._playMusic()}} hitSlop={{top:10,left:10,right:10,bottom:5}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
+              {
+                this.state.is_playing?
+                  <TouchableOpacity 
+                    onPress={()=>{this._pauseMusic()}} 
+                    hitSlop={{top:10,left:10,right:10,bottom:10}}>
+                    <Icon name="pause" size={13} color="rgba(255,255,255,1)"/>
+                  </TouchableOpacity>:
+                  <TouchableOpacity onPress={()=>{this._playMusic()}} hitSlop={{top:10,left:10,right:10,bottom:5}}>
+                    <Icon name="play" size={13} color="rgba(255,255,255,1)"/>
+                  </TouchableOpacity>
+              }
               <TouchableOpacity onPress={()=>{this._goToNext()}} hitSlop={{top:10,left:10,right:10,bottom:10}} style={{marginLeft:50}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)" /></TouchableOpacity>
               <TouchableOpacity onPress={()=>{Actions.musiclist()}} style={{position:'absolute',right:20,bottom:9}}>
                 <Image source={require('../../Images/btn_music.png')} style={{width:40,height:40}}/>

@@ -128,6 +128,7 @@ class Register extends Component {
       birthday:'Birthday(mm/dd)',
       birthday_data:['01','01'],
       isLoading:false,
+      stretchKeyboardHeight:500
     }
     GoogleAnalytics.setTrackerId('UA-84489321-1');
     GoogleAnalytics.trackScreenView('Home');
@@ -255,6 +256,11 @@ class Register extends Component {
 
     }
   }
+  _checkLength() {
+    if (this.state.display_name.length < 8) {
+      alert("Display name length at least 8 characters")
+    }
+  } 
   async _saveLoginInformation(){
       try{
          await AsyncStorage.setItem('email',this.state.email);
@@ -267,7 +273,8 @@ class Register extends Component {
   }
 
   componentWillMount(){
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', ()=>this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', ()=>this._keyboardDidHide);
   }
 
   componentWillUnmount(){
@@ -276,6 +283,7 @@ class Register extends Component {
 
   _keyboardDidShow(){
     Picker.hide();
+    this.setState({stretchKeyboardHeight:300})
   }
 
   render() {
@@ -293,74 +301,78 @@ class Register extends Component {
     });
     return (
       <TouchableWithoutFeedback onPress={()=>{this._hideDatePicker()}}>
-      <View style={{flex:1}}>
-      <Image source={require('../../Images/bg_onboarding.png')} resizeMode={Image.resizeMode.cover} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
-      <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
+        <View style={{flex:1}}>
+          <Image source={require('../../Images/bg_onboarding.png')} resizeMode={Image.resizeMode.cover} style={{flex:1,width:width,height:height,position:'absolute',top:0,left:0}}/>
+          <TouchableOpacity onPress={()=>{Actions.frontpage();console.log("pressed back")}} style={{zIndex:3,alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+            <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
+          </TouchableOpacity>
+          <InputScrollView style={styles.container} inputs={temp} scrollEnabled={false}>
 
-        <View style={{paddingTop:height*0.13,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
-          <H1 style={{color:"white",fontWeight:'bold'}}>REGISTER</H1>
-          <Text style={{color:'white'}}>Register with your email address</Text>
-          <Text style={{color:'white'}}>before starting.</Text>
-        </View>
-        <View style={{paddingTop:height*0.01,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='email' onChangeText={(text) => this.setState({email:text})}></TextInput>
-          </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Password" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({password:text})}></TextInput>
-          </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="ConfirmPassword" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({confirm_password:text})}></TextInput>
-          </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput placeholderTextColor="white" placeholder="Display Name (8-20 characters)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
-          </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
-          </View>
-          <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10,backgroundColor:'rgba(0,0,0,0)'}}>
-            <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
-          </View>
-          <View style={{width:width-64,marginTop:16}}>
-            <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>
-              <CheckBox
-                checkboxStyle={{width:16,height:16,tintColor:'white'}}
-                checked={this.state.checked}
-                onChange={(checked) => this.setState({checked:checked})}
+            <View style={{paddingTop:height*0.12,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+              <H1 style={{color:"white",fontWeight:'bold'}}>REGISTER</H1>
+              <Text style={{color:'white'}}>Register with your email address</Text>
+              <Text style={{color:'white'}}>before starting.</Text>
+            </View>
+            <View style={{paddingTop:height*0.01,width:width,alignItems:'center',backgroundColor:'rgba(0,0,0,0)'}}>
+              <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
+                <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='email' onChangeText={(text) => this.setState({email:text})}></TextInput>
+              </View>
+              <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
+                <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Password" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({password:text})}></TextInput>
+              </View>
+              <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
+                <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="ConfirmPassword" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({confirm_password:text})}></TextInput>
+              </View>
+              <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
+                <TextInput placeholderTextColor="white" placeholder="Display Name (8-20 characters)" onBlur={()=>this._checkLength()} style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+              </View>
+              <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
+                <TextInput maxLength={8} onFocus={()=>this._checkLength()} keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+              </View>
+              <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10,backgroundColor:'rgba(0,0,0,0)'}}>
+                <TouchableOpacity onPress={()=>{this._showDatePicker();this._checkLength()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
+              </View>
+              <View style={{width:width-64,marginTop:16}}>
+                <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>
+                  <CheckBox
+                    checkboxStyle={{width:16,height:16,tintColor:'white'}}
+                    checked={this.state.checked}
+                    onChange={(checked) => this.setState({checked:checked})}
 
-              />
-              <TouchableWithoutFeedback>
-              <View style={{flexDirection:'column',marginLeft:5}}>
-                <View style={{flexDirection:'row',width:width-40}}>
+                  />
+                  <TouchableWithoutFeedback>
+                  <View style={{flexDirection:'column',marginLeft:5}}>
+                    <View style={{flexDirection:'row',width:width-40}}>
+                      <Text style={{color:'white',fontSize:10}}>
+                        {privacyText}
+                      </Text>
+                    </View>
+                  </View>
+                  </TouchableWithoutFeedback>
+                </View>
+                <View style={{flexDirection:'row',width:width-40,position:'relative',top:-5}}>
                   <Text style={{color:'white',fontSize:10}}>
-                    {privacyText}
+                    {privacyText2}
                   </Text>
                 </View>
               </View>
-              </TouchableWithoutFeedback>
+              <View style={{paddingTop:10}}>
+                <Button onPress={()=>{this._vaildateFormSubmit();this._checkLength()}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
+              </View>
+              <View style={{paddingTop:5,flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
+                <Text style={{color:"white"}}>Already a member? </Text><TouchableOpacity onPress={()=>{Actions.login({type:ActionConst.REPLACE})}}><Text style={{textDecorationLine:'underline',color:"white"}}>Sign In</Text></TouchableOpacity>
+              </View>
             </View>
-            <View style={{flexDirection:'row',width:width-40,position:'relative',top:-5}}>
-              <Text style={{color:'white',fontSize:10}}>
-                {privacyText2}
-              </Text>
-            </View>
-          </View>
-          <View style={{paddingTop:10}}>
-            <Button onPress={()=>{this._vaildateFormSubmit()}}style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER</Text></Button>
-          </View>
-          <View style={{paddingTop:5,flexDirection:'row',backgroundColor:'rgba(0,0,0,0)'}}>
-            <Text style={{color:"white"}}>Already a member? </Text><TouchableOpacity onPress={()=>{Actions.login({type:ActionConst.REPLACE})}}><Text style={{textDecorationLine:'underline',color:"white"}}>Sign In</Text></TouchableOpacity>
-          </View>
+            <View style={{height:0, width: width, backgroundColor:"red"}}/>
+          </InputScrollView>
+          <OrientationLoadingOverlay
+              visible={this.state.isLoading}
+              color="white"
+              indicatorSize="large"
+              messageFontSize={24}
+              message="Loading..."
+              />
         </View>
-      </InputScrollView>
-      <OrientationLoadingOverlay
-          visible={this.state.isLoading}
-          color="white"
-          indicatorSize="large"
-          messageFontSize={24}
-          message="Loading..."
-          />
-      </View>
 
       </TouchableWithoutFeedback>
     );

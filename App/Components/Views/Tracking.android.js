@@ -251,6 +251,22 @@ class Tracking extends Component {
     accelerometer = null;
   }
 
+  _resumeMusic() {
+    if (!music) {
+      this._setupMusic();
+      return;
+    }
+    music.play(success=> {
+      if (success) 
+        ;
+      else 
+        console.log("resume failed");
+    });
+    this.setState({
+          is_playing:true,
+        });
+  }
+
   _setupMusic(){
     if(!Global.musicToPlay.path){
       alert('Please select a music first.');
@@ -279,7 +295,8 @@ class Tracking extends Component {
   }
 
   _pauseMusic(){
-    music.pause();
+    if (music)
+      music.pause();
     this.setState({
       is_playing:false,
     });
@@ -307,6 +324,11 @@ class Tracking extends Component {
       music.release();
     }
     var current = Global.current_playing_index+1;
+    
+    if (current >= Global.tempMusicArr.length) {
+      this._pauseMusic();
+      return;
+    }
     Global.musicToPlay.path = Global.tempMusicArr[current].path;
     Global.musicToPlay.title = Global.tempMusicArr[current].title;
     Global.musicToPlay.singer = Global.tempMusicArr[current].artist;
@@ -692,14 +714,19 @@ class Tracking extends Component {
     });
   }
   _resumeRun(){
+    if(music){
+      this._resumeMusic();
+    }
     this.setState({
       opacity:this.state.opacity==0?0.8:0,
       canPress:true
     });
+    
     this._resumeTimer();
   }
   _clickToPause(){
     this._pauseTimer();
+    this._pauseMusic(); 
     this.setState({
       opacity:this.state.opacity==0?0.8:0,
       canPress:false
@@ -1011,7 +1038,11 @@ class Tracking extends Component {
             </View>}
             <View style={{width:width,height:28,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
               <TouchableOpacity onPress={()=>{this._goToPreAndPlay()}} style={{marginRight:50}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="step-backward" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>
-              {this.state.is_playing?<TouchableOpacity onPress={()=>{this._pauseMusic()}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:<TouchableOpacity onPress={()=>{this._setupMusic()}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>}
+              {
+                this.state.is_playing?
+                  <TouchableOpacity onPress={()=>{this._pauseMusic()}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="pause" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>:
+                  <TouchableOpacity onPress={()=>{this._resumeMusic()}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="play" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>
+              }
               <TouchableOpacity onPress={()=>{this._goToNextAndPlay()}} style={{marginLeft:50}} hitSlop={{top:10,left:10,right:10,bottom:10}}><Icon name="step-forward" size={13} color="rgba(255,255,255,1)"/></TouchableOpacity>
               <TouchableOpacity onPress={()=>{Actions.musiclist({musicArr:tempArr})}} style={{position:'absolute',right:20,bottom:9}}>
                 <Image source={require('../../Images/btn_music.png')} style={{width:40,height:40}}/>
