@@ -380,7 +380,13 @@ class Tracking extends Component {
       musicTimer = setInterval(()=>{
         musicDuration++;
         console.log('music time:'+musicDuration);
-        if(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
+        if(Global.iosPlayList && 
+          Global.iosPlayList.length > 0 && 
+          Global.iosPlayList[Global.selectedPlaylist] &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex] &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
           if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
             Global.currentPlayingIndex = -1; // reset the playing pointer to first track
           }
@@ -394,6 +400,10 @@ class Tracking extends Component {
         console.log('music time:'+musicDuration);
         if(Global.iosPlayList && 
           Global.iosPlayList.length > 0 && 
+          Global.iosPlayList[Global.selectedPlaylist] &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex] &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration &&
           Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].duration<=musicDuration){
           if(Global.currentPlayingIndex==Global.iosPlayList[Global.selectedPlaylist].tracks.length-1){
             Global.currentPlayingIndex = -1; // reset the playing pointer to first track
@@ -945,18 +955,24 @@ class Tracking extends Component {
       return;
     }
     this.startMusicTimer();
-    iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex])
-    .then(res => {
-      console.log('is playing');
-      this.setState({
-        music_title:Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].title,
-        singer:Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].albumArtist,
-        is_playing:true,
-      });
-    })
-    .catch(err => {
-      alert('No Music Selected');
-    });
+    if(Global.iosPlayList && 
+          Global.iosPlayList.length > 0 && 
+          Global.iosPlayList[Global.selectedPlaylist] &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks &&
+          Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex])
+    {    iTunes.playTrack(Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex])
+        .then(res => {
+          console.log('is playing');
+          this.setState({
+            music_title:Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].title,
+            singer:Global.iosPlayList[Global.selectedPlaylist].tracks[Global.currentPlayingIndex].albumArtist,
+            is_playing:true,
+          });
+        })
+        .catch(err => {
+          alert('No Music Selected');
+        });
+    } 
   }
 
   _goToPre(){

@@ -305,16 +305,20 @@ class Run extends Component {
 
   _goToMusicList(){
       if(Platform.OS=='ios'){
-        iTunes.getPlaylists()
-        .then(playlists => {
-          if(playlists.length!=0){
-            Actions.musiclist();
-          }
-          
-        })
-        .catch(err=>{
-          alert('You need to allow iRun to access your apple music.');
-        });
+        
+          iTunes.getPlaylists()
+          .then(playlists => {
+            console.log("gotomusiclist run.js")
+            if(playlists.length!=0){
+              console.log("gotomusiclist run.js 2")
+              Actions.musiclist();
+            }
+            
+          })
+          .catch(err=>{
+            alert('You need to allow iRun to access your apple music.');
+          });
+       
       }else{
         Actions.musiclist({list:tempArr});
       }
