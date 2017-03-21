@@ -81,7 +81,7 @@ class Intro extends Component {
       scrollY:0,
       testComponentDidMount: false
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     console.log('landing home', "constructor")
@@ -323,10 +323,13 @@ class Intro extends Component {
         }
       });
     }else{
+      console.log("auto login android")
       var self = this;
       OneSignal.configure({
           onIdsAvailable: function(device) {
+            
               Global.onesignal_devicetoken = device.userId;
+              console.log("auto login android onesignal");
               let data = {
                 method: 'POST',
                 body: JSON.stringify({
@@ -340,14 +343,18 @@ class Intro extends Component {
                   'Content-Type': 'application/json',
                 }
               };
+              console.log("onesignal before send request")
               Global._sendPostRequest(data,'api/login',(v)=>{
+                console.log("auto login android before eventList");
                 self._getEventList();
+                console.log("auto login before getProfile");
                 self._getProfile();
+                console.log("auto login android api login");
                 console.log(v);
               });
           },
         onNotificationOpened: function(message, data, isActive) {
-
+            console.log("auto login android onNotificationOpened");
             // Do whatever you want with the objects here
             // _navigator.to('main.post', data.title, { // If applicable
             //  article: {
@@ -528,7 +535,7 @@ class Intro extends Component {
           </View>
       </View>
       */
-      var Runs = <Run />;
+      var Runs = <View style={styles.withBorder}><Run /></View>;
       var Event = <Events />;
       var Reward = <Rewards />;
       var More = <Mores />;
@@ -694,6 +701,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  withBorder: {
+    borderTopColor:"rgba(20,139,205,1)", borderTopWidth:1,
   },
   scrollContainer:{
     justifyContent: 'center',

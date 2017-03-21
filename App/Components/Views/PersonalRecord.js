@@ -151,7 +151,7 @@ class PersonalRecord extends Component {
       is_loading:true,
       personalRecord:personalRecord,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     rewardArr = [];

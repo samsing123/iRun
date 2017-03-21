@@ -89,7 +89,7 @@ class Inbox extends Component {
 			isDelete:false,
 			isDeleteAll:false,
 		}
-		GoogleAnalytics.setTrackerId('UA-84489321-1');
+		GoogleAnalytics.setTrackerId('UA-90865128-2');
 		GoogleAnalytics.trackScreenView('Home');
 		GoogleAnalytics.trackEvent('testcategory', 'testaction');
 		rewardArr = [];
@@ -503,9 +503,7 @@ class Inbox extends Component {
 		return Global.inbox_list.map(function(msg, i){
 			var bgColor = 'rgba(255,0,0,1)';
 			var isDelete = self._findInArray(i);
-			console.log("message time",msg.msg_time)
-			console.log("message time",msg.msg_time.slice(0,10))
-			console.log("message time",msg.msg_time.slice(12,22))
+			
 			if(msg.is_read){
 				bgColor = 'rgba(0,0,0,0)';
 			}

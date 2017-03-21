@@ -78,7 +78,7 @@ class Mores extends Component {
       opacity:0,
       scrollValue:0,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -95,8 +95,9 @@ class Mores extends Component {
   render() {
 
     return (
+      <ScrollView>
       <View style={styles.container}>
-        <Image style={{height:210,width:width,backgroundColor:'black'}} source={require('../../Images/bg_more.png')}>
+        <Image style={{height:280,width:width,backgroundColor:'black'}} source={require('../../Images/bg_more.png')}>
 
         </Image>
         <View style={{height:height-185,paddingLeft:10,paddingRight:10,width:width,paddingTop:5}}>
@@ -118,13 +119,19 @@ class Mores extends Component {
               <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.setting}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.appintro({type:ActionConst.RESET})}}>
+          <TouchableOpacity onPress={()=>{Actions.login({type:ActionConst.RESET})}}>
+            <View style={{borderBottomWidth:1,borderBottomColor:'rgba(0,0,0,0)'}}>
+              <Text style={{fontSize:14,padding:15,marginLeft:20,color:'rgba(0,0,0,0)'}}>Back To FontPage (For Testing)</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.running_level()}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
-              <Text style={{fontSize:14,padding:15,marginLeft:20}}>Back To FontPage (For Testing)</Text>
+              <Text style={{fontSize:14,padding:15,marginLeft:20,color:'rgba(0,0,0,0)'}}>Emergenct Contacct</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
+      </ScrollView>
     );
   }
 }

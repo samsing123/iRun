@@ -53,7 +53,7 @@ var testingFeed={
 };
 var count = 0;
 class EventDetail extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     var webviewWidth = width;
     this.state={
@@ -74,10 +74,13 @@ class EventDetail extends Component {
       videoContent:'<html><iframe align="center" width="'+webviewWidth+'" height="240" src="https://www.youtube.com/embed/ePpPVE-GGJw" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
       share_icon_pos:208,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
+
+    console.log("event detail props", this.props.title);
   }
+
   _shareToFacebook(){
     return ShareDialog.show(this.state.shareLinkContent);
   }
@@ -86,12 +89,16 @@ class EventDetail extends Component {
     return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
   }
   */
-  componentDidMount(){
+  componentWillMount(){
     count=0;
     var data = {
       method: 'GET'
     };
-    Global._sendGetRequest(data,'api/event-detail?id='+this.props.id,(v)=>{this._getDetailCallback(v)});
+    console.log('geting event detail');
+    // Global._sendGetRequest(data,'api/event-detail?id='+this.props.id,(v)=>{
+    //   console.log("event detail return", v);
+    //   this._getDetailCallback(v)
+    // });
 
   }
 
@@ -133,22 +140,24 @@ class EventDetail extends Component {
     var widthT = 0;
     var heightT = 0;
 
-    if(count<5){
-      content = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:height/2}}>
-        <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
-      </View>;
-    }else{
+    // if(count<5){
+    //   content = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:height/2}}>
+    //     <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
+    //   </View>;
+    // }else{
       facebookBtn = <View style={{paddingTop:35,paddingBottom:12,width:width,alignItems:'center',justifyContent:'center'}}>
         <View>
           <Button onPress={()=>{this._shareToFacebook()}} style={{backgroundColor:'rgba(20,139,205,1)',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>SHARE ON FACEBOOK</Text></Button>
         </View>
       </View>;
       tag = <View style={{paddingBottom:10}}>
-      <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,paddingTop:18,fontWeight:'bold'}}>{this.state.tag}</Text>
-      <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10}} ref="title1">{this.state.title}</Text>
-      <View style={{flexDirection:'row',paddingLeft:10}}><Image style={{width:14,height:14}} source={require('../../Images/ic_date.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'rgba(103,103,103,1)',fontSize:14,paddingLeft:10}}>{this.state.date}</Text></View>
+      <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,paddingTop:18,fontWeight:'bold'}}>{this.props.tag}</Text>
+      <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10}} ref="title1">{this.props.title}</Text>
+      <View style={{flexDirection:'row',paddingLeft:10}}><Image style={{width:14,height:14}} source={require('../../Images/ic_date.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'rgba(103,103,103,1)',fontSize:14,paddingLeft:10}}>{this.props.date}</Text></View>
       </View>;
-    }
+    // }
+    console.log('webview height', this.props.webViewHeight);
+    console.log("event detail html content", this.props.htmlContent);
     return (
       <View style={styles.container}>
         <StatusBar
@@ -193,8 +202,8 @@ class EventDetail extends Component {
               <View style={{width:width-36}}>
                 {tag}
                 <WebView
-                  source={{html:this.state.htmlContent}}
-                  style={{width:width-30,height:this.state.webViewHeight}}
+                  source={{html:this.props.htmlContent}}
+                  style={{width:width-30,height:350}}
                   onNavigationStateChange={this._onNavigationStateChange.bind(this)}
                   injectedJavaScript={jscode}
                 />

@@ -121,7 +121,7 @@ class Running_level extends Component {
       next:'NEXT >',
       run_level:'LIGHT',
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -191,8 +191,8 @@ class Running_level extends Component {
       case 0:level='LIGHT';break;
       case 1:level='LIGHT';break;
       case 2:level='MEDIUM';break;
-      case 3:level='MEDIUM';break;
-      case 4:level='MEDIUM';break;
+      case 3:level='HEAVY';break;
+      case 4:level='HEAVY';break;
       case 5:level='HEAVY';break;
       case 6:level='HEAVY';break;
     }
@@ -208,8 +208,8 @@ class Running_level extends Component {
       case 0:level='LIGHT';break;
       case 1:level='LIGHT';break;
       case 2:level='MEDIUM';break;
-      case 3:level='MEDIUM';break;
-      case 4:level='MEDIUM';break;
+      case 3:level='HEAVY';break;
+      case 4:level='HEAVY';break;
       case 5:level='HEAVY';break;
       case 6:level='HEAVY';break;
     }
@@ -246,25 +246,26 @@ class Running_level extends Component {
             value={this.state.value}
             trackStyle={customStyles.track}
             thumbStyle={customStyles.thumb}
-            minimumTrackTintColor='rgba(0,82,161,1)'
+            minimumTrackTintColor={'#148bcd'} 
+            maximumTrackTintColor={'#0058a6'}
             minimumValue={0}
             maximumValue={6}
             step={1}
           onValueChange={(value) => this._levelScroll(value)}/>
         </View>
         <View style={{position:'absolute',bottom:26,paddingLeft:28,flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.personalinformation()}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text>
+          </TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
-          <TouchableOpacity onPress={()=>{
-            Actions.fitnesstrackerconnect({
+          <TouchableOpacity onPress={()=>{Actions.EmergencyContact({
               gender:this.props.gender,
               ageArr:this.props.ageArr,
               height:this.props.height,
               weight:this.props.weight,
               run:this.state.value+1,
-            })
-          }}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>{this.state.next}</Text></TouchableOpacity>
+            })}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.next}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

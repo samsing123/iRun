@@ -50,6 +50,7 @@ const {
 var DeviceInfo = require('react-native-device-info');
 var auth_token = '';
 var device_id = DeviceInfo.getUniqueID();
+import AppEventEmitter from "../../Services/AppEventEmitter";
 import OneSignal from 'react-native-onesignal'; // Import package from node modules
 
 function _responseInfoCallback(error: ?Object, result: ?Object) {
@@ -141,7 +142,7 @@ class Login extends Component {
       email:'',
       password:'',
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -174,6 +175,22 @@ class Login extends Component {
     }
     */
   }
+
+  _sendMigratedUserRequest(){
+    var self = this;
+    let data = {
+        method: 'GET',
+        url:'api/check-migrated-user?contact=' + self.state.email,
+        headers: {
+          'Content-Type': 'application/json',
+        }, 
+      };
+      console.log("send request data",data)
+      Global._sendMigratedUserRequest(data,(responseJson)=>{
+        console.log("mirgrauser?", responseJson);
+        this._migratedUserCallback(responseJson)
+      });
+  }
   _sendLoginRequest(){
     var lang = Global.language.lang;
     var self = this;
@@ -191,6 +208,7 @@ class Login extends Component {
           'Content-Type': 'application/json',
         }
       };
+      console.log("deviceid",data)
       Global._sendPostRequest(data,'api/login',(responseJson)=>{self._requestCallback(responseJson)});
     }else{
       OneSignal.configure({
@@ -260,20 +278,34 @@ class Login extends Component {
     }
     //Actions.home();
   }
+  _migratedUserCallback(responseJson){
+    console.log("migrate check",responseJson)
+     if(responseJson.status=='success'){   
+      //AppEventEmitter.emit('overlayAlert');
+      if (responseJson.response.result) {
+        Actions.ResetPasswordAlert();
+      }else{
+        this._sendLoginRequest();
+      }
+    }
+  }
   //vaildation (input,title,format,maxLength,minLength)
   _vaildateFormSubmit(){
+    console.log("_vaildateFormSubmit ")
     if(Global._vaildateInputBlank(this.state.email,'email')
     ||Global._vaildateInputFormat(this.state.email,'email','email')){
+      console.log("email fail")
       return;
     }
     if(Global._vaildateInputBlank(this.state.password,'password')
     ||Global._vaildateInputFormat(this.state.password,'password','num+alpha+spec',12,6)){
+       console.log("password fail")
       return;
     }
     try {
-      this._sendLoginRequest();
+      this._sendMigratedUserRequest();
     } catch(error) {
-      tracker.trackException(error.message, false);
+      //tracker.trackException(error.message, false);
     }
   }
   loginWithFacebook(){
@@ -338,7 +370,7 @@ class Login extends Component {
             </View>
 
             <View style={{paddingTop:20,backgroundColor:'rgba(0,0,0,0)'}}>
-              <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN</Text></Button>
+              <Button onPress={()=>{this._vaildateFormSubmit();console.log("login press")}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>LOGIN</Text></Button>
             </View>
             <View style={{width:width,paddingTop:10}}>
               <TouchableOpacity onPress={()=>{Actions.forgotpassword()}} style={{width:width,alignItems:'center',justifyContent:'center'}}><Text style={{textDecorationLine:'underline',color:"white"}}>Forgotten your password?</Text></TouchableOpacity>

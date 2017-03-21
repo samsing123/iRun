@@ -78,7 +78,7 @@ class Events extends Component {
       scrollValue:0,
     }
     console.log("enter Reward")
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -305,7 +305,7 @@ class Events extends Component {
     </View>;
     const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
       <TouchableOpacity onPress={()=>{this.setState({is_run_now:true});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)',paddingRight:48}}>EVENTS</Text></TouchableOpacity>
-      <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
+     
       <Text style={{color:'rgba(227,1,58,1)'}}>NEWS</Text>
     </View>;
     var title = run_now_title;

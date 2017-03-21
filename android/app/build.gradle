@@ -87,6 +87,13 @@ def enableProguardInReleaseBuilds = false
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+     }
+    lintOptions {
+        checkReleaseBuilds false
+    }
 
     defaultConfig {
         applicationId "com.irun"
@@ -144,7 +151,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-get-music-files')
+    compile project(':react-native-image-sequence')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-code-push')
     compile project(':react-native-svg')
@@ -176,7 +183,7 @@ dependencies {
     compile project(':react-native-onesignal')
     compile "com.google.android.gms:play-services-base:+"
     compile 'com.google.android.gms:play-services-location:+'
-    compile 'com.google.android.gms:play-services-maps:+'
+    compile "com.google.android.gms:play-services-maps:+"
 
 }
 

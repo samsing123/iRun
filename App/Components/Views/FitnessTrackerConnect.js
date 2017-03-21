@@ -134,7 +134,7 @@ class FitnessTrackerConnect extends Component {
       t4:styles.non_selectedBack,
       t5:styles.non_selectedBack,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     this.interestArr = [];
@@ -316,10 +316,15 @@ class FitnessTrackerConnect extends Component {
             expires_in: '31536000',
             state:JSON.stringify({
               user_id:Global.user_profile.user_id,
+              mobile_number:Global.tempMobileNumber,
+              device_id:DeviceInfo.getUniqueID(),          
             }),
           });
+          console.log("fitbit data",data)
+          data = data.replace("&","%26");
+          console.log("replace data",data)
     Linking.openURL('https://www.fitbit.com/oauth2/authorize?'+data);
-
+    
   }
   _jwAuth(){
     var data = qs.stringify({
@@ -347,12 +352,15 @@ class FitnessTrackerConnect extends Component {
           <TouchableOpacity onPress={()=>{this._fitbitAuth()}}>
             <Image source={{uri:'https://designerfund.com/bridge/wp-content/uploads/2015/08/fitbit.png'}} style={{width:200,height:50}} resizeMode={Image.resizeMode.contain}/>
           </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.interest()}}>
+            <Text style={{color:'rgba(74,74,74,1)',fontSize:18,paddingTop:14}}>I have no fitness tracker</Text>
+          </TouchableOpacity>
         </View>
         <View style={{paddingLeft:40,paddingRight:40}}>
           <Text style={{textAlign:'center',alignSelf:'center',color:'rgba(74,74,74,1)',fontSize:18,paddingTop:14}}>You can always connect your fitness tracker at setting</Text>
         </View>
         <View style={{position:'absolute',bottom:26,paddingLeft:28,flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>{this.state.back}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.EmergencyContact()}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
           <TouchableOpacity onPress={()=>{Actions.interest({
@@ -361,7 +369,7 @@ class FitnessTrackerConnect extends Component {
             height:this.props.height,
             weight:this.props.weight,
             run:this.props.run,
-          })}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17}}>NEXT ></Text></TouchableOpacity>
+          })}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>NEXT ></Text></TouchableOpacity>
         </View>
       </View>
     );

@@ -234,7 +234,7 @@ class RedeemHistorySummary extends Component {
 
           }}
           renderForeground={() => (
-           <View style={{ height: 240,width:width, flex: 1}}>
+          <View style={{ height: 240,width:width, flex: 1}}>
               <Image style={{height:240,width:width}} source={{uri:this.state.img_data}} />
            </View>
           )}

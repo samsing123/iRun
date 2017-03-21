@@ -12,8 +12,8 @@ var ENG = {
     run_now:'RUN NOW',
     run_session:'RUN SESSION',
     redeem_history:'REDEEM HISTORY',
-    avail_point:'Available point',
-    total_avail_point:'Total Available point',
+    avail_point:'Availble point',
+    total_avail_point:'Total Available Points',
     profile:'Profile',
     inbox:'Inbox',
     inbox_title:'INBOX',
@@ -34,7 +34,7 @@ var ENG = {
     step_stat:'STEPS STATS',
     step_history:'STEPS HISTORY',
     connect_fitness_tracker:'CONNECT FITNESS TRACKER',
-    expiry_date:'Expiry Date',
+    expiry_date:'EXPIRY DATE',
     point_history:'POINT HISTORY',
     delete:'DELETE',
     delete_all:'DELETE ALL',
@@ -102,6 +102,7 @@ var ENG = {
     cancel:'CANCEL',
     no_record:'NO RECORD',
     running_frequency:'Running Frequency',
+    optional:'optional'
 };
 
 module.exports = ENG;

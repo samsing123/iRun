@@ -66,7 +66,7 @@ class Welcome extends Component {
       birthday:'',
       imagePath:Global.tempIconBase64,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }

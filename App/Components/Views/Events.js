@@ -15,7 +15,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
-  Switch
+  Switch,
 } from 'react-native';
 import {Actions} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -77,7 +77,7 @@ class Events extends Component {
       opacity:0,
       scrollValue:0,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -245,8 +245,53 @@ class Events extends Component {
       );
     });
   }
+
+  _loadEvent(news) {
+    var data = {
+      method: 'GET'
+    };
+    console.log('geting event detail');
+    Global._sendGetRequest(data,'api/event-detail?id=' + news.id,(v)=>{
+      console.log("event detail return", v);
+      this._eventLoaded(v, news);
+    });
+  }
+
+  _eventLoaded(response, news) {
+    var date = Util._getEventDetailDate(response.response.start_time.split(' ')[0],response.response.end_time.split(' ')[0]);
+    var tagList = Util._getTag(response.response.share_hashtag);
+    var tempContent = {
+      contentType: 'link',
+      commonParameters: {
+        hashtag: '#'+Global.global_setting.facebook.tags[0]
+      },
+      contentTitle:response.response.share_title,
+      contentDescription:response.response.share_msg,
+      contentUrl: response.response.link,
+    };
+
+    eventData = {
+      tag:tagList,
+      htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
+      date:date,
+      shareLinkContent:tempContent,
+      video:response.response.video,
+      videoContent:'<html><iframe align="center" width="'+width+'" height="240" src="https://www.youtube.com/embed/'+response.response.video+'+?autoplay=0&controls=0&showinfo=0" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
+      title:news.title,
+      image:news.image,
+  };
+    console.log("go to event detail", eventData);
+    Actions.eventdetail(eventData);
+    // {
+    //       id:news.id,
+    //       title:news.title,
+    //       image:news.image,
+    //       video:news.video,
+    //     }
+  }
+
   _renderEventsList(){
-    return Global.eventArr.map(function(news, i){
+    return Global.eventArr.map((news, i)=>{
       var image;
       if(news.image!=''){
         image = <Image source={{uri:news.image}} style={{height:230,width:width-10,borderRadius:6}} shouldComponentUpdate={()=>{return false;}} />
@@ -256,13 +301,11 @@ class Events extends Component {
         </View>;
       }
       return(
-        <TouchableOpacity onPress={()=>{Actions.eventdetail(
-          {id:news.id,
-          title:news.title,
-          image:news.image,
-          video:news.video,}
-        )}} key={i}>
-          <View style={{borderRadius:6,paddingTop:10,width:width-10}}>
+        <TouchableOpacity onPress={()=>{
+          console.log("on event press: " + news.id)
+          this._loadEvent(news)
+        }} key={i}>
+          <View style={{borderRadius:6,paddingTop:10,width:width-5,paddingLeft:5,paddingRight:5}}>
             {image}
             <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width-10,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
               <Text style={{fontSize:14,color:'white',padding:8,marginTop:10}}>{news.date}</Text>

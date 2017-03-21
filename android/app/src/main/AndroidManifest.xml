@@ -39,7 +39,7 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-      <provider android:authorities="com.facebook.app.FacebookContentProvider1778008479134008"
+      <provider android:authorities="com.facebook.app.FacebookContentProvider1485826508368116"
           android:name="com.facebook.FacebookContentProvider"
           android:exported="true"/>
     </application>

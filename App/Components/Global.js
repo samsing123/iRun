@@ -142,6 +142,7 @@ function _getImage(id,callback){
   .then((responseText)=>callback(responseText));
 }
 
+
 function _getTumblr(callback){
   fetch(tumblrLink,{
     method: 'GET',
@@ -205,6 +206,20 @@ function _saveUserProfile(data){
   console.log(data);
   fetch(serverHost+'api/profile',data)
     .then((responsex) => {console.log(responsex)})
+    .catch((error) => {
+      alert(error);
+    });
+}
+function _sendMigratedUserRequest(data, callack){
+  console.log("_sendMigratedUserRequest", data);
+  fetch(serverHost+data.url,data)
+    .then((responsex) => {
+      responsex.json().then((json) => {
+        console.log("response", json);
+        callack(json);
+      });
+
+    })
     .catch((error) => {
       alert(error);
     });
@@ -307,6 +322,7 @@ var Global = {
     _vaildateSelectBlank:_vaildateSelectBlank,
     _vaildateInputFormat:_vaildateInputFormat,
     _sendPostRequest:_sendPostRequest,
+    _sendMigratedUserRequest:_sendMigratedUserRequest,
     _getImage:_getImage,
     _getTumblr:_getTumblr,
     _getEventList:_getEventList,
@@ -317,7 +333,7 @@ var Global = {
     _getList:_getList,
     no_status_bar:no_status_bar,
     status_bar:status_bar,
-    fitbit_redirect:serverHost+'/connect-fitbit',
+    fitbit_redirect:serverHost+'connect-fitbit',
     onesignal_devicetoken:'',
     currentReward:{
       id:'',

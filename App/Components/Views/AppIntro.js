@@ -80,7 +80,7 @@ class AppIntros extends Component {
   }
   _renderGetStarted(){
     if(!this.state.showDot){
-      return <TouchableOpacity onPress={()=>{this.getStarted()}} style={{backgroundColor:'#0e55a7',alignItems:'center',position:'absolute',bottom:15,paddingTop:15,width:width, borderTopColor:"white", borderTopWidth:1}}>
+     <TouchableOpacity onPress={()=>{this.getStarted()}} style={{backgroundColor:'#148BCD',alignItems:'center',position:'absolute',bottom:15,paddingTop:15,width:width, borderTopColor:"white", borderTopWidth:1}}>
         <Text style={{color:'#ffffff',fontSize:24,fontWeight:'bold'}}>GET STARTED</Text>
       </TouchableOpacity>;
     }
@@ -88,20 +88,20 @@ class AppIntros extends Component {
   _returnBackground(index){
     if(index == 0){
       console.log("first image")
-      return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/onboarding_feed.png')} >
+      return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,right:0,bottom:0}} source={require('../../Images/tutoral_bg.png')} >
         </Image>;
       
     }else if(index == 1){
       console.log("2 image")
-       return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/onboarding_share.png')} >
+       return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/tutoral_bg.png')} >
         </Image>;
     }else if(index == 2){
       console.log("3 image")
-       return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/onboarding_rewards.png')} >
+       return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/tutoral_bg.png')} >
         </Image>;
     }else{
       console.log("4 image")
-       return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/onboarding_events.png')} >
+       return <Image style={{width:width,height:height,position:'absolute',top:0,left:0,bottom:0,right:0}} source={require('../../Images/tutoral_bg.png')} >
         </Image>;
     }
  }
@@ -205,7 +205,7 @@ class AppIntros extends Component {
           showSkipButton={false}
           showDoneButton={true}
           onDoneBtnClick={this.doneBtnHandle}
-          showDots={false}
+          showDots={true}
           nextBtnLabel={this.state.nextBtn}
           doneBtnLabel=""
           defaultIndex={this.state.curSlide}
@@ -221,10 +221,10 @@ class AppIntros extends Component {
           }}>
 
           {[
-            {h:"", c:""}, 
-            {h:" ", c:""},
-            {h:" ", c:""},
-            {h:" ", c:""}
+            {h:"FEED", c:"customized news feed to fit your run status"}, 
+            {h:"SHARE", c:"Love your body and run for healthy living! Share you run activities with your familyand friends!"},
+            {h:"REWARDS", c:"Accumulated points while running to redeem a wide range of amazing rewards!"},
+            {h:"EVENTS", c:"Join our \"iRun for Love\" event to give the society a helping hand!"}
           ].map((item)=> {
             return (
               

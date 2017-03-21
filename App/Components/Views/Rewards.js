@@ -85,7 +85,7 @@ class Rewards extends Component {
       loading:true,
       availPoint:0,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     rewardArr = [];
@@ -474,6 +474,7 @@ class Rewards extends Component {
     const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#D57D91'}}>
       <TouchableOpacity hitSlop={{top: 20, bottom: 20, left: 20, right: 20}} onPress={()=>{this.setState({is_run_now:true});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)',paddingRight:48}}>{Global.language.reward}</Text></TouchableOpacity>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
+      
       <Text style={{color:'rgba(227,1,58,1)'}}>{Global.language.redeem_history}</Text>
     </View>;
     var title = run_now_title;

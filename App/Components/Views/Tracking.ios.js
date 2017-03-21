@@ -172,7 +172,7 @@ class Tracking extends Component {
         y:0,
       }
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Tracking');
     GoogleAnalytics.trackEvent('Tracking Run', 'Start Run');
     this._loadingProgress = this._loadingProgress.bind(this);
@@ -1121,10 +1121,11 @@ class Tracking extends Component {
           {
             this.state.is_3s_later?
             <View>
-              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>For emergency, please slide the screen</Text>
-              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>below and we will send a SMS to</Text>
-              <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',textAlign:'center'}}>NAME</Text>
-              <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>with your exact location</Text>
+              <Text>Button</Text>
+                <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>Please slide the screen below and we will</Text>
+                <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>send a SMS to</Text>
+                <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',textAlign:'center'}}>NAME</Text>
+                <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>with your exact location</Text>
             </View>
             :
             <View>

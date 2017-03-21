@@ -101,7 +101,7 @@ class StepHistory extends Component {
       availPoint:0,
       is_loading:true,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     rewardArr = [];

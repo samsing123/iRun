@@ -91,7 +91,7 @@ class PersonalInformation extends Component {
       trueSwitchIsOn: false,
       pageNumber:1,
       gender:'M',
-      ageArr: '15-20',
+      ageArr: '30-35',
       userWeight:'50',
       userHeight:'160',
       selectedColor:'rgba(20,139,205,1)',
@@ -99,7 +99,7 @@ class PersonalInformation extends Component {
       m_color:'rgba(20,139,205,1)',
       f_color:'grey',
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
 
@@ -278,14 +278,14 @@ class PersonalInformation extends Component {
     if(number>1){
       back = <View style={{position:'absolute',bottom:30,left:30}}>
         <TouchableOpacity onPress={()=>{this.setState({pageNumber:number-1})}}>
-          <Text style={{color:'#56B3F3'}}>{backString}</Text>
+          <Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{backString}</Text>
         </TouchableOpacity>
       </View>;
     }
     if(number<4){
       next = <View style={{position:'absolute',bottom:30,right:30}}>
         <TouchableOpacity onPress={()=>{this.setState({pageNumber:number+1})}}>
-          <Text style={{color:'#56B3F3',fontWeight:'bold'}}>NEXT ></Text>
+          <Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>NEXT ></Text>
         </TouchableOpacity>
       </View>
     }else{

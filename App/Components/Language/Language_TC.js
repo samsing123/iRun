@@ -102,6 +102,7 @@ var TC = {
     cancel:'取消',
     no_record:'沒有記錄',
     running_frequency:'跑步頻率',
+    optional:'可選的',
 };
 
 module.exports = TC;

@@ -130,7 +130,7 @@ class Register extends Component {
       isLoading:false,
       stretchKeyboardHeight:500
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -257,8 +257,8 @@ class Register extends Component {
     }
   }
   _checkLength() {
-    if (this.state.display_name.length < 8) {
-      alert("Display name length at least 8 characters")
+    if (this.state.display_name.length < 1) {
+      alert("Display name length at least 1 characters")
     }
   } 
   async _saveLoginInformation(){
@@ -289,16 +289,33 @@ class Register extends Component {
   render() {
     console.log("page?")
     var self = this;
+    // BackAndroid.addEventListener('hardwareBackPress', () => {
+    //     try {
+    //       Picker.hide();
+    //       return true;
+    //     }
+    //     catch (err) {
+    //       Action.pop();
+    //       return true;
+    //     }
+    // });
     BackAndroid.addEventListener('hardwareBackPress', () => {
-        try {
-          Picker.hide();
-          return true;
-        }
-        catch (err) {
-          Action.pop();
-          return true;
-        }
-    });
+            try {
+                Actions.pop();
+                return true;
+            }
+            catch (err) {
+              Alert.alert(
+                'You are going to quit the app',
+                'Are you sure?',
+                [
+                  {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                  {text: 'OK', onPress: () => BackAndroid.exitApp()},
+                ],
+              );
+              return true;
+            }
+        });
     return (
       <TouchableWithoutFeedback onPress={()=>{this._hideDatePicker()}}>
         <View style={{flex:1}}>
@@ -324,13 +341,13 @@ class Register extends Component {
                 <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="ConfirmPassword" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='password' onChangeText={(text) => this.setState({confirm_password:text})}></TextInput>
               </View>
               <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-                <TextInput placeholderTextColor="white" placeholder="Display Name (8-20 characters)" onBlur={()=>this._checkLength()} style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
+                <TextInput placeholderTextColor="white" placeholder="Display Name (1-20 characters)"  style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})}></TextInput>
               </View>
               <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-                <TextInput maxLength={8} onFocus={()=>this._checkLength()} keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+                <TextInput maxLength={8}  keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile No. (sms verification)" style={{marginRight:10,flex:1,fontSize:17,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
               </View>
               <View style={{width:width-64,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10,backgroundColor:'rgba(0,0,0,0)'}}>
-                <TouchableOpacity onPress={()=>{this._showDatePicker();this._checkLength()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:17}}>{this.state.birthday}</Text></TouchableOpacity>
               </View>
               <View style={{width:width-64,marginTop:16}}>
                 <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>

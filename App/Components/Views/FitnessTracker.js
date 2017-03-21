@@ -37,15 +37,20 @@ class FitnessTracker extends Component {
       }
     }else{
       var data = qs.stringify({
-              client_id:'227XBC',
+              client_id: '227XBC',
               response_type: 'token',
               scope: 'activity profile',
               redirect_uri: Global.fitbit_redirect,
               expires_in: '31536000',
               state:JSON.stringify({
-                user_id:Global.user_profile.user_id
+                user_id: Global.user_profile.user_id,
+                mobile_number: Global.user_profile.mobile_number,
+                device_id: DeviceInfo.getUniqueID(), 
               }),
             });
+            console.log("fitbit data",data)
+         // data = data.replace("&","%26");
+          //console.log("replace data",data)
       Linking.openURL('https://www.fitbit.com/oauth2/authorize?'+data);
     }
   }

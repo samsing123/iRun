@@ -77,7 +77,7 @@ class FeedDetail extends Component {
       share_icon_pos:208,
       htmlContent:"<p><a href=\"http:\/\/foreverneilyoung.tumblr.com\/ post\/6522738445\" target=\"_blank\">foreverneilyoung<\/a>: <\/p>\n<blockquote>\n<p><a href=\"http:\/\/watchmojo.tumblr.com\/ post\/6521201320\" target=\"_blank\">watchmojo<\/a>:<\/p>\n <blockquote>\n<p>Neil Young\u2019s live album \u201cA Treasure\ u201d is available today. To celebrate, we take a look at the life and career of the Canadian singer-songwriter. <\/p>\n<\/blockquote>\n<p>Neil 101 for you new fans out there.<\/p>\n<\/blockquote>\n<p><strong>If you don't know\/appreciate Neil Young's impressive body of work, this will help<\/strong><\/p><p><a href=\"http:\/\/foreverneilyoung.tumblr.com\/ post\/6522738445\" target=\"_blank\">foreverneilyoung<\/a>: <\/p>\n<blockquote>\n<p><a href=\"http:\/\/watchmojo.tumblr.com\/ post\/6521201320\" target=\"_blank\">watchmojo<\/a>:<\/p>\n <blockquote>\n<p>Neil Young\u2019s live album \u201cA Treasure\ u201d is available today. To celebrate, we take a look at the life and career of the Canadian singer-songwriter. <\/p>\n<\/blockquote>\n<p>Neil 101 for you new fans out there.<\/p>\n<\/blockquote>\n<p><strong>If you don't know\/appreciate Neil Young's impressive body of work, this will help<\/strong><\/p>",
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }

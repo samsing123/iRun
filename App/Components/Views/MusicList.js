@@ -55,7 +55,8 @@ class MusicList extends Component {
         refresh:false,
       });
     }else{
-      this._getFileRecursively('/sdcard/Music/');
+      //this._getFileRecursively('/sdcard/Music/');
+      this._loadMusic('/sdcard/Music/', true);
     }
   }
 
@@ -77,6 +78,30 @@ class MusicList extends Component {
     }).done();
   }
 
+  async _loadMusic(path, isRoot) {
+    let files = await RNFS.readDir(path);
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].isDirectory()) {
+        this._loadMusic(files[i].path, false);
+      }
+      if (files[i].isFile() && Util._getFileExtension(files[i].name)=='mp3') {
+        tempArr.push({
+          path:files[i].path,
+          name:files[i].name,
+          artist:'',
+          title:'',
+        });        
+      }
+    }
+
+    if (isRoot)
+      console.log("refresh finish")
+      this.setState({
+        refresh:false,
+      });
+      Global.tempMusicArr = tempArr;
+  }
+
   _getFileRecursively(path){
       RNFS.readDir(path)
       .then((files)=>{
@@ -95,6 +120,7 @@ class MusicList extends Component {
                 title:'',
               });
               if(tempArr.length==Global.totalMusicNumber){
+                console.log("refresh finish")
                 this.setState({
                   refresh:false,
                 });

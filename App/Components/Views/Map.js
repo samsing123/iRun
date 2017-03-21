@@ -946,7 +946,7 @@ class Map extends Component {
               this.setState({share:false});
               return true;
             }else{
-              //Actions.pop();
+              Actions.pop();
               return true;
             }
         }
@@ -956,9 +956,10 @@ class Map extends Component {
         }
     });
   }
+  
 
   _getMapImageWithInfo(){
-    RNViewShot.takeSnapshot(this.refs.mapInfoImage, {
+    RNViewShot.takeSnapshot(this.refs.mapWithInfo, {
       format: "jpg",
       quality: 0.8,
     })

@@ -123,7 +123,7 @@ class FB_Register extends Component {
       birthday:'Birthday(mm/dd)',
       isLoading:false,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
 
@@ -292,8 +292,8 @@ class FB_Register extends Component {
     
   }
   _checkLength() {
-    if (this.state.display_name.length < 8) {
-      alert("Display name length at least 8 characters")
+    if (this.state.display_name.length < 1) {
+      alert("Display name length at least 1 characters")
     }
   } 
   /*
@@ -320,16 +320,35 @@ class FB_Register extends Component {
     var self = this;
     var photoImage;
     var flex = 0;
-    BackAndroid.addEventListener('hardwareBackPress', () => {
-        try {
-          Picker.hide();
-          return true;
-        }
-        catch (err) {
-          Action.pop();
-          return true;
-        }
-    });
+    // BackAndroid.addEventListener('hardwareBackPress', () => {
+    //     try {
+    //       Picker.hide();
+    //       return true;
+    //     }
+    //     catch (err) {
+    //       Action.pop();
+    //       return true;
+    //     }
+    // });
+BackAndroid.addEventListener('hardwareBackPress', () => {
+            try {
+                Actions.pop();
+                return true;
+            }
+            catch (err) {
+              Alert.alert(
+                'You are going to quit the app',
+                'Are you sure?',
+                [
+                  {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                  {text: 'OK', onPress: () => BackAndroid.exitApp()},
+                ],
+              );
+              return true;
+            }
+        });
+
+
     if(Platform.OS=='ios'){
       flex = 1;
     }
@@ -364,16 +383,16 @@ class FB_Register extends Component {
         </View>
         <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:12}}>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput minLength={8} maxLength={20} placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name (8-20 characters)" onBlur={()=>this._checkLength()} style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})} onBlur={()=>this._checkLength()}></TextInput>
+            <TextInput  maxLength={20} placeholderTextColor="white" autoCapitalize='sentences' placeholder="Display Name (1-20 characters)"  style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='display_name' onChangeText={(text) => this.setState({display_name:text})} ></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput onFocus={()=>this._checkLength()} maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
+            <TextInput  maxLength={8} keyboardType="numeric" placeholderTextColor="white" placeholder="+852 Mobile No. (sms verification)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({mobile_no:text})}></TextInput>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TouchableOpacity onPress={()=>{this._showDatePicker();this._checkLength()}}><Text style={{color:'white',fontSize:14}}>{this.state.birthday}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this._showDatePicker()}}><Text style={{color:'white',fontSize:14}}>{this.state.birthday}</Text></TouchableOpacity>
           </View>
           <View style={{width:width-64,height:25,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:24}}>
-            <TextInput keyboardType="email-address" placeholderTextColor="white" onFocus={()=>this._checkLength()} placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white',flex:flex}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
+            <TextInput keyboardType="email-address" placeholderTextColor="white"  placeholder="Email(optional)" style={{marginRight:10,fontSize:14,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref='mobile_no' onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
           <View style={{width:width-64,marginTop:16}}>
             <View style={{flexDirection:'row',alignItems:'center',marginBottom: 5}}>

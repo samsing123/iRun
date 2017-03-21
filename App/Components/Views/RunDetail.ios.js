@@ -176,7 +176,7 @@ class RunDetail extends Component {
 
     result.promise.then(function (val) {
         console.log('Success Result:' + JSON.stringify(val));
-        var localFilePath = 'file://' + tempImagePath;
+        var localFilePath = 'file://' //+ tempImagePath;
         console.log(RNFS.DocumentDirectoryPath+'temp.jpg');
     }, function (val) {
         console.log('Error Result:' + JSON.stringify(val));

@@ -75,7 +75,7 @@ class Verify extends Component {
       selected:'#ff0000',
       non_selected:'#fff'
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -478,7 +478,7 @@ class Verify extends Component {
   _submitForgotPasswordCallback(responseJson){
     console.log(responseJson);
     if(responseJson.status=='success'){
-      Actions.resetpassword({verify_token:responseJson.response.verify_token,mobile_number:this.props.mobile_no});
+      Actions.ResetPasswords({verify_token:responseJson.response.verify_token,mobile_number:this.props.mobile_no});
     }else{
       alert(responseJson.response.error);
     }

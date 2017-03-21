@@ -70,9 +70,7 @@ class Run extends Component {
     super(props);
     this.state={
       trueSwitchIsOn: false,
-      t1:"LET'S GO",
-      t2:"FOR YOUR",
-      t3:"FIRST RUN!",
+     
       is_run_now:true,
       distance:'Distance',
       duration:'Duration',
@@ -81,7 +79,7 @@ class Run extends Component {
       is_have_run:false,
       is_rest_day:false,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -139,6 +137,7 @@ class Run extends Component {
         }
       };
     }else if(this.state.duration!='Duration'){
+      
       data = {
         method: 'POST',
         body: JSON.stringify({
@@ -159,30 +158,74 @@ class Run extends Component {
       alert('Please Select one either Distance or Duration');
       return;
     }
-
     Global._sendPostRequest(data,'api/run-start',this._registerCallback);
   }
-
-  _sendStartRunRequest(){
+   _sendStartRunRequest(){
     var date = new Date();
-    let data = {
-      method: 'POST',
-      body: JSON.stringify({
-        start_time: Util._getDateFormat(date),
-        weather: weather,
-        temperature: temperature,
-        humidity: humidity,
-        uvi: uvi,
-        aqi: aqi,
-        is_session:false
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    };
+    var date1 = new Date().getHours();
+    
+    if(!isNaN(temperature)){
+      console.log("date1",date1)
+      console.log("is not a number")
+      console.log("is not a number",temperature)
+      console.log("true or false",(!isNaN(temperature)))
+        fetch(Global.serverHost+'api/home')
+        .then((response) => response.json())
+        .then((responseText) => {
+          console.log(responseText);
+          aqi1 = responseText.response.aqi;
+          var temperatures=responseText.response.temperature+"";
+          temperatures = temperatures.split('.')[0];
+          var uv = Math.round(responseText.response.uvi);
+          var weatherImage = responseText.response.icon;
+          var weatherNumber = weatherImage.substring(weatherImage.lastIndexOf('pic')+3,weatherImage.lastIndexOf('.png'));
+            
+        let data = {
+          method: 'POST',
+          body: JSON.stringify({
+            start_time: Util._getDateFormat(date),
+            weather: weather.substring(weather.lastIndexOf("img/")+4,weather.lastIndexOf(".png")+4),//weather,//
+            temperature: temperatures,//can call api/home to get this and the following var numb = str.match(/\d/g); numb = numb.join("");  
+            humidity: humidity,
+            uvi: uv,
+            aqi: aqi1,
+            is_session:false
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        };
+        Global._sendPostRequest(data,'api/run-start',this._registerCallback);
+    
+        });
+    }else{
+      console.log("is a number")
+        let data = {
+          method: 'POST',
+          body: JSON.stringify({
+            start_time: Util._getDateFormat(date),
+            weather: weather.substring(weather.lastIndexOf("img/")+4,weather.lastIndexOf(".png")+4),//weather,//
+            temperature: temperature,//can call api/home to get this and the following var numb = str.match(/\d/g); numb = numb.join("");  
+            humidity: humidity,
+            uvi: uvi,
+            aqi: aqi,
+            is_session:false
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          }   
+        };
+    console.log("runstart call",data)
     Global._sendPostRequest(data,'api/run-start',this._registerCallback);
+    }
+
   }
+  // _sendStartRunRequest(){
+    
+    
+  // }
   _registerCallback(responseJson){
+    console.log("runstart response",responseJson)
     if(responseJson.status=='success'){
       Global.current_run_id = responseJson.response.run_id;
       Global.current_run_token = responseJson.response.run_token;
@@ -327,31 +370,30 @@ class Run extends Component {
   render() {
     var self = this;
     const run_now = (
-    <View style={{width:width,height:height-185}}>
-      <Image style={{width:width,height:height-185}} source={require('../../Images/bg_runnow.png')} resizeMode={Image.resizeMode.cover} />
-      <View style={{position:'absolute',top:46,left:0,backgroundColor:'rgba(0,0,0,0)',height:200}}>
-        <Text style={styles.t1}>{this.state.t1}</Text>
-        <Text style={styles.t2}>{this.state.t2}</Text>
-        <Text style={styles.t3}>{this.state.t3}</Text>
+      <View style={{width:width,height:height-185}}>
+        <Image style={{width:width,height:height-185}} source={require('../../Images/bg_runnow.png')} resizeMode={Image.resizeMode.cover} />
+        <View style={{position:'absolute',top:46,left:0,backgroundColor:'rgba(0,0,0,0)',height:200}}>
+          
+        </View>
+        <View style={{position:'absolute',bottom:41,width:width,flexDirection:'row'}}>
+          <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity onPress={()=>{Actions.setting({isRunSetting:true,title:'Run Setting'})}}>
+              <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_msuicsetting.png')} resizeMode={Image.resizeMode.contain}></Image>
+            </TouchableOpacity>
+          </View>
+          <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity onPress={()=>{this._startRun()}}>
+              <Image style={{width:width/3,height:height/3}} source={require('../../Images/btn_go.png')} resizeMode={Image.resizeMode.contain}></Image>
+            </TouchableOpacity>
+          </View>
+          <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity onPress={()=>{this._goToMusicList()}}>
+              <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_music.png')} resizeMode={Image.resizeMode.contain}></Image>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-      <View style={{position:'absolute',bottom:41,width:width,flexDirection:'row'}}>
-        <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{Actions.setting({isRunSetting:true,title:'Run Setting'})}}>
-            <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_msuicsetting.png')} resizeMode={Image.resizeMode.contain}></Image>
-          </TouchableOpacity>
-        </View>
-        <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{this._startRun()}}>
-            <Image style={{width:width/3,height:height/3}} source={require('../../Images/btn_go.png')} resizeMode={Image.resizeMode.contain}></Image>
-          </TouchableOpacity>
-        </View>
-        <View style={{width:width/3,height:width/3,alignItems:'center',justifyContent:'center'}}>
-          <TouchableOpacity onPress={()=>{this._goToMusicList()}}>
-            <Image style={{width:width/9,height:height/9}} source={require('../../Images/btn_music.png')} resizeMode={Image.resizeMode.contain}></Image>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>);
+    );
 
     const run_session = <Image source={require('../../Images/bg_run.png')} style={{width:width,height:height-185,backgroundColor:'white',alignItems:'center'}}>
       <View style={{width:width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0)',paddingTop:24}}>

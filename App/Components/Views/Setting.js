@@ -140,7 +140,7 @@ class Setting extends Component {
       imagePath:Global.user_icon,
 
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
   }
@@ -691,7 +691,7 @@ class Setting extends Component {
           </View>
         </TouchableOpacity>
         <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-          <Text>{Global.language.your_interest}</Text><Text>></Text>
+          <Text>{Global.language.your_interest}</Text><Text >></Text>
         </View>
         <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
@@ -758,7 +758,7 @@ class Setting extends Component {
     const settingContent = <Animatable.View animation="fadeIn">
       <TouchableOpacity onPress={()=>{this.setState({isRunSetting:true});Actions.refresh({title:Global.language.run_setting,onBack:()=>{this._backClick();}})}}>
         <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-          <Animatable.Text ref="text" style={{fontSize:14}}>{Global.language.run_setting}</Animatable.Text><Animatable.Text style={{fontSize:16}}>></Animatable.Text>
+          <Animatable.Text ref="text" style={{fontSize:14}}>{Global.language.run_setting}</Animatable.Text><Animatable.Text style={{fontSize:20, color:'#b2b2b2'}}>></Animatable.Text>
         </View>
       </TouchableOpacity>
       <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
@@ -780,23 +780,23 @@ class Setting extends Component {
       </View>
       <TouchableOpacity onPress={()=>{Actions.fitnesstracker()}}>
         <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-          <Text style={{fontSize:14}}>{Global.language.fitness_tracked_connection}</Text><Text style={{fontSize:16}}>></Text>
+          <Text style={{fontSize:14}}>{Global.language.fitness_tracked_connection}</Text><Text style={{fontSize:20, color:'#b2b2b2'}}>></Text>
         </View>
       </TouchableOpacity>
       <View style={{backgroundColor:'#F5F5F5',height:20,width:width}}></View>
       <TouchableOpacity onPress={()=>{Actions.tnc({content:Global.global_setting.content.privacy,title:'Privacy Policy'});}}>
         <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-          <Text style={{fontSize:14}}>{Global.language.privacy_policy}</Text><Text style={{fontSize:16}}>></Text>
+          <Text style={{fontSize:14}}>{Global.language.privacy_policy}</Text><Text style={{fontSize:20, color:'#b2b2b2'}}>></Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={()=>{Actions.tnc({content:Global.global_setting.content.terms,title:'Terms of use'});}}>
         <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-          <Text style={{fontSize:14}}>{Global.language.term_of_use}</Text><Text style={{fontSize:16}}>></Text>
+          <Text style={{fontSize:14}}>{Global.language.term_of_use}</Text><Text style={{fontSize:20, color:'#b2b2b2'}}>></Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={()=>{Actions.tnc({content:Global.contactUsTemp,title:'Contact Us'});}}>
         <View style={{width:width,justifyContent:'space-between',flexDirection:'row',paddingTop:15,paddingBottom:15,paddingLeft:20,paddingRight:20,borderWidth:1,borderColor:'#f1f1f1'}}>
-          <Text style={{fontSize:14}}>{Global.language.contact_us}</Text><Text style={{fontSize:16}}>></Text>
+          <Text style={{fontSize:14}}>{Global.language.contact_us}</Text>
         </View>
       </TouchableOpacity>
     </Animatable.View>;
@@ -1007,6 +1007,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  btnNext: {
+    color: '#b2b2b2'
+  }
 });
 
 /*

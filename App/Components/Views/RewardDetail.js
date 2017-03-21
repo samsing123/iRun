@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
   TouchOpacity,
   ScrollView,
   Image,
@@ -83,7 +84,7 @@ class RewardDetail extends Component {
       arrow:'<',
       tnc:'',
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     this.openAlert = this.openAlert.bind(this);
@@ -181,6 +182,39 @@ class RewardDetail extends Component {
       Global.currentReward.qty = this.state.current_num;
     }
   }
+  changeQuantity(text){
+    if (!text) {
+      this.setState({
+        current_num:text,
+        total_point:0*this.state.point,
+      });
+      return;
+    }
+    if(text < this.state.inventory){
+       if(text > 1){
+          this.setState({
+            current_num:text,
+            total_point:text*this.state.point,
+          });
+          Global.currentReward.total_point = text*this.state.point;
+          Global.currentReward.qty = this.state.current_num;
+      }else{
+        this.setState({
+          current_num:1,
+          total_point:this.state.point,
+        });
+        Global.currentReward.total_point = this.state.point;
+        Global.currentReward.qty = this.state.current_num;
+      }
+    }else{
+      this.setState({
+        current_num:this.state.inventory,
+        total_point:this.state.inventory*this.state.point,
+      });
+      Global.currentReward.total_point = this.state.inventory*this.state.point;
+      Global.currentReward.qty = this.state.current_num;
+    }
+  }
   toggleDisable(){
     this.setState({isDisabled: !this.state.isDisabled});
   }
@@ -216,12 +250,12 @@ class RewardDetail extends Component {
         </View>
       </View>;
       tag = <View style={{paddingBottom:10}}>
-        <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10,paddingTop:20,fontWeight:'bold'}} ref="title1" fontWeight="bold">{this.state.title}</Text>
+        <Text style={{color:'#4a4a4a',fontSize:24,paddingLeft:10,paddingTop:20,fontWeight:'bold'}} ref="title1" fontWeight="bold">{this.state.title}</Text>
         <View style={{paddingLeft:10,paddingTop:10}}>
-          <View style={{flexDirection:'row'}}><Text style={{fontWeight:'bold',fontSize:14}}>{Global.language.expiry_date}</Text><Text style={{fontSize:14,paddingLeft:20}}>{Util._changeDateFormat(this.state.expiry)}</Text></View>
+          <View style={{flexDirection:'row'}}><Text style={{fontWeight:'bold',fontSize:14,color:'#676667'}}>{Global.language.expiry_date}</Text><Text style={{fontSize:14,paddingLeft:20,color:'#676667'}}>{Util._changeDateFormat(this.state.expiry)}</Text></View>
         </View>
         <View style={{flexDirection:'row',paddingLeft:10,paddingTop:10}}>
-          <Image style={{height:16,width:16}} source={{uri:this.state.merchantImage}} /><Text style={{color:'rgba(74,74,74,1)',fontSize:12,fontWeight:'bold',paddingLeft:10}}>{this.state.merchant_name}</Text>
+          <Image style={{height:16,width:16}} source={{uri:this.state.merchantImage}} /><Text style={{color:'#676667',fontSize:12,fontWeight:'bold',paddingLeft:10}}>{this.state.merchant_name}</Text>
         </View>
       </View>;
     }
@@ -265,30 +299,37 @@ class RewardDetail extends Component {
               <View style={{width:width-36}}>
 
                 {tag}
-                <View style={{marginLeft:10,marginRight:10,height:80,borderBottomWidth:1,borderBottomColor:'#F3F3F3',borderTopWidth:1,borderTopColor:'#F3F3F3',flexDirection:'row'}}>
+                <View style={{paddingTop:10,marginLeft:10,marginRight:10,height:80,borderBottomWidth:1,borderBottomColor:'#F3F3F3',borderTopWidth:1,borderTopColor:'#F3F3F3',flexDirection:'row'}}>
                   <View style={{flex:0.5}}>
-                    <Text style={{fontSize:16,fontWeight:'bold'}}>{Global.language.point}</Text>
+                    <Text style={{fontSize:16,fontWeight:'bold',color:'#676667'}}>{Global.language.point}</Text>
                     <View style={{flexDirection:'row',flexWrap:'wrap'}}>
                       <View style={{position:'relative',top:15}}>
-                        <Image style={{width:16,height:16,tintColor:'black'}} source={require('../../Images/ic_pts_copy.png')} />
+                        <Image style={{width:16,height:16,tintColor:'#676667'}} source={require('../../Images/ic_pts_copy.png')} />
                       </View>
-                      <Text style={{fontSize:20,paddingLeft:10,fontWeight:'bold',position:'relative',top:9}}>{this.state.point}</Text>
+                      <Text style={{fontSize:20,paddingLeft:10,fontWeight:'bold',position:'relative',top:9,color:'#676667'}}>{this.state.point}</Text>
                     </View>
                   </View>
                   <View style={{flex:0.5}}>
-                    <Text style={{fontSize:16,fontWeight:'bold'}}>{Global.language.quantity}</Text>
+                    <Text style={{fontSize:16,fontWeight:'bold',color:'#676667'}}>{Global.language.quantity}</Text>
                     <View style={{flexDirection:'row',paddingTop:15}}>
                       <TouchableOpacity onPress={()=>{this.minorCurrentNum()}} style={{width:16,height:32}}>
-                        <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'center',marginTop:3}}>
-                          <Text style={{fontSize:12}}>-</Text>
+                        <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'flex-start',marginTop:3}}>
+                          <Text style={{fontSize:12,color:'#676667'}}>-</Text>
                         </View>
                       </TouchableOpacity>
-                      <View style={{width:50,alignItems:'center'}}>
-                        <Text style={{fontSize:16}}>{this.state.current_num}</Text>
+                      <View style={{width:35,alignItems:'center'}}>
+                        <TextInput defaultValue={this.state.current_num.toString()} 
+                          value={this.state.current_num.toString()} 
+                          style={{fontSize:16,height: 20,color:'#676667', paddingLeft:10,paddingRight:0}}  
+                          maxLength={3} 
+                          keyboardType="numeric" 
+                          onChangeText={(text) => {
+                            this.changeQuantity(text);
+                          }}  />
                       </View>
-                      <TouchableOpacity onPress={()=>{this.addCurrentNum()}} style={{width:16,height:32}}>
-                        <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'center',marginTop:3}}>
-                          <Text style={{fontSize:12}}>+</Text>
+                      <TouchableOpacity onPress={()=>{this.addCurrentNum()}}  style={{width:16,height:32}}>
+                        <View style={{backgroundColor:'#D6D6D6',width:16,height:16,borderRadius:16/2,alignItems:'center',justifyContent:'flex-start',marginTop:3}}>
+                          <Text style={{fontSize:12,color:'#676667'}}>+</Text>
                         </View>
                       </TouchableOpacity>
                     </View>
@@ -297,7 +338,7 @@ class RewardDetail extends Component {
                 <View style={{paddingTop:20}}>
                 <WebView
                   source={{html:this.state.htmlContent}}
-                  style={{width:width-30,height:this.state.webViewHeight}}
+                  style={{width:width-30,height:this.state.webViewHeight,color:'#676667'}}
                   onNavigationStateChange={this._onNavigationStateChange.bind(this)}
                   injectedJavaScript={jscode}
                 />
@@ -319,11 +360,12 @@ class RewardDetail extends Component {
         <TouchableOpacity onPress={()=>{this.openAlert()}}>
           <View style={{width:width-100,borderRadius:6,backgroundColor:'#1A8BCF',flexDirection:'row',marginBottom:20,height:50,alignItems:'center'}}>
             <View style={{width:(width-100)/2,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:16}}>{Global.language.redeem}</Text>
+              <Text style={{color:'white',fontSize:16,fontWeight:'bold'}}>{Global.language.redeem}</Text>
             </View>
-            <View style={{height:20,width:1,backgroundColor:'white'}}></View>
-            <View style={{width:(width-100)/2,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'white',fontSize:16}}>{this.state.total_point}</Text>
+            <View style={{height:20,width:1,backgroundColor:'white',opacity:0.7}}></View>
+            <View style={{width:(width-140)/2,flexDirection:'row',justifyContent:'center'}}>
+              <Image style={{width:18,height:18,paddingHorizontal:15,tintColor:'white'}} source={require('../../Images/ic_pts_copy.png')} resizeMode={Image.resizeMode.contain}/>
+              <Text style={{color:'white',fontSize:16,fontWeight:'bold'}}>{this.state.total_point}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -336,7 +378,7 @@ class RewardDetail extends Component {
 var style2 = StyleSheet.create({
   a: {
     fontWeight: '300',
-    color: '#FF3366', // pink links
+    color: '#676667', // pink links
   },
 })
 const styles = StyleSheet.create({

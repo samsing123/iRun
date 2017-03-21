@@ -43,7 +43,6 @@ import stephistory from './Views/StepHistory';
 import changepassword from './Views/ChangePassword';
 import realtimemap from './Views/RealTimeMap';
 import forgotpassword from './Views/ForgotPassword';
-import resetpassword from './Views/ResetPasswords';
 import appintro from './Views/AppIntro';
 import fitnesstrackerconnect from './Views/FitnessTrackerConnect';
 import animationtest from './Views/AnimationTest';
@@ -54,6 +53,11 @@ import profileediting from './Views/ProfileEditing';
 import runplansetting from './Views/RunPlanSetting';
 import eventform from './Views/EventForm';
 import tmp from './Views/Tmp';
+import EmergencyCcontact from './Views/EmergencyContact';
+import ResetPassword from './Views/ResetPassword';
+import ResetPasswords from './Views/ResetPasswords';
+import ResetPasswordAlert from './Controls/ResetPasswordAlert';
+
 
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -76,7 +80,7 @@ var rewardArr = [];
 var createRightButton = function() {
       return (
           <View>
-                <Image source={require('../Images/img_axalogo.png')} style={{width:30,height:30,position:'relative',right:-4,top:-8}} resizeMode={Image.resizeMode.contain}/>
+                <Image source={require('../Images/img_axalogo.png')} style={{width:30,height:30,position:'relative',right:-2,top:-3}} resizeMode={Image.resizeMode.contain}/>
           </View>
       );
 }
@@ -98,14 +102,14 @@ export default class RootRouter extends Component {
     createLeftButton() {
           return (
               <TouchableOpacity onPress={()=>{Actions.inbox()}}>
-                    <Image source={require('../Images/btn_email_not.png')} style={{width:30,height:20}} resizeMode={Image.resizeMode.contain}/>
+                    <Image source={require('../Images/btn_email_not.png')} style={{width:30,height:20,marginTop:5}} resizeMode={Image.resizeMode.contain}/>
               </TouchableOpacity>
           );
     }
     createNoMailButton() {
           return (
               <TouchableOpacity onPress={()=>{Actions.inbox()}}>
-                    <Image source={require('../Images/btn_email.png')} style={{width:30,height:20}} resizeMode={Image.resizeMode.contain}/>
+                    <Image source={require('../Images/btn_email.png')} style={{width:30,height:20,marginTop:5}} resizeMode={Image.resizeMode.contain}/>
               </TouchableOpacity>
           );
     }
@@ -439,7 +443,7 @@ export default class RootRouter extends Component {
         const scenes = Actions.create(
             <Scene key="scene">
                 <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>
-                <Scene key="home" component={Home} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}>
+                <Scene key="home" shouldHideBorder={true} component={Home} noBackBtn={true} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}>
                 </Scene>
                 <Scene key="tmp" component={tmp} />
                 
@@ -448,7 +452,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="personalinformation"  component={PersonalInformation} title="personalinformation" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="intro2" component={Intro2} title="Page2"/>
-                <Scene renderRightButton={createRightButton} key="map" component={Map} title="RESULT" />
+                <Scene renderRightButton={createRightButton} key="map" shouldHideBorder={true} isBackDisablws={true} noBackBtn={false} component={Map} title="RESULT" />
                 <Scene renderRightButton={createRightButton} key="photo" component={Photo} title="Photo"/>
                 <Scene renderRightButton={createRightButton} key="verify" component={Verify} title="Verify" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="welcome" component={Welcome} title="Welcome" hideNavBar={true}/>
@@ -456,8 +460,8 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="fb_register" component={FB_Register} title="FB Register" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="running_level" component={Running_level} title="Running Level" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="interest" component={Interest} title="Interest" hideNavBar={true}/>
-                <Scene renderRightButton={createRightButton} key="run" component={Run} title="Run"/>
-                <Scene renderRightButton={createRightButton} key="tracking" component={Tracking} title="Tracking" hideNavBar={true}/>
+                <Scene renderRightButton={createRightButton} key="run"  component={Run} title="Run"/>
+                <Scene renderRightButton={createRightButton} key="tracking" shouldHideBorder={true} component={Tracking} title="Tracking" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="numbercount" component={NumberCount} title="NumberCount" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="musicplayer" component={musicPlayer} title="musicPlayer" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="musiclist" component={musicList} title="Select a music to play"/>
@@ -465,9 +469,9 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="eventdetail" component={eventDetail} title="Event" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="profile" component={profile} title="PROFILE" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="setting" component={setting} title="SETTING" hideNavBar={false}/>
-                <Scene renderRightButton={createRightButton}key="rewarddetail" component={rewarddetail} title="REWARDDetail" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="rewarddetail" component={rewarddetail} title="REWARDDetail" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="redeemform" component={redeemform} title="REDEMPTION FORM" hideNavBar={false}/>
-                <Scene renderRightButton={createRightButton}key="redeemsummary" component={redeemsummary} title="CONFIRMATION" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="redeemsummary" component={redeemsummary} title="CONFIRMATION" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="inbox" component={inbox} title="INBOX" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="runhistory" component={runhistory} title="RUNNING HISTORY" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="pointhistory" component={pointhistory} title="POINT HISTORY" hideNavBar={false}/>
@@ -478,7 +482,6 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="changepassword" component={changepassword} title="Change Password" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="realtimemap" component={realtimemap} title="MAP" hideNavBar={false}/>
                 <Scene renderRightButton={createRightButton} key="forgotpassword" component={forgotpassword} title="Forgot Passwrd" hideNavBar={true}/>
-                <Scene renderRightButton={createRightButton} key="resetpassword" component={resetpassword} title="Reset Passwrd" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="fitnesstrackerconnect" component={fitnesstrackerconnect} title="Connet Fitness Tracker" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="animationtest" component={animationtest} title="Bar Animation Test" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="personalrecord" component={personalrecord} title="PERSONAL RECORD" hideNavBar={false}/>
@@ -488,11 +491,14 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="runplansetting" component={runplansetting} title="Run Plan Setting" hideNavBar={true}/>
                 <Scene key="pointalert" component={AvailiblePointAlert} schema="modal" title="availible point" hideNavBar={true} sceneStyle={{backgroundColor:'rgba(0,0,0,0)'}}/>
                 <Scene renderRightButton={createRightButton} key="eventform" component={eventform} title="Registration" hideNavBar={false}/>
+                <Scene renderRightButton={createRightButton} key="EmergencyContact" component={EmergencyCcontact} title="EmergencyCcontact" hideNavBar={true} />
+                <Scene renderRightButton={createRightButton} key="ResetPassword" component={ResetPassword} title="ResetPassword" hideNavBar={true} />
+                <Scene renderRightButton={createRightButton} key="ResetPasswordAlert" component={ResetPasswordAlert} title="Reset Password" hideNavBar={true} />
+                <Scene renderRightButton={createRightButton} key="ResetPasswords" component={ResetPasswords} title="Reset Password" hideNavBar={true} />
             </Scene>
         );
         return(
-            <Router hideNavBar={false} scenes={scenes} titleStyle={{marginTop:5}}>
-
+            <Router hideNavBar={false} scenes={scenes} titleStyle={{marginTop:13}}>
             </Router>
         )
 

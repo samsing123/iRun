@@ -81,45 +81,8 @@ function _callback(responseJson){
     alert(responseJson.response.error);
   }
 }
-function createDateData(){
-    let month = [];
-    for(let j = 1;j<13;j++){
-        let day = [];
-        if(j === 2){
-            for(let k=1;k<29;k++){
-                if(k<10){
-                  k='0'+k;
-                }
-                day.push(k);
-            }
-        }
-        else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
-            for(let k=1;k<32;k++){
-                if(k<10){
-                  k='0'+k;
-                }
-                day.push(k);
-            }
-        }
-        else{
-            for(let k=1;k<31;k++){
-                if(k<10){
-                  k='0'+k;
-                }
-                day.push(k);
-            }
-        }
-        if(j<10){
-          j='0'+j;
-        }
-        let _month = {};
-        _month[j] = day;
-        month.push(_month);
-    }
-    return month;
-};
 
-class ResetPasswords extends Component {
+class ResetPassword extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -130,7 +93,6 @@ class ResetPasswords extends Component {
       arrow:'<',
       alertMessage:'',
       mobile:'',
-      birthday:'Date Of Birth',
     }
     GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
@@ -165,19 +127,19 @@ class ResetPasswords extends Component {
     }
     */
   }
-  _sendResetPasswordRequest(){
+  _sendForgetPasswordRequest(){
     let data = {
       method: 'POST',
       body: JSON.stringify({
-        mobile_number:this.props.mobile_number,
-        new_password:this.state.new_password,
-        verify_token:this.props.verify_token,
+        mobile_number:this.state.mobile,
+        email:this.state.email
       }),
       headers: {
         'Content-Type': 'application/json',
       }
     };
-    Global._sendPostRequest(data,'api/reset-password',(responseJson)=>{this._requestCallback(responseJson)});
+    console.log(data);
+    Global._sendPostRequest(data,'api/reset-migrated-user',(responseJson)=>{this._requestCallback(responseJson)});
   }
   async _saveNewPassword(){
       try{
@@ -188,8 +150,9 @@ class ResetPasswords extends Component {
       }
   }
   _requestCallback(responseJson){
+    console.log(responseJson);
     if(responseJson.status=='success'){
-      Actions.login({type:ActionConst.RESET});
+      Actions.verify({smsType:'reset_password',mobile_no:this.state.mobile});
     }else{
       alert(responseJson.response.error);
     }
@@ -197,41 +160,15 @@ class ResetPasswords extends Component {
   }
   //vaildation (input,title,format,maxLength,minLength)
   _vaildateFormSubmit(){
-    if(Global._vaildateInputBlank(this.state.new_password,'password')
-    ||Global._vaildateInputFormat(this.state.new_password,'password','num+alpha+spec',12,6)){
+
+    if(Global._vaildateInputBlank(this.state.mobile,'mobile')
+    ||Global._vaildateInputFormat(this.state.mobile,'mobile','mobile',8)){
       return;
     }
-    if(this.state.new_password!=this.state.confirm_password){
-      alert('The cofirm password not match the password.');
-      return;
-    }
-    alert('Reset successfully, please login again');
-    //Actions.login({type:ActionConst.RESET});
-    this._sendResetPasswordRequest();
+    //Actions.verify({smsType:'reset_password'});
+    this._sendForgetPasswordRequest();
   }
-  _showDatePicker() {
-      Picker.init({
-          pickerData: createDateData(),
-          selectedValue: ['1', '1'],
-          pickerConfirmBtnText:'Done',
-          pickerCancelBtnText:'Cancel',
-          pickerBg:[255,255,255,1],
-          pickerToolBarBg:[255,255,255,1],
-          pickerTitleText:'Birthday',
-          onPickerConfirm: pickedValue => {
-              this.setState({
-                birthday:pickedValue[0]+'/'+pickedValue[1]
-              });
-          },
-          onPickerCancel: pickedValue => {
-              console.log('date', pickedValue);
-          },
-          onPickerSelect: pickedValue => {
-              console.log('date', pickedValue);
-          }
-      });
-      Picker.show();
-  }
+  
   loginWithFacebook(){
     LoginManager.logInWithReadPermissions(['public_profile','email']).then(
       function(result) {
@@ -275,17 +212,17 @@ class ResetPasswords extends Component {
         </View>
         <View style={{paddingTop:height*0.05,width:width,alignItems:'center'}}>
           <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
-            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="New Password" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({new_password:text})}></TextInput>
+            <TextInput keyboardType="numeric" placeholderTextColor="white" placeholder="Mobile (SMS Verification)" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({mobile:text})}></TextInput>
           </View>
-          <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center',marginTop:10}}>
-            <TextInput secureTextEntry={true} placeholderTextColor="white" placeholder="Confirm Password" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="password" onChangeText={(text) => this.setState({confirm_password:text})}></TextInput>
+          <View style={{width:width-30,height:40,borderBottomWidth:1,borderBottomColor:'white',justifyContent:'center'}}>
+            <TextInput keyboardType="email-address" placeholderTextColor="white" placeholder="Email" style={{marginRight:10,flex:1,fontSize:16,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' ref="email" onChangeText={(text) => this.setState({email:text})}></TextInput>
           </View>
           <View style={{paddingTop:146}}>
-            <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>SUBMIT</Text></Button>
+            <Button onPress={()=>{this._vaildateFormSubmit()}} style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,borderWidth:1,borderColor:'#fff',width:240,height:40}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>NEXT</Text></Button>
           </View>
         </View>
-        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',width:30,height:30,borderRadius:30/2,position:'absolute',top:20,left:20}}>
-         <Text style={{fontSize:20,color:'blue'}}>{this.state.arrow}</Text>
+        <TouchableOpacity onPress={()=>{Actions.pop()}} style={{alignItems:'center',justifyContent:'center',position:'absolute',top:20,left:20}}>
+         <Image style={{width:30,height:30}} source={require('../../Images/btn_back.png')} resizeMode={Image.resizeMode.contain}></Image>
         </TouchableOpacity>
       </InputScrollView>
       </View>
@@ -296,7 +233,7 @@ class ResetPasswords extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: '#rgba(0,0,0,0)',
     height:height-54,
   },
   welcome: {
@@ -341,4 +278,4 @@ const styles = StyleSheet.create({
 </View>
 */
 
-module.exports = ResetPasswords;
+module.exports = ResetPassword;

@@ -134,17 +134,19 @@ class ProfileEditing extends Component {
       language_chi_text:styles.language_text_non_selected,
       isEditting:false,
       isRunSetting:this.props.isRunSetting?true:false,
-      height:Global.user_profile.height+' cm',
-      weight:Global.user_profile.weight+' kg',
+      height:(Global.user_profile.height)?Global.user_profile.height+' cm':' cm',
+      weight:(Global.user_profile.weight)?Global.user_profile.weight+' kg':' kg',
       gender:Global.user_profile.gender,
       age_range:Global.user_profile.age_range,
       exercise:Global.user_profile.exercise,
       imagePath:Global.user_icon,
       loading:true,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
+    console.log("if null",Global.user_profile.weight=='')
+    console.log("state height",this.state.weight)
   }
 
   _sendFormData(imagePath){
@@ -237,14 +239,15 @@ class ProfileEditing extends Component {
     Global.tempInterest = Global.user_profile.interest;
     this.setState({
       loading:false,
-      height:Global.user_profile.height+' cm',
-      weight:Global.user_profile.weight+' kg',
+      height:(Global.user_profile.height)?Global.user_profile.height+' cm':' cm',
+      weight:(Global.user_profile.weight)?Global.user_profile.weight+' kg':' kg',
       gender:Global.user_profile.gender,
       age_range:Global.user_profile.age_range,
       exercise:Global.user_profile.exercise+temp,
       display_name:Global.user_profile.display_name,
       email:Global.user_profile.email
     });
+    
     //Actions.home();
   }
   _testRunRequest(){
@@ -421,7 +424,7 @@ class ProfileEditing extends Component {
   _showHeightPicker() {
       Picker.init({
           pickerData: createHeight(),
-          selectedValue: [Global.user_profile.height+' cm'],
+          selectedValue: [Global.user_profile.height+' '],
           pickerConfirmBtnText:'Done',
           pickerCancelBtnText:'Cancel',
           pickerBg:[255,255,255,1],
@@ -719,40 +722,40 @@ class ProfileEditing extends Component {
         {Global.is_facebook?<View/>:
         <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.change_password}</Text><Text>></Text>
+            <Text style={fontWeight='bold'}>{Global.language.change_password}</Text><Text>></Text>
           </View>
         </TouchableOpacity>
         }
         <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-          <Text>{Global.language.your_interest}</Text><Text>></Text>
+          <Text style={fontWeight='bold'}>{Global.language.your_interest}</Text><Text>></Text>
         </View>
-        <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
+         <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.gender}</Text><Text>{this.state.gender} ></Text>
+            <Text style={fontWeight='bold'}>{Global.language.gender}</Text><Text>{this.state.gender} ></Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showAgePicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.age_range}</Text><Text>{this.state.age_range} ></Text>
+            <Text style={fontWeight='bold'}>{Global.language.age_range}</Text><Text>{this.state.age_range} ></Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showHeightPicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.height}</Text><Text>{this.state.height} ></Text>
+            <Text style={fontWeight='bold'}>{Global.language.height}</Text><Text>{this.state.height} ></Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showWeightPicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.weight}</Text><Text>{this.state.weight} ></Text>
+            <Text style={fontWeight='bold'}>{Global.language.weight}</Text><Text>{this.state.weight} ></Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showRlevelPicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.running_level}</Text><Text>{this.state.exercise} ></Text>
+            <Text>{Global.language.running_level}</Text><Text style={fontWeight='bold'}>{this.state.exercise} ></Text>
           </View>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0}}>
+      <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0,width:width}}>
         <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
           <Text style={{fontSize:14,color:'white'}}>123</Text>
         </View>
@@ -906,7 +909,7 @@ class ProfileEditing extends Component {
       <ScrollView animation="fadeIn">
 
         <View style={styles.container}>
-          <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:tempHeight,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_profile.png')}>
+          <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:tempHeight,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_setting.png')}>
               <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
                 <TouchableOpacity onPress={()=>{this._imagePick()}} >
                 {profileImage}
@@ -914,22 +917,31 @@ class ProfileEditing extends Component {
                 </TouchableOpacity>
               </View>
               <View style={{flex:1}}>
-              <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
+              <View style={{paddingLeft:20,paddingRight:20,paddingTop:20,width:width-50,justifyContent:'center'}}>
                   <View>
-                    <Text style={styles.textColor}>{Global.language.display_name}</Text>
-                    <View style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
-                      <TextInput placeholder='Display Name' value={this.state.display_name} style={{color:'white', width:width-50,height:30,}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({display_name:text})}/>
+                    <Text style={styles.textSmallColor}>{Global.language.display_name}</Text>
+                    <View style={{width:width-80,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
+                      <Text style={{color:'white', backgroundColor:'rgba(0,0,0,0)',width:width-50,height:50,paddingTop:15,paddingBottom:15}} 
+                        underlineColorAndroid='rgba(0,0,0,0)' 
+                        >{this.state.display_name}</Text>
                     </View>
                   </View>
-                  <View style={{flexDirection:'row',paddingTop:10}}>
-                    <View style={{flex:0.7}}>
-                      <Text style={styles.textColor}>{Global.language.email}</Text>
-                      <View style={{width:width-160,height:20,justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
-                        <TextInput keyboardType="email-address" ref="email" onSubmitEditing={() => {this.refs['email'].blur();}} onBlur={()=>{this._checkEmail();}} placeholder='Add Email' value={this.state.email} style={{width:width-160,height:20,color:'white'}} underlineColorAndroid='rgba(0,0,0,0)' placeholderTextColor='white' onChangeText={(text) => this.setState({email:text})}/>
+                  <View style={{flexDirection:'row',paddingTop:20,paddingBottom:20}}>
+                    <View style={{flex:0.8}}>
+                      <Text style={{color:'#ffffff',backgroundColor:'rgba(0,0,0,0)',fontSize:18,fontWeight:'bold',opacity:0.8}}>{Global.language.email}({Global.language.optional})</Text>
+                      <View style={{width:width-140,height:40,justifyContent:'center',borderBottomWidth:1,borderBottomColor:'rgba(0,0,0,0)'}}>
+                        <TextInput style={{width:width-140,height:40,color:'white' }}  
+                          ref="email" 
+                          keyboardType="email-address"  
+                          onSubmitEditing={() => {this.refs['email'].blur()}} 
+                          onBlur={()=>{this._checkEmail()}}  
+                          value={this.state.email}  
+                          underlineColorAndroid="rgba(0, 0, 0, 0)"
+                          onChangeText={(text) => this.setState({email:text})} />
                       </View>
                     </View>
-                    <View style={{flex:0.3}}>
-                      <Text style={styles.textColor}>{Global.language.birthday}</Text>
+                    <View style={{flex:0.2}}>
+                      <Text style={styles.textSmallColor}>{Global.language.birthday}</Text>
                       <View style={{width:width-80,height:20,justifyContent:'center'}}>
                         <Text style={styles.textColor}>{Global.user_profile.birthday}</Text>
                       </View>
@@ -937,19 +949,17 @@ class ProfileEditing extends Component {
                   </View>
                   {Global.is_facebook?<View/>:
                   <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
-                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                      <Text style={styles.textColor}>{Global.language.change_password}</Text><Text style={styles.textColor}>></Text>
-                    </View>
-                  </TouchableOpacity>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                     <Text style={styles.textColor}>{Global.language.change_password}</Text><Text style={styles.textColor}>></Text></View></TouchableOpacity>
                   }
-                  <TouchableOpacity onPress={()=>{Actions.interest({editing:true,int_arr:Global.user_profile.interest})}}>
+                 <TouchableOpacity onPress={()=>{Actions.interest({editing:true,int_arr:Global.user_profile.interest})}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1',borderTopWidth:Global.is_facebook?1:0,borderColor:'#f1f1f1',marginTop:Global.is_facebook?40:0}}>
                       <Text style={styles.textColor}>{Global.language.your_interest}</Text><Text style={styles.textColor}>></Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showGenderPicker()}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                      <Text style={styles.textColor}>{Global.language.gender}</Text>
+                      <Text style={styles.textColor}>{Global.language.gender}</Text><Text style={styles.textColor}>{this.state.gender} ></Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showAgePicker()}}>
@@ -1112,7 +1122,16 @@ const styles = StyleSheet.create({
   textColor:{
     color:'#ffffff',
     backgroundColor:'rgba(0,0,0,0)',
+    fontSize:18,
+    //fontWeight:'bold'
   },
+  textSmallColor:{
+    color:'#ffffff',
+    backgroundColor:'rgba(0,0,0,0)',
+    fontSize:13,
+    fontWeight:'bold'
+  },
+  
   textBGColor:{
 
   },
@@ -1126,3 +1145,5 @@ value={this.state.trueSwitchIsOn} />
 */
 
 module.exports = ProfileEditing;
+
+  

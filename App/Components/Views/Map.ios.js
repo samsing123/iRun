@@ -301,7 +301,7 @@ class Map extends Component {
     this.getDirections().then((result) => {
       var lineCoordinates = this._createRouteCoordinates(result);
       var string = JSON.stringify(lineCoordinates);
-      GoogleAnalytics.setTrackerId('UA-84489321-1');
+      GoogleAnalytics.setTrackerId('UA-90865128-2');
       GoogleAnalytics.trackEvent('EngRun', lineCoordinates);
       this.setState({polylineCoords:lineCoordinates});
     });
@@ -805,8 +805,9 @@ class Map extends Component {
   render() {
     //this._checkCurrentState();
     var run_info = <View>
-      <View style={{width:width,alignItems:'center',justifyContent:'center',paddingTop:10}}>
-        <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold'}}>POINTS</Text></Text>
+      <View style={{width:width,alignItems:'center',flexDirection:'row',justifyContent:'center',paddingTop:10}}>
+        <Image style={{width:25,height:25,paddingHorizontal:20}} source={require('../../Images/ic_pts_blue.png')} resizeMode={Image.resizeMode.contain}/>
+        <Text style={{color:'rgba(20,139,205,1)',fontSize:36,fontWeight:'bold'}}>{this.state.point}<Text style={{color:'rgba(20,139,205,1)',fontSize:12,fontWeight:'bold',paddingHorizontal:15}}>POINTS</Text></Text>
       </View>
       <TouchableOpacity onPress={()=>{Actions.runhistory()}}>
         <View style={{marginTop:12,height:48,alignItems:'center',justifyContent:'center',width:width,borderTopColor:'rgba(103,103,103,0.5)',borderTopWidth:1,borderBottomColor:'rgba(103,103,103,0.5)',borderBottomWidth:1}}>

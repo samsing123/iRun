@@ -131,7 +131,7 @@ class Interest extends Component {
       t4:styles.non_selectedBack,
       t5:styles.non_selectedBack,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     this.interestArr = [];
@@ -236,8 +236,8 @@ class Interest extends Component {
         case 'lifestyle':this._interestSelected(1);break;
         case 'food':this._interestSelected(2);break;
         case 'travel':this._interestSelected(3);break;
-        case 'family':this._interestSelected(4);break;
-        case 'health':this._interestSelected(5);break;
+        case 'health':this._interestSelected(4);break;
+        case 'sport':this._interestSelected(5);break;
       }
     }
   }
@@ -378,10 +378,10 @@ class Interest extends Component {
           </TouchableOpacity>
         </View>
         <View style={{position:'absolute',bottom:26,paddingLeft:28,flexDirection:'row'}}>
-          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.pop()}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
-          <TouchableOpacity onPress={()=>{if(this.props.editing){this._setInterestForProfileEditing()}else{this._sendEditProfile()}}}><Text style={{color:'rgba(20,139,205,1)',fontSize:17,fontWeight:'bold'}}>DONE ></Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{if(this.props.editing){this._setInterestForProfileEditing()}else{this._sendEditProfile()}}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>DONE ></Text></TouchableOpacity>
         </View>
       </View>
     );

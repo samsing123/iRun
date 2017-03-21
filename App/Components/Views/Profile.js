@@ -215,7 +215,7 @@ class Profile extends Component {
       barChartRefresh:false,
       monthChartRefresh:false,
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     console.log(Global.user_profile.run_stat_week.plots);
@@ -247,7 +247,7 @@ class Profile extends Component {
   }
   _requestCallback(responseJson){
     Global.user_profile = responseJson.response;
-
+    console.log("profile callback",responseJson.response)
     for(var key in Global.user_profile){
       if(Global.user_profile[key]===null){
         Global.user_profile[key] = '';
@@ -828,21 +828,21 @@ class Profile extends Component {
     var duration = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_duration)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
         <Image source={require('../../Images/ic_duration.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.duration}</Text>
+        <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.duration}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_duration}</Text>
       </View>
     </TouchableOpacity>;
     var pace = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.avg_speed)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
         <Image source={require('../../Images/ic_avgspeed.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.pace_str}</Text>
+        <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.pace_str}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.avg_speed}</Text>
       </View>
     </TouchableOpacity>;
     var cal = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_cal)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
         <Image source={require('../../Images/ic_cal.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.calories}</Text>
+        <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.calories}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_cal}</Text>
       </View>
     </TouchableOpacity>;
@@ -851,7 +851,7 @@ class Profile extends Component {
       steps = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_step)}}>
         <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
           <Image source={require('../../Images/btn_step.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.steps}</Text>
+          <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.steps}</Text>
           <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>
         </View>
       </TouchableOpacity>;
@@ -859,7 +859,7 @@ class Profile extends Component {
       steps = <TouchableOpacity onPress={()=>{Actions.fitnesstracker()}}>
         <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
           <Image source={require('../../Images/btn_step.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-          <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>--</Text>
+          <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>--</Text>
           <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>
         </View>
       </TouchableOpacity>;
@@ -916,7 +916,7 @@ class Profile extends Component {
     }
 
     var run_stat_arr = this._renderRunStat();
-    var run_stat_content = <View style={{position:'relative',top:10,height:100,flexDirection:'row'}}>
+    var run_stat_content = <View style={{position:'relative',top:-15,height:85,flexDirection:'row'}}>
       {run_stat_arr[0]}
       <View style={{width:1,height:52,backgroundColor:'rgba(151,151,151,1)',marginTop:31}}/>
       {run_stat_arr[1]}
@@ -945,7 +945,7 @@ class Profile extends Component {
     return (
       <ScrollView>
       <View style={styles.container}>
-        <Image source={require('../../Images/bg_setting.png')} style={{width:width,height:170,justifyContent:'center',alignItems:'center',borderBottomWidth:1}}>
+        <Image source={require('../../Images/bg_setting.png')} style={{width:width,height:160,justifyContent:'center',alignItems:'center',borderBottomWidth:1}}>
           <TouchableOpacity onPress={()=>{Actions.setting()}}>
             <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
               {profileImage}
@@ -959,7 +959,7 @@ class Profile extends Component {
           </View>
         </Image>
 
-        <TouchableOpacity onPress={()=>{Actions.pointhistory({title:Global.language.point_history})}} style={{position:'relative',top:-25}}>
+        <TouchableOpacity onPress={()=>{Actions.pointhistory({title:Global.language.point_history})}} style={{position:'relative',top:-26}}>
           <View style={{flexDirection:'row',width:160,height:50,borderRadius:50/2,backgroundColor:'#148BCD',borderColor:'rgba(255,255,255,1)',borderWidth:2,alignItems:'center',justifyContent:'center'}}>
             <View style={{width:24}}>
               <Image style={{width:24,height:24,tintColor:'#FFFFFF'}} source={require('../../Images/ic_pts_copy.png')}></Image>
@@ -972,7 +972,7 @@ class Profile extends Component {
             </View>
           </View>
         </TouchableOpacity>
-        <View style={{position:'relative',top:-14,width:320,height:40,borderRadius:60/2,backgroundColor:'rgba(255,255,255,0.9)',borderColor:'rgba(233,233,233,1)',borderWidth:1,flexDirection:'row'}}>
+        <View style={{position:'relative',top:-25,width:320,height:40,borderRadius:60/2,backgroundColor:'white',borderColor:'rgba(233,233,233,1)',borderWidth:1,flexDirection:'row'}}>
           <TouchableWithoutFeedback onPress={()=>this._changePeriod('1')} style={{width:80,height:40}}>
             <View style={this.state.p1}>
               <Text style={this.state.p1t}>{Global.language.weekly_days}</Text>
@@ -995,65 +995,65 @@ class Profile extends Component {
           </TouchableWithoutFeedback>
         </View>
 
-        {this.state.isSevenDay?<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
-          <View style={{alignSelf:'center',marginTop:10}}>
+        {this.state.isSevenDay?<View style={{top:-20,width:width-16,height:250,backgroundColor:'#f3f3f3',borderRadius:6}}>
+          <View style={{alignSelf:'center',marginTop:5}}>
             <Text>{this.state.display_title}</Text>
             <View style={{alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
           </View>
-          <View style={{position:'absolute',top:50,left:-5}}>
+          <View style={{position:'absolute',top:50,left:0}}>
             {this.state.barChartRefresh?<WebView
               ref="barChart"
               source={{html:htmlContent7}}
-              style={{width:width,height:160,backgroundColor:'#f3f3f3'}}
+              style={{width:width-16,height:160,backgroundColor:'#f3f3f3'}}
               renderLoading={()=><Text>Loading...</Text>}
             />:<View><WebView
               ref="barChart2"
               source={{html:htmlContent7}}
-              style={{width:width,height:160,backgroundColor:'#f3f3f1'}}
+              style={{width:width-16,height:160,backgroundColor:'#f3f3f1'}}
               renderLoading={()=><Text>Loading...</Text>}
             /></View>}
           </View>
         </View>:null}
-        {this.state.isSevenDay?null:<View style={{width:width-16,height:200,backgroundColor:'#f3f3f3',borderRadius:6}}>
-          <View style={{alignSelf:'center',marginTop:10}}>
+        {this.state.isSevenDay?null:<View style={{top:-20,width:width-16,height:250,backgroundColor:'#f3f3f3',borderRadius:6}}>
+          <View style={{alignSelf:'center',marginTop:5}}>
             <Text>{this.state.display_title}</Text>
             <View style={{alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
           </View>
-          <View style={{position:'absolute',top:50,left:-5}}>
+          <View style={{position:'absolute',top:50,left:0}}>
 
           {this.state.monthChartRefresh?<WebView
             source={{html:curveChart}}
-            style={{width:width,height:160,backgroundColor:'#f3f3f3'}}
+            style={{width:width-16,height:160,backgroundColor:'#f3f3f3'}}
             renderLoading={()=><Text>Loading...</Text>}
           />:<View><WebView
             source={{html:curveChart}}
-            style={{width:width,height:160,backgroundColor:'#f3f3f3'}}
+            style={{width:width-16,height:160,backgroundColor:'#f3f3f3'}}
             renderLoading={()=><Text>Loading...</Text>}
           /></View>}
           </View>
         </View>}
 
-        <View style={{width:width-16,height:100,justifyContent:'center',position:'relative'}}>
+        <View style={{top:-50,width:width-16,height:95,justifyContent:'center',position:'relative',backgroundColor:'white'}}>
           {/*<Text style={{fontSize:17,color:'rgba(103,103,103,1)',fontWeight:'bold'}}>{Global.language.run_stat}</Text>*/}
           {run_stat_content}
         </View>
-        <View style={{width:width-16,height:40,marginTop:4,flexDirection:'row',justifyContent:'space-around'}}>
+        <View style={{top:-70,width:width-16,height:100,marginTop:4,flexDirection:'row',justifyContent:'space-around'}}>
           <TouchableOpacity onPress={()=>{Actions.runhistory({title:Global.language.running_history})}}>
-            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-10,height:40,alignItems:'center',justifyContent:'center'}}>
+            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-15,height:40,alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'white',fontSize:12,fontWeight:'bold',textAlign:'center'}}>{Global.language.running_history}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{this._fitnessTracker()}}>
-            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-10,height:40,alignItems:'center',justifyContent:'center'}}>
+            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-15,height:40,alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'white',fontSize:12,fontWeight:'bold',textAlign:'center'}}>{Global.language.step_history}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{Actions.personalrecord()}}>
-            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-10,height:40,alignItems:'center',justifyContent:'center'}}>
+            <View style={{borderRadius:4,backgroundColor:'rgba(20,139,205,1)',width:(width-16)/3-15,height:40,alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'white',fontSize:12,fontWeight:'bold',textAlign:'center'}}>{Global.language.personal_record}</Text>
             </View>
           </TouchableOpacity>
@@ -1085,7 +1085,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    paddingTop:navbarHeight
+    paddingTop:navbarHeight-10
   },
   period_non_selected:{
     width:80,

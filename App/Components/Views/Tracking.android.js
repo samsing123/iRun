@@ -20,7 +20,8 @@ import {
   BackAndroid,
   PanResponder,
   Switch,
-  Vibration
+  Vibration,
+  TouchableHighlight
 } from 'react-native';
 import {Actions} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
@@ -161,7 +162,7 @@ class Tracking extends Component {
         y:0,
       }
     }
-    GoogleAnalytics.setTrackerId('UA-84489321-1');
+    GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
     GoogleAnalytics.trackEvent('testcategory', 'testaction');
     this._loadingProgress = this._loadingProgress.bind(this);
@@ -945,7 +946,7 @@ class Tracking extends Component {
     var self = this;
     BackAndroid.addEventListener('hardwareBackPress', () => {
         try {
-            //Actions.pop();
+            Actions.pop();
             return true;
         }
         catch (err) {
@@ -957,40 +958,41 @@ class Tracking extends Component {
     var left_icon = null;
     var right_icon = null;
     switch(this._getIconFromValue(left_value)){
-      case 'time':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_duration.png')}></Image>;
+      case 'time':left_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_duration.png')}></Image>;
       break;
-      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}></Image>;
+      case 'speed':left_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}></Image>;
       break;
-      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_distance.png')}></Image>;
+      case 'distance':left_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_distance.png')}></Image>;
       break;
     }
     switch(this._getIconFromValue(right_value)){
-      case 'time':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_duration.png')}></Image>;
+      case 'time':right_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_duration.png')}></Image>;
       break;
-      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}></Image>;
+      case 'speed':right_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_avgspeed.png')}></Image>;
       break;
-      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.conatin} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_distance.png')}></Image>;
+      case 'distance':right_icon=<Image resizeMode={Image.resizeMode.contain} style={{width:20,height:20,tintColor:'white'}} source={require('../../Images/ic_distance.png')}></Image>;
       break;
     }
 
     var emergency_view;
     if(this.state.is_1s_later){
-      emergency_view = <View style={{width:width,height:height,opacity:this.state.emergency_opacity,backgroundColor:'rgba(234,40,57,1)',position:'absolute',top:0,left:0,alignItems:'center'}}>
+      emergency_view = <View style={{width:width,height:height,opacity:this.state.emergency_opacity,backgroundColor:'#EC4D33',position:'absolute',top:0,left:0,alignItems:'center'}}>
         <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',marginTop:64}}>EMERGENCY</Text>
         <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold'}}>CONTACT</Text>
         {
           this.state.is_3s_later?
-          <View>
-            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>For emergency, please slide the screen</Text>
-            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>below and we will send a SMS to</Text>
+          <View>         
+            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>For emergency, please slide the screen below and we will </Text>
+            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>send a SMS to</Text>
             <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',textAlign:'center'}}>NAME</Text>
-            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>with your exact location</Text>
+            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>with your exact location</Text>          
           </View>
           :
           <View>
             <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>Hold down for 3 second,</Text>
-            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>then push up to confirm.</Text>
+            <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>then push up to confirm.</Text>       
           </View>
+          
         }
       </View>;
     }
@@ -1006,7 +1008,7 @@ class Tracking extends Component {
       </MapView>
 
         <View style={{alignItems:'center',width:width}}>
-          <Text style={{fontSize:115,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:35}}>{main_value}</Text>
+          <Text style={{fontSize:90,color:'rgba(21,139,205,1)',fontWeight:'bold',position:'relative',top:25}}>{main_value}</Text>
         </View>
         <View style={{flex:1,backgroundColor:'rgba(21,139,205,1)',width:width,alignItems:'center'}}>
           <View style={{paddingTop:15}}>
