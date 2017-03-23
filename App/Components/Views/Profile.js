@@ -214,6 +214,7 @@ class Profile extends Component {
       htmlContent7:'',
       barChartRefresh:false,
       monthChartRefresh:false,
+      backButton:'>'
     }
     GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
@@ -820,28 +821,28 @@ class Profile extends Component {
     console.log('check is calling?');
     var distance = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_distance)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-        <Image source={require('../../Images/ic_distance.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
-        <Text style={{fontSize:24,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.wordShort(this.state.run_stat.distance)}</Text>
+        <Image source={require('../../Images/ic_distance.png')} style={{width:25,height:25}} resizeMode={Image.resizeMode.contain}></Image>
+        <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.wordShort(this.state.run_stat.distance)}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_distance}</Text>
       </View>
     </TouchableOpacity>;
     var duration = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_duration)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-        <Image source={require('../../Images/ic_duration.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Image source={require('../../Images/ic_duration.png')} style={{width:25,height:25}} resizeMode={Image.resizeMode.contain}></Image>
         <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.duration}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_duration}</Text>
       </View>
     </TouchableOpacity>;
     var pace = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.avg_speed)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:25,height:25}} resizeMode={Image.resizeMode.contain}></Image>
         <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.pace_str}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.avg_speed}</Text>
       </View>
     </TouchableOpacity>;
     var cal = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_cal)}}>
       <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-        <Image source={require('../../Images/ic_cal.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+        <Image source={require('../../Images/ic_cal.png')} style={{width:25,height:25}} resizeMode={Image.resizeMode.contain}></Image>
         <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.calories}</Text>
         <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_cal}</Text>
       </View>
@@ -850,7 +851,7 @@ class Profile extends Component {
     if(this.state.isHaveStep){
       steps = <TouchableOpacity onPress={()=>{this._getDisplay(Global.language.total_step)}}>
         <View style={{height:100,width:(width-32)/4,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-          <Image source={require('../../Images/btn_step.png')} style={{width:30,height:30}} resizeMode={Image.resizeMode.contain}></Image>
+          <Image source={require('../../Images/btn_step.png')} style={{width:25,height:25}} resizeMode={Image.resizeMode.contain}></Image>
           <Text style={{fontSize:13,color:'rgba(20,139,205,1)',fontWeight:'bold'}}>{this.state.run_stat.steps}</Text>
           <Text style={{fontSize:8,color:'rgba(155,155,155,1)',fontWeight:'bold'}}>{Global.language.total_step}</Text>
         </View>
@@ -960,19 +961,19 @@ class Profile extends Component {
         </Image>
 
         <TouchableOpacity onPress={()=>{Actions.pointhistory({title:Global.language.point_history})}} style={{position:'relative',top:-26}}>
-          <View style={{flexDirection:'row',width:160,height:50,borderRadius:50/2,backgroundColor:'#148BCD',borderColor:'rgba(255,255,255,1)',borderWidth:2,alignItems:'center',justifyContent:'center'}}>
+          <View style={{flexDirection:'row',width:190,height:50,borderRadius:50/2,backgroundColor:'#148BCD',borderColor:'rgba(255,255,255,1)',borderWidth:2,alignItems:'center',justifyContent:'center'}}>
             <View style={{width:24}}>
               <Image style={{width:24,height:24,tintColor:'#FFFFFF'}} source={require('../../Images/ic_pts_copy.png')}></Image>
             </View>
-            <View style={{alignItems:'center',justifyContent:'center'}}>
-              <Text style={{fontSize:24,color:'rgba(255,255,255,1)'}}>{Global.user_profile.points}</Text>
+            <View style={{alignItems:'center',justifyContent:'center',paddingHorizontal:15,paddingBottom:2}}>
+              <Text style={{fontSize:24,color:'rgba(255,255,255,1)',fontWeight:'bold'}}>{Global.user_profile.points}</Text>
             </View>
-            <View style={{alignItems:'flex-end',paddingLeft:10}}>
-              <Image style={{width:14,height:18,tintColor:'#FFFFFF'}} source={require('../../Images/btn_next.png')}></Image>
+            <View style={{alignItems:'flex-end',paddingLeft:10,paddingBottom:5}}>
+            <Text style={{fontSize:28,color:'#FFFFFF'}}>{this.state.backButton}</Text>
             </View>
           </View>
         </TouchableOpacity>
-        <View style={{position:'relative',top:-25,width:320,height:40,borderRadius:60/2,backgroundColor:'white',borderColor:'rgba(233,233,233,1)',borderWidth:1,flexDirection:'row'}}>
+        <View style={{position:'relative',top:-15,width:320,height:40,borderRadius:60/2,backgroundColor:'white',borderColor:'rgba(233,233,233,1)',borderWidth:1,flexDirection:'row'}}>
           <TouchableWithoutFeedback onPress={()=>this._changePeriod('1')} style={{width:80,height:40}}>
             <View style={this.state.p1}>
               <Text style={this.state.p1t}>{Global.language.weekly_days}</Text>
@@ -997,7 +998,7 @@ class Profile extends Component {
 
         {this.state.isSevenDay?<View style={{top:-20,width:width-16,height:250,backgroundColor:'#f3f3f3',borderRadius:6}}>
           <View style={{alignSelf:'center',marginTop:5}}>
-            <Text>{this.state.display_title}</Text>
+            <Text style={{color:'#70706f'}}>{this.state.display_title}</Text>
             <View style={{alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
@@ -1018,7 +1019,7 @@ class Profile extends Component {
         </View>:null}
         {this.state.isSevenDay?null:<View style={{top:-20,width:width-16,height:250,backgroundColor:'#f3f3f3',borderRadius:6}}>
           <View style={{alignSelf:'center',marginTop:5}}>
-            <Text>{this.state.display_title}</Text>
+            <Text style={{color:'#70706f'}}>{this.state.display_title}</Text>
             <View style={{alignItems:'center',justifyContent:'center'}}>
               <Text style={{color:'#148BCD',fontSize:18,fontWeight:'bold'}}>{this.state.display_content}</Text>
             </View>
@@ -1106,7 +1107,7 @@ const styles = StyleSheet.create({
   },
   period_text_non:{
     fontSize:14,
-    color:'black'
+    color:'#70706f'
   },
   period_text:{
     fontSize:14,

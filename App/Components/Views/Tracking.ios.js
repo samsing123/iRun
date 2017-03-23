@@ -229,6 +229,7 @@ class Tracking extends Component {
       is_3s_later:false,
       is_1s_later:false,
       can_push:false,
+      emergency_name:'',
       start_point:{
         x:0,
         y:0,
@@ -263,6 +264,7 @@ class Tracking extends Component {
     musicDuration = 0;
   }
   componentWillMount(){
+    this._getEmergencyContact();
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => {
@@ -282,9 +284,22 @@ class Tracking extends Component {
       onPanResponderMove: (e,gs)=>{
         if(this.state.can_push){
             if(gs.dy<-150){
-              alert('emergency message sent!!');
+              
+              let data = {
+                method: 'POST',
+                body: JSON.stringify({
+                  latitude:location.latitude
+                }),
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }
+              };
+              Global._sendPostRequest(data,'api/emergency-call',(responseJson)=>{this._requestCallback(responseJson)});
+               
               clearTimeout(this.long_press_timeout);clearTimeout(this.long_start_opacity);clearInterval(this.vibrate_controller);clearInterval(this.emergency);emergency_opacity = 0;this.setState({emergency_opacity:emergency_opacity,is_3s_later:false,is_1s_later:false,can_push:false});
-            }
+              
+          }
         }
       },
       onPanResponderRelease: (evt,gs)=>{
@@ -292,7 +307,31 @@ class Tracking extends Component {
       }
     });
   }
-
+  _requestCallback(responseJson){
+    if(responseJson.status=='success'){
+      alert('emergency message sent!!');
+    }else{
+      alert(responseJson.response.error);
+    }
+    //Actions.home();
+  }
+  _getEmergencyContact(){
+    console.log("_getEmergencyContact")
+      let data = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      Global._sendPostRequest(data,'api/emergency',(responseJson)=>{this._inboxCallback(responseJson)});
+    
+    }
+    _inboxCallback(response){
+      console.log("_getEmergencyContact name",response.response.emergency_name)
+      this.setState({
+        emergency_name:response.response.emergency_name
+      });
+    }
   _firstLongPress(){
     var self = this;
     this.long_start_opacity = setTimeout(function(){
@@ -1121,10 +1160,9 @@ class Tracking extends Component {
           {
             this.state.is_3s_later?
             <View>
-              <Text>Button</Text>
                 <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>Please slide the screen below and we will</Text>
                 <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>send a SMS to</Text>
-                <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',textAlign:'center'}}>NAME</Text>
+                <Text style={{fontSize:30,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',textAlign:'center'}}>{(this.state.emergency_name)?(this.state.emergency_name):'Your Emergency Contact'}</Text>
                 <Text style={{fontSize:17,color:'white',backgroundColor:'rgba(0,0,0,0)',textAlign:'center'}}>with your exact location</Text>
             </View>
             :

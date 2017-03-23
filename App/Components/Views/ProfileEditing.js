@@ -344,14 +344,18 @@ class ProfileEditing extends Component {
           pickerTitleText:'Age Range',
           onPickerConfirm: pickedValue => {
               this.setState({
-                age_range:pickedValue[0],
+                age_range:pickedValue,
                 opacity:0
               });
+              console.log("pickedage",pickedValue)
+              console.log("confirmage",this.state.age_range)
           },
           onPickerCancel: pickedValue => {
               this.setState({
-                opacity:0
+                opacity:0,
+                //age_range:'',
               });
+              console.log("cancelage",this.state.age_range)
           },
           onPickerSelect: pickedValue => {
 
@@ -539,6 +543,7 @@ class ProfileEditing extends Component {
           'Content-Type': 'application/json',
         }
       };
+      console.log("profile data",data)
       Global._sendPostRequest(data,'api/profile',(v)=>{this._editPersonalCallback(v)});
       profileEdit=false;
       this.setState({
@@ -551,7 +556,7 @@ class ProfileEditing extends Component {
     let data = {
       method: 'POST',
       body: JSON.stringify({
-        age_range : this.state.age_range,
+        age_range : this.state.age_range.split(' ')[0],
         gender : this.state.gender,
         height : this.state.height.split(' ')[0],
         weight : this.state.weight.split(' ')[0],
@@ -564,7 +569,6 @@ class ProfileEditing extends Component {
         'Content-Type': 'application/json',
       }
     };
-    console.log(data);
     Global._saveUserProfile(data);
   }
 
@@ -703,16 +707,16 @@ class ProfileEditing extends Component {
     <View style={{paddingLeft:20,paddingRight:20,paddingTop:20}}>
         <View>
           <Text>{Global.language.display_name}</Text>
-          <TextInput style={{width:width-50,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}} placeholder='Display Name' value='123'/>
+          <TextInput style={{width:width-40,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'flex-end'}} placeholder='Display Name' value='123'/>
         </View>
-        <View style={{flexDirection:'row',paddingTop:10}}>
-          <View style={{flex:0.7}}>
+        <View style={{flexDirection:'row',paddingTop:10,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+          <View style={{flex:0.8}}>
             <Text>{Global.language.email}</Text>
             <View style={{width:width-160,height:20,justifyContent:'center'}}>
               <TextInput placeholder='Add Email' value={Global.email}/>
             </View>
           </View>
-          <View style={{flex:0.3}}>
+          <View style={{flex:0.2,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
             <Text>{Global.language.birthday}</Text>
             <View style={{width:width-80,height:20,justifyContent:'center'}}>
               <Text>{Global.user_profile.birthday}</Text>
@@ -721,7 +725,7 @@ class ProfileEditing extends Component {
         </View>
         {Global.is_facebook?<View/>:
         <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
-          <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',marginTop:40,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:20,padding:20,borderTopWidth:1,borderColor:'#f1f1f1',borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
             <Text style={fontWeight='bold'}>{Global.language.change_password}</Text><Text>></Text>
           </View>
         </TouchableOpacity>
@@ -736,7 +740,7 @@ class ProfileEditing extends Component {
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showAgePicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text style={fontWeight='bold'}>{Global.language.age_range}</Text><Text>{this.state.age_range} ></Text>
+            <Text style={fontWeight='bold'}>{Global.language.age_range}</Text><Text>{(this.state.age_range)?(this.state.age_range):''} ></Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showHeightPicker()}}>
@@ -751,11 +755,11 @@ class ProfileEditing extends Component {
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{this._showRlevelPicker()}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-            <Text>{Global.language.running_level}</Text><Text style={fontWeight='bold'}>{this.state.exercise} ></Text>
+            <Text>{Global.language.running_level}</Text><Text style={fontWeight='bold'}>{(this.state.exercise)?(this.state.exercise):''} ></Text>
           </View>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0,width:width}}>
+      <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0}}>
         <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
           <Text style={{fontSize:14,color:'white'}}>123</Text>
         </View>
@@ -784,21 +788,38 @@ class ProfileEditing extends Component {
   render() {
     console.log("profile editing...")
     var self = this;
+    // BackAndroid.addEventListener('hardwareBackPress', () => {
+    //     try {
+    //         if(!this.state.isRunSetting){
+    //           Actions.pop();
+    //           return true;
+    //         }else{
+    //           this._backClick();
+    //           return true;
+    //         }
+    //     }
+    //     catch (err) {
+    //         BackAndroid.exitApp();
+    //         return true;
+    //     }
+    // });
     BackAndroid.addEventListener('hardwareBackPress', () => {
-        try {
-            if(!this.state.isRunSetting){
-              Actions.pop();
-              return true;
-            }else{
-              this._backClick();
+            try {
+                Actions.pop();
+                return true;
+            }
+            catch (err) {
+              Alert.alert(
+                'You are going to quit the app',
+                'Are you sure?',
+                [
+                  {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                  {text: 'OK', onPress: () => BackAndroid.exitApp()},
+                ],
+              );
               return true;
             }
-        }
-        catch (err) {
-            BackAndroid.exitApp();
-            return true;
-        }
-    });
+        });
 
     const settingContent = <Animatable.View animation="fadeIn">
       <TouchableOpacity onPress={()=>{this.setState({isRunSetting:true});Actions.refresh({title:Global.language.run_setting,onBack:()=>{this._backClick();}})}}>
@@ -907,7 +928,6 @@ class ProfileEditing extends Component {
     }
     return (
       <ScrollView animation="fadeIn">
-
         <View style={styles.container}>
           <Image resizeMode={Image.resizeMode.cover} style={{width:width,height:tempHeight,paddingTop:20,justifyContent:'center',alignItems:'center'}} source={require('../../Images/bg_setting.png')}>
               <View style={{backgroundColor:'rgba(0,0,0,0)',width:80,height:80,borderRadius:80/2}}>
@@ -917,7 +937,7 @@ class ProfileEditing extends Component {
                 </TouchableOpacity>
               </View>
               <View style={{flex:1}}>
-              <View style={{paddingLeft:20,paddingRight:20,paddingTop:20,width:width-50,justifyContent:'center'}}>
+              <View style={{paddingLeft:20,paddingRight:20,paddingTop:20,width:width-40,justifyContent:'center'}}>
                   <View>
                     <Text style={styles.textSmallColor}>{Global.language.display_name}</Text>
                     <View style={{width:width-80,height:30,borderBottomWidth:1,borderBottomColor:'#F1F1F1',justifyContent:'center'}}>
@@ -929,7 +949,7 @@ class ProfileEditing extends Component {
                   <View style={{flexDirection:'row',paddingTop:20,paddingBottom:20}}>
                     <View style={{flex:0.8}}>
                       <Text style={{color:'#ffffff',backgroundColor:'rgba(0,0,0,0)',fontSize:18,fontWeight:'bold',opacity:0.8}}>{Global.language.email}({Global.language.optional})</Text>
-                      <View style={{width:width-140,height:40,justifyContent:'center',borderBottomWidth:1,borderBottomColor:'rgba(0,0,0,0)'}}>
+                      <View style={{width:width-140,height:40,justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
                         <TextInput style={{width:width-140,height:40,color:'white' }}  
                           ref="email" 
                           keyboardType="email-address"  
@@ -940,7 +960,7 @@ class ProfileEditing extends Component {
                           onChangeText={(text) => this.setState({email:text})} />
                       </View>
                     </View>
-                    <View style={{flex:0.2}}>
+                    <View style={{flex:0.2,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
                       <Text style={styles.textSmallColor}>{Global.language.birthday}</Text>
                       <View style={{width:width-80,height:20,justifyContent:'center'}}>
                         <Text style={styles.textColor}>{Global.user_profile.birthday}</Text>
@@ -949,8 +969,9 @@ class ProfileEditing extends Component {
                   </View>
                   {Global.is_facebook?<View/>:
                   <TouchableOpacity onPress={()=>{Actions.changepassword();}}>
-                    <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderTopWidth:1,borderColor:'#f1f1f1',borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                     <Text style={styles.textColor}>{Global.language.change_password}</Text><Text style={styles.textColor}>></Text></View></TouchableOpacity>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:20,padding:20,borderTopWidth:1,borderColor:'#f1f1f1',borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                     <Text style={styles.textColor}>{Global.language.change_password}</Text><Text style={styles.textColor}>></Text></View>
+                  </TouchableOpacity>
                   }
                  <TouchableOpacity onPress={()=>{Actions.interest({editing:true,int_arr:Global.user_profile.interest})}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1',borderTopWidth:Global.is_facebook?1:0,borderColor:'#f1f1f1',marginTop:Global.is_facebook?40:0}}>
@@ -964,7 +985,7 @@ class ProfileEditing extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showAgePicker()}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                      <Text style={styles.textColor}>{Global.language.age_range}</Text><Text style={styles.textColor}>{this.state.age_range} ></Text>
+                      <Text style={styles.textColor}>{Global.language.age_range}</Text><Text style={styles.textColor}>{(this.state.age_range)?(this.state.age_range):''} ></Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showHeightPicker()}}>
@@ -979,16 +1000,17 @@ class ProfileEditing extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{this._showRlevelPicker()}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                      <Text style={styles.textColor}>{Global.language.running_frequency}</Text><Text style={styles.textColor}>{this.state.exercise} ></Text>
+                      <Text style={styles.textColor}>{Global.language.running_frequency}</Text><Text style={styles.textColor}>{(this.state.exercise)?(this.state.exercise):''} ></Text>
                     </View>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0}}>
+                
+              </View>
+              <TouchableOpacity onPress={()=>{this._logout();}} style={{position:'absolute',bottom:0}}>
                   <View style={{width:width,height:42,backgroundColor:'rgba(20,139,205,1)',alignItems:'center',justifyContent:'center'}}>
                     <Text style={{fontSize:14,color:'white'}}>{Global.language.logout}</Text>
                   </View>
                 </TouchableOpacity>
-                </View>
           </Image>
         </View>
       </ScrollView>
@@ -999,7 +1021,7 @@ class ProfileEditing extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     paddingTop:navbarHeight

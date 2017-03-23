@@ -63,7 +63,7 @@ function _renderBar(points){
     currentMonth = Util._getMonth(points.date);
     currentYear = Util._getYear(points.date);
     return (<View style={{marginLeft:20,height:40,width:width-60,borderBottomWidth:1,borderBottomColor:'#f1f1f1',alignItems:'flex-start',justifyContent:'center'}}>
-      <Text>{Util._monthToEng(currentMonth)+' '+currentYear}</Text>
+      <Text style={{fontSize:18,color:'#6a696a',fontWeight:'bold'}}>{Util._monthToEng(currentMonth)+' '+currentYear}</Text>
     </View>)
   }else{
     return null;
@@ -406,18 +406,18 @@ class PointHistorys extends Component {
     var self = this;
     return pointHistory.map(function (points,i){
       var temp = _renderBar(points);
-      return <View>
+      return <View >
         {temp}
         <View style={{paddingLeft:20,paddingRight:20}}>
-          <View style={{height:60,width:width-60,borderBottomWidth:1,borderBottomColor:'#f1f1f1',alignItems:'flex-start',justifyContent:'center'}}>
-            <Text>{Util._changeDateFormat(points.date)}</Text>
-            <View style={{flexDirection:'row',width:width-60,justifyContent:'space-between'}}>
-              <Text style={{fontSize:18}}>{points.name}</Text>
+          <View style={{height:60,width:width-60,borderBottomWidth:2,borderBottomColor:'#f1f1f1',alignItems:'flex-start',justifyContent:'center'}}>
+            <Text style={{color:'#9b9b9b',fontSize:8}}>{Util._changeDateFormat(points.date)}</Text>
+            <View style={{flex:1,flexDirection:'row',width:width-60,justifyContent:'space-between'}}>
+              <Text numberOfLines={1} style={{width:width-150,fontSize:18,color:'#6a696a',fontWeight:'bold'}}>{points.name.toUpperCase()}</Text>
               <View style={{flexDirection:'row'}}>
                 <View style={{paddingRight:10}}>
                   <Image source={require('../../Images/ic_pts_copy.png')} style={{width:24,height:24,tintColor:self._checkAddOrReduct(points.point)}}/>
                 </View>
-                <Text style={{fontSize:28,position:'relative',top:-5,color:self._checkAddOrReduct(points.point)}}>{points.point}</Text>
+                <Text style={{fontSize:30,fontWeight:'bold',position:'relative',top:-5,color:self._checkAddOrReduct(points.point)}}>{points.point}</Text>
               </View>
 
             </View>
@@ -478,20 +478,20 @@ class PointHistorys extends Component {
       <View style={styles.container}>
         <View style={{width:width,height:150,borderBottomWidth:1,borderBottomColor:'black'}}>
           <Image source={require('../../Images/bg_setting.png')} style={{position:'absolute',top:0,left:0,width:width,height:150}}/>
-          <View style={{width:width,height:120,position:'relative',top:-10,borderRadius:80/2,justifyContent:'center',alignItems:'center'}}>
+          <View style={{width:width,height:120,position:'relative',top:5,borderRadius:80/2,justifyContent:'center',alignItems:'center'}}>
             <View style={{flexDirection:'row'}}>
               <View style={{position:'relative',top:2}}>
-                <Image style={{width:12,height:12}} source={require('../../Images/ic_pts_copy.png')}/>
+                <Image style={{width:24,height:24,paddingHorizontal:15,resizeMode:'contain'}} source={require('../../Images/ic_pts_copy.png')}/>
               </View>
-              <Text style={{fontSize:12,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>{Global.language.avail_point}</Text>
+              <Text style={{fontSize:14,color:'white',backgroundColor:'rgba(0,0,0,0)',fontWeight:'bold',top:4}}>{Global.language.avail_point.toUpperCase()}</Text>
             </View>
 
-            <Text style={{fontSize:40,color:'white',fontWeight:'bold',backgroundColor:'rgba(0,0,0,0)'}}>{Global.user_profile.points}</Text>
-            <Text style={{fontSize:12,color:'white',backgroundColor:'rgba(0,0,0,0)'}}>{Global.language.expiry_date}:{Global.user_profile.points_exp_date}</Text>
+            <Text style={{fontSize:50,color:'white',fontWeight:'bold',backgroundColor:'rgba(0,0,0,0)'}}>{Global.user_profile.points}</Text>
+            <Text style={{fontSize:12,color:'white',fontWeight:'bold',backgroundColor:'rgba(0,0,0,0)'}}>{Global.language.expiry_date.slice(0,6).toUpperCase()}:{Global.user_profile.points_exp_date}</Text>
           </View>
         </View>
         <View style={{borderWidth:1,borderColor:'#f1f1f1',position:'relative',top:-25,borderRadius:8}}>
-          <ScrollView style={{width:width-20,height:height-150-25-Global.navbarHeight,backgroundColor:'white',borderRadius:8}}>
+          <ScrollView style={{width:width-20,height:height-120-Global.navbarHeight,backgroundColor:'white',borderRadius:8}}>
             {content}
           </ScrollView>
         </View>

@@ -7,13 +7,13 @@ var ENG = {
     home:'HOME',
     events:'EVENT',
     run:'RUN',
-    reward:'REWARD',
+    reward:'REWARDS',
     more:'MORE',
     run_now:'RUN NOW',
     run_session:'RUN SESSION',
     redeem_history:'REDEEM HISTORY',
-    avail_point:'Availble point',
-    total_avail_point:'Total Available Points',
+    avail_point:'Available point',
+    total_avail_point:'Total Available point',
     profile:'Profile',
     inbox:'Inbox',
     inbox_title:'INBOX',
@@ -34,7 +34,7 @@ var ENG = {
     step_stat:'STEPS STATS',
     step_history:'STEPS HISTORY',
     connect_fitness_tracker:'CONNECT FITNESS TRACKER',
-    expiry_date:'EXPIRY DATE',
+    expiry_date:'Expiry Date',
     point_history:'POINT HISTORY',
     delete:'DELETE',
     delete_all:'DELETE ALL',
@@ -102,7 +102,26 @@ var ENG = {
     cancel:'CANCEL',
     no_record:'NO RECORD',
     running_frequency:'Running Frequency',
-    optional:'optional'
+
+    redefining_standards: '../Images/img_logo.png',
+    
+    FEED: 'FEED',
+    FEED_desc: 'A interest-specific newsfeed about health to be pushed regularly.',
+    SHARE: 'SHARE',
+    SHARE_desc: 'Stay motivated and share your progress with friends and family.',
+    REWARDS: 'REWARDS',
+    REWARDS_desc: 'Redeem amazing rewards with points you accumulate while running!',
+    EVENTS: 'EVENTS',
+    EVENTS_desc: 'Join our AXA event and give society a helping hand.',
+    GETSTARTED: 'GET STARTED',
+
+    REG_WITH_FB: 'REGISTER WITH FACEBOOK',
+    REG_WITH_EMAIL: 'REGISTER WITH EMAIL',
+    LOGIN: 'LOGIN',
+    TERMS_OF_USE: 'TERMS OF USE',
+    PRIVACY_POLICY: 'PRIVACY POLICY',
+    ACCEPT: 'ACCEPT',
+    DECLINE: 'DECLINE',
 };
 
 module.exports = ENG;

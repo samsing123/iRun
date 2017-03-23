@@ -56,6 +56,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
   l_run:{
     date:'HOW ABOUT TODAY?',
@@ -64,6 +65,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
   f1km:{
     date:'HOW ABOUT TODAY?',
@@ -72,6 +74,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
   f5km:{
     date:'HOW ABOUT TODAY?',
@@ -80,6 +83,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
   f10km:{
     date:'HOW ABOUT TODAY?',
@@ -88,6 +92,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
   f21km:{
     date:'HOW ABOUT TODAY?',
@@ -96,6 +101,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
   f42km:{
     date:'HOW ABOUT TODAY?',
@@ -104,6 +110,7 @@ var personalRecord = {
     pace_str:' - ',
     calories:' - ',
     no_content:true,
+    run_id:''
   },
 }
 
@@ -177,24 +184,31 @@ class PersonalRecord extends Component {
       var response = responseJson.response;
       if(responseJson.response.farthest){
         personalRecord.f_run = responseJson.response.farthest;
+        personalRecord.run_id = responseJson.response.run_id;
       }
       if(responseJson.response.longest){
         personalRecord.l_run = responseJson.response.longest;
+         personalRecord.run_id = responseJson.response.run_id;
       }
       if(responseJson.response.fastest_1){
         personalRecord.f1km = responseJson.response.fastest_1;
+         personalRecord.run_id = responseJson.response.run_id;
       }
       if(responseJson.response.fastest_5){
         personalRecord.f5km = responseJson.response.fastest_5;
+         personalRecord.run_id = responseJson.response.run_id;
       }
       if(responseJson.response.fastest_10){
         personalRecord.f10km = responseJson.response.fastest_10;
+         personalRecord.run_id = responseJson.response.run_id;
       }
       if(responseJson.response.fastest_21){
         personalRecord.f21km = responseJson.response.fastest_21;
+         personalRecord.run_id = responseJson.response.run_id;
       }
       if(responseJson.response.fastest_42){
         personalRecord.f42km = responseJson.response.fastest_42;
+         personalRecord.run_id = responseJson.response.run_id;
       }
 
       this.setState({
@@ -510,7 +524,8 @@ class PersonalRecord extends Component {
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
       <TouchableOpacity onPress={()=>{this.setState({is_run_now:false});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)'}}>REDEEM HISTORY</Text></TouchableOpacity>
     </View>;
-    const run_session_title = <View style={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#D57D91'}}>
+    const run_session_title = <View style
+    ={{width:width,height:55,flexDirection:'row',alignItems:'center',justifyContent:'center',borderBottomWidth:1,borderBottomColor:'#D57D91'}}>
       <TouchableOpacity onPress={()=>{this.setState({is_run_now:true});_scrollView.scrollTo({x:0,y:0,animated:true});}}><Text style={{color:'rgba(155,155,155,1)',paddingRight:48}}>REWARDS</Text></TouchableOpacity>
       <Text style={{color:'rgba(227,1,58,1)',paddingRight:48,fontSize:24}}>/</Text>
       <Text style={{color:'rgba(227,1,58,1)'}}>REDEEM HISTORY</Text>
@@ -519,139 +534,177 @@ class PersonalRecord extends Component {
 
     const run_session = this._renderRewardList();
     content = run_session;
-    return (
-      <View style={styles.container}>
-        <View style={{height:height-Global.navbarHeight-30,width:width}}>
-          <ScrollView onScroll={(e)=>{this._handleBottom(e)}} componentDidMount={()=>{this.scrollTo({x:0,y:0,animated:true})}} ref={(scrollView)=>{_scrollView = scrollView}}>
-            <View >
-              <View style={{backgroundColor:'rgba(255,255,255,1)',marginBottom:5}}>
-
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f_run.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>FARTHEST RUN</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{this.state.personalRecord.f_run.distance} KM</Text>
+    //return Global.run_history.map((run, i)=>{
+      return (      
+        <View style={styles.container}>         
+          <View style={{height:height-Global.navbarHeight-30,width:width}}>
+            <ScrollView onScroll={(e)=>{this._handleBottom(e)}} componentDidMount={()=>{this.scrollTo({x:0,y:0,animated:true})}} ref={(scrollView)=>{_scrollView = scrollView}}>
+              <View >
+                <View style={{backgroundColor:'rgba(255,255,255,1)',marginBottom:5}}>
+                  <View>
+                    <TouchableOpacity onPress={()=>{Actions.rundetail({id:this.state.personalRecord.f_run.run_id})}} >
+                      <View style={{paddingLeft:20,paddingTop:10,height:100}}>
+                        <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f_run.date).substring(0,10)}</Text>
+                        <Text style={{fontSize:24,color:'#087DC4',paddingTop:1,fontWeight:'bold'}}>FARTHEST RUN</Text>
+                        <View style={{position:'absolute',right:50,top:27,flexDirection:'row'}}>
+                          <Text style={{color:'#087DC4',fontSize:24,fontWeight:'bold'}}>{this.state.personalRecord.f_run.distance} </Text>
+                          <Text style={{color:'#087DC4',fontSize:10,top:12,left:-5}}> KM</Text>
+                        </View>
+                        <View style={{position:'absolute',left:20,bottom:5,flexDirection:'row'}}>
+                          <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:13,marginRight:10}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f_run.duration,'time')}</Text>
+                          <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:13,marginRight:10}}>{this.state.personalRecord.f_run.pace_str}</Text>
+                          <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/>
+                          <Text style={{color:'#CFCFCF',fontSize:13,marginRight:10}}>{this.state.personalRecord.f_run.calories}</Text>
+                          <Text style={{color:'#CFCFCF',fontSize:7,marginRight:12,top:5,fontWeight:'bold',marginLeft:-8}}>CAL</Text>
+                        </View>
+                        <View style={{position:'absolute',right:10,top:45}}>
+                          <Image source={require('../../Images/btn_next.png')} style={{width:16,height:16,position:'relative',top:0,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/>
+                        </View>                        
+                        {this.state.personalRecord.f_run.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}                  
+                      </View>
+                    </TouchableOpacity>
+                  </View>               
+                </View>
+                <View style={{backgroundColor:'white',marginBottom:5}}>
+                  <View>
+                    <TouchableOpacity onPress={()=>{Actions.rundetail({id:this.state.personalRecord.l_run.run_id})}} >
+                      <View style={{paddingLeft:20,paddingTop:10,height:100}}>
+                        <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.l_run.date).substring(0,10)}</Text>
+                        <Text style={{fontSize:24,color:'#087DC4',paddingTop:1,fontWeight:'bold'}}>LONGEST RUN</Text>
+                        <View style={{position:'absolute',right:50,top:27,flexDirection:'row'}}>
+                          <Text style={{color:'#087DC4',fontSize:24,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.l_run.duration,'time')} </Text>
+                          <Text style={{color:'#087DC4',fontSize:10,top:12,left:-5}}> KM</Text>
+                        </View>
+                        <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
+                          <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:13,marginRight:10}}>{this.state.personalRecord.l_run.distance}</Text>
+                          <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:13,marginRight:10}}>{this.state.personalRecord.l_run.pace_str}</Text>
+                          <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:13,marginRight:10}}>{this.state.personalRecord.l_run.calories}</Text><Text style={{color:'#CFCFCF',fontSize:7,marginRight:12,top:5,fontWeight:'bold',marginLeft:-8}}>CAL</Text>
+                        </View>
+                        <View style={{position:'absolute',right:10,top:45}}>
+                          <Image source={require('../../Images/btn_next.png')} style={{width:16,height:16,position:'relative',top:0,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/>
+                        </View>                        
+                        {this.state.personalRecord.l_run.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}                  
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={{backgroundColor:'white',marginBottom:5}}>
+                  <View>
+                    <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f1km.date)}</Text>
+                      <Text style={{fontSize:24,color:'#62b1dd',fontWeight:'bold'}}>FASTER 1 KM</Text>
+                      <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
+                        <Text style={{color:'#087DC4',fontSize:24,opacity:0}}>{this.state.personalRecord.f1km.pace_str}</Text>
+                      </View>
+                      <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f1km.distance}</Text> 
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> KM</Text> 
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>             
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f1km.distance}</Text> 
+                        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',marginLeft:15,paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f1km.duration,'time')}</Text>
+                        <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF',marginRight:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f1km.calories}</Text>
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> CAL</Text> 
+                      </View>
+                      {this.state.personalRecord.f1km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
                     </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f_run.duration,'time')}</Text>
-                      <Image source={require('../../Images/ic_avgspeed.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f_run.pace_str}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f_run.calories+' CAL'}</Text>
+                  </View>
+                </View>
+                <View style={{backgroundColor:'white',marginBottom:5}}>
+                   <View>
+                    <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f5km.date)}</Text>
+                      <Text style={{fontSize:24,color:'#62b1dd',fontWeight:'bold'}}>FASTER 5 KM</Text>
+                      <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
+                        <Text style={{color:'#087DC4',fontSize:24,opacity:0}}>{this.state.personalRecord.f5km.pace_str}</Text>
+                      </View>
+                      <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.distance}</Text> 
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> KM</Text> 
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>             
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.distance}</Text> 
+                        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',marginLeft:15,paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f5km.duration,'time')}</Text>
+                        <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF',marginRight:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.calories}</Text>
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> CAL</Text> 
+                      </View>
+                      {this.state.personalRecord.f5km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
                     </View>
-                    {this.state.personalRecord.f_run.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-
+                  </View>
+                </View>
+                <View style={{backgroundColor:'white',marginBottom:5}}>
+                  <View>
+                    <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f10km.date)}</Text>
+                      <Text style={{fontSize:24,color:'#62b1dd',fontWeight:'bold'}}>FASTER 10 KM</Text>
+                      <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
+                        <Text style={{color:'#087DC4',fontSize:24,opacity:0}}>{this.state.personalRecord.f10km.pace_str}</Text>
+                      </View>
+                      <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f10km.distance}</Text> 
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> KM</Text> 
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>             
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.distance}</Text> 
+                        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',marginLeft:15,paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f5km.duration,'time')}</Text>
+                        <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF',marginRight:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f10km.calories}</Text>
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> CAL</Text> 
+                      </View>
+                      {this.state.personalRecord.f10km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
+                    </View>
+                  </View>
+                </View>
+                <View style={{backgroundColor:'white',marginBottom:5}}>
+                  <View>
+                    <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f21km.date)}</Text>
+                      <Text style={{fontSize:24,color:'#62b1dd',fontWeight:'bold'}}>FASTER HALF MARATHON</Text>
+                      <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
+                        <Text style={{color:'#087DC4',fontSize:24,opacity:0}}>{this.state.personalRecord.f21km.pace_str}</Text>
+                      </View>
+                      <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f21km.distance}</Text> 
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> KM</Text> 
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>             
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.distance}</Text> 
+                        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',marginLeft:15,paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f5km.duration,'time')}</Text>
+                        <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF',marginRight:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f21km.calories}</Text>
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> CAL</Text> 
+                      </View>
+                      {this.state.personalRecord.f21km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
+                    </View>
+                  </View>
+                </View>
+                <View style={{backgroundColor:'white',marginBottom:5}}>
+                  <View>
+                    <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+                      <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f42km.date)}</Text>
+                      <Text style={{fontSize:24,color:'#62b1dd',fontWeight:'bold'}}>FASTER MARATHON</Text>
+                      <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
+                        <Text style={{color:'#087DC4',fontSize:24,opacity:0}}>{this.state.personalRecord.f42km.pace_str}</Text>
+                      </View>
+                      <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f21km.distance}</Text> 
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> KM</Text> 
+                        <Image source={require('../../Images/ic_duration.png')} style={{width:20,height:20,position:'relative',top:0,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>             
+                        <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.distance}</Text> 
+                        <Image source={require('../../Images/ic_avgspeed.png')} style={{width:15,height:15,position:'relative',top:0,tintColor:'#CFCFCF',marginLeft:15,paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f5km.duration,'time')}</Text>
+                        <Image source={require('../../Images/ic_cal.png')} style={{width:17,height:17,position:'relative',top:0,tintColor:'#CFCFCF',marginRight:15}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f42km.calories}</Text>
+                        <Text style={{color:'#CFCFCF',fontSize:10,top:5,left:-5}}> CAL</Text> 
+                      </View>
+                      {this.state.personalRecord.f42km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
+                    </View>
                   </View>
                 </View>
               </View>
-              <View style={{backgroundColor:'white',marginBottom:5}}>
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.l_run.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>LONGEST RUN</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{Util._secondToMinuteDisplay(this.state.personalRecord.l_run.duration,'time')}</Text>
-                    </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.l_run.distance}</Text>
-                      <Image source={require('../../Images/ic_avgspeed.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.l_run.pace_str}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.l_run.calories+' CAL'}</Text>
-                    </View>
-                    {this.state.personalRecord.l_run.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-                  </View>
-                </View>
-              </View>
-              <View style={{backgroundColor:'white',marginBottom:5}}>
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f1km.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>FASTER 1 KM</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{this.state.personalRecord.f1km.pace_str}</Text>
-                    </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f1km.distance}</Text>
-                      <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f1km.duration,'time')}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f1km.calories+' CAL'}</Text>
-                    </View>
-                    {this.state.personalRecord.f1km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-                  </View>
-                </View>
-              </View>
-              <View style={{backgroundColor:'white',marginBottom:5}}>
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f5km.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>FASTER 5 KM</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{this.state.personalRecord.f5km.pace_str}</Text>
-                    </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.distance}</Text>
-                      <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f5km.duration,'time')}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f5km.calories+' CAL'}</Text>
-                    </View>
-                    {this.state.personalRecord.f5km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-                  </View>
-                </View>
-              </View>
-              <View style={{backgroundColor:'white',marginBottom:5}}>
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f10km.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>FASTER 10 KM</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{this.state.personalRecord.f10km.pace_str}</Text>
-                    </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f10km.distance}</Text>
-                      <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f10km.duration,'time')}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f10km.calories+' CAL'}</Text>
-                    </View>
-                    {this.state.personalRecord.f10km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-                  </View>
-                </View>
-              </View>
-              <View style={{backgroundColor:'white',marginBottom:5}}>
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f21km.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>FASTER HALF MARATHON</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{this.state.personalRecord.f21km.pace_str}</Text>
-                    </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f21km.distance}</Text>
-                      <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f21km.duration,'time')}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f21km.calories+' CAL'}</Text>
-                    </View>
-                    {this.state.personalRecord.f21km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-                  </View>
-                </View>
-              </View>
-              <View style={{backgroundColor:'white',marginBottom:5}}>
-                <View>
-                  <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
-                    <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(this.state.personalRecord.f42km.date)}</Text>
-                    <Text style={{fontSize:24,color:'#087DC4'}}>FASTER MARATHON</Text>
-                    <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                      <Text style={{color:'#087DC4',fontSize:24}}>{this.state.personalRecord.f42km.pace_str}</Text>
-                    </View>
-                    <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                      <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f42km.distance}</Text>
-                      <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(this.state.personalRecord.f42km.duration,'time')}</Text>
-                      <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{this.state.personalRecord.f42km.calories+' CAL'}</Text>
-                    </View>
-                    {this.state.personalRecord.f42km.no_content?<View style={{backgroundColor:'rgba(255,255,255,0.5)',height:100,width:width,position:'absolute',top:0,left:0}}/>:null}
-                  </View>
-                </View>
-              </View>
-            </View>
-          </ScrollView>
-        </View>
-
-        {this._overlay()}
-      </View>
-    );
+            </ScrollView>
+          </View>
+          {this._overlay()}
+        </View>  
+      );
+   // });
   }
 }
 
@@ -662,8 +715,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: '#EFEFEF',
     paddingTop:navbarHeight,
-    borderTopWidth:3,
-    borderTopColor:'#B3C9D4',
+    borderTopWidth:1,
+    borderTopColor:'#148bcd',
   },
   scrollContainer:{
     justifyContent: 'center',

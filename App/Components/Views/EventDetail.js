@@ -117,7 +117,7 @@ class EventDetail extends Component {
 
     this.setState({
       tag:tagList,
-      htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
+      htmlContent:'<html><body><div id="wrapper" style="font-size:100px">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
       date:date,
       shareLinkContent:tempContent,
       video:response.response.video,
@@ -151,9 +151,10 @@ class EventDetail extends Component {
         </View>
       </View>;
       tag = <View style={{paddingBottom:10}}>
-      <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,paddingTop:18,fontWeight:'bold'}}>{this.props.tag}</Text>
-      <Text style={{color:'rgba(74,74,74,1)',fontSize:24,paddingLeft:10}} ref="title1">{this.props.title}</Text>
-      <View style={{flexDirection:'row',paddingLeft:10}}><Image style={{width:14,height:14}} source={require('../../Images/ic_date.png')} resizeMode={Image.resizeMode.contain}/><Text style={{color:'rgba(103,103,103,1)',fontSize:14,paddingLeft:10}}>{this.props.date}</Text></View>
+      <Text style={{color:'rgba(227,1,58,1)',paddingLeft:10,fontWeight:'bold'}}>{this.props.tag}</Text>
+      <Text style={{color:'#4a4a4a',fontSize:24,paddingLeft:10,fontWeight:'bold'}} ref="title1">{this.props.title.toUpperCase()}</Text>
+      <View style={{flexDirection:'row',paddingLeft:10,paddingTop:10}}><Image style={{width:16,height:16}} source={require('../../Images/ic_date.png')} resizeMode={Image.resizeMode.contain}/>
+      <Text style={{color:'rgba(103,103,103,1)',fontSize:14,paddingLeft:10,fontWeight:'bold'}}>{this.props.date}</Text></View>
       </View>;
     // }
     console.log('webview height', this.props.webViewHeight);

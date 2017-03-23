@@ -272,7 +272,7 @@ class Events extends Component {
 
     eventData = {
       tag:tagList,
-      htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
+      htmlContent:'<html><body><div id="wrapper" style="font-size:17px;font-family:Sans-serif">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
       date:date,
       shareLinkContent:tempContent,
       video:response.response.video,
@@ -294,7 +294,9 @@ class Events extends Component {
     return Global.eventArr.map((news, i)=>{
       var image;
       if(news.image!=''){
-        image = <Image source={{uri:news.image}} style={{height:230,width:width-10,borderRadius:6}} shouldComponentUpdate={()=>{return false;}} />
+        image = <Image source={{uri:news.image}} style={{height:230,width:width-10,borderRadius:10,borderBottomRightRadius:10,borderTopRightRadius:10,borderBottomLeftRadius:10,borderTopLeftRadius:10}} shouldComponentUpdate={()=>{return false;}}>
+            <Image source={require('../../Images/gradient.png')} style={{height:230,width:width,borderRadius:10,borderBottomRightRadius:10,borderTopRightRadius:10,borderBottomLeftRadius:10,borderTopLeftRadius:10}}/>
+          </Image>
       }else{
         image = <View style={{alignItems:'center',justifyContent:'center',flex:1,backgroundColor:'white',height:230,width:width}}>
           <Spinner isVisible={true} size={80} type='Circle' color='grey'/>
@@ -305,11 +307,11 @@ class Events extends Component {
           console.log("on event press: " + news.id)
           this._loadEvent(news)
         }} key={i}>
-          <View style={{borderRadius:6,paddingTop:10,width:width-5,paddingLeft:5,paddingRight:5}}>
+          <View style={{borderRadius:10,borderBottomRightRadius:10,borderTopRightRadius:10,borderBottomLeftRadius:10,borderTopLeftRadius:10,paddingTop:10,width:width-5,paddingLeft:5,paddingRight:5}}>
             {image}
-            <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width-10,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
+            <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:10,borderBottomRightRadius:10,borderTopRightRadius:10,borderBottomLeftRadius:10,borderTopLeftRadius:10,height:230,width:width-10,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
               <Text style={{fontSize:14,color:'white',padding:8,marginTop:10}}>{news.date}</Text>
-              <Text style={{fontSize:20,color:'white',paddingLeft:8,fontWeight:'bold'}}>{news.title}</Text>
+              <Text style={{fontSize:20,color:'white',paddingLeft:8,fontWeight:'bold'}}>{news.title.toUpperCase()}</Text>
             </View>
           </View>
         </TouchableOpacity>

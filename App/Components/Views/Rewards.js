@@ -433,10 +433,10 @@ class Rewards extends Component {
     return rewardArr.map(function(news, i){
       return (
         <TouchableOpacity key={i} onPress={()=>{Actions.rewarddetail({image:news.image,title:news.title,id:news.id})}}>
-          <View style={{width:width,height:200,borderRadius:8,paddingBottom:10,marginBottom:5}}>
-            <Image style={{width:width,height:200,borderRadius:8,position:'absolute',top:0}} source={{uri:news.image}}/>
+          <View style={{width:width-10,marginLeft:5,height:200,borderRadius:8,marginBottom:5}}>
+            <Image style={{width:width-10,height:200,borderRadius:8,position:'absolute',top:0}} source={{uri:news.image}}/>
 
-            <View style={{position:'absolute',bottom:0,flexDirection:'row',borderRadius:8,width:width,height:70,backgroundColor:'rgba(20,139,205,0.8)',alignItems:'center',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
+            <View style={{position:'absolute',bottom:0,flexDirection:'row',borderRadius:8,width:width-10,height:70,backgroundColor:'rgba(20,139,205,0.8)',alignItems:'center',paddingRight:20,paddingTop:5,justifyContent:'space-between'}}>
               <View style={{width:width*0.7,paddingLeft:10}}>
                 <Text style={{fontSize:24,color:'white',fontWeight:'bold'}}>{Util._getTextWithEllipsis(news.title,40)}</Text>
               </View>
@@ -506,7 +506,7 @@ class Rewards extends Component {
 
         {this.state.is_run_now?<TouchableOpacity onPress={()=>{this.openAlert()}} style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>{Global.language.avail_point}</Text>
+            <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4',fontWeight:'bold'}}>{Global.language.avail_point}</Text>
             <View style={{paddingLeft:10}} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
               <Image source={require('../../Images/iBtn.png')} style={{width:16,height:16}}/>
             </View>
@@ -515,7 +515,7 @@ class Rewards extends Component {
             <View style={{position:'relative',top:2}}>
               <Image style={{width:18.5,height:18.5,tintColor:'rgba(22,141,208,1)'}} source={require('../../Images/ic_pts_copy.png')}/>
             </View>
-            <Text style={{fontSize:17,paddingRight:30,color:'#268BC4'}}>
+            <Text style={{fontSize:17,paddingLeft:7,paddingRight:20,color:'#268BC4'}}>
               {this.state.availPoint}
             </Text>
           </View>
@@ -539,7 +539,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
-    paddingTop:navbarHeight
+    marginTop:navbarHeight,
+    borderTopColor:'rgba(20,139,205,1)',
+    borderStyle:'solid',
+    borderTopWidth:1,
+   
   },
   scrollContainer:{
     justifyContent: 'center',

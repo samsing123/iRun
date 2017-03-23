@@ -310,7 +310,7 @@ class RunHistory extends Component {
   }
 
   _renderRewardList(){
-    return Global.run_history.map(function(run, i){
+    return Global.run_history.map((run, i)=>{
       var monthBar = <View/>;
 
       if(Util._getMonth(run.start_time)!=currentMonth||Util._getYear(run.start_time)!=currentYear){
@@ -319,7 +319,7 @@ class RunHistory extends Component {
         firstTime = false;
         monthBar = <View style={{width:width,backgroundColor:'#F1F1EF',height:40,alignItems:'center',flexDirection:'row',justifyContent: 'space-between'}}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Text style={{fontSize:17,paddingLeft:30,color:'#268BC4'}}>{Util._monthToEng(currentMonth)+' '+currentYear}</Text>
+            <Text style={{fontSize:17,paddingLeft:30,color:'#9b9b9b',fontWeight:'bold'}}>{Util._monthToEng(currentMonth)+' '+currentYear}</Text>
           </View>
         </View>;
       }
@@ -328,23 +328,29 @@ class RunHistory extends Component {
           <View key={i}>
           {monthBar}
           <TouchableOpacity onPress={()=>{Actions.rundetail({id:run.id,title:Util._getRunHistoryDateFormat(run.start_time)})}} >
-            <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:1,borderBottomColor:'#f1f1f1'}}>
+            <View style={{paddingLeft:20,paddingTop:10,height:100,borderBottomWidth:5,borderBottomColor:'#f1f1f1'}}>
               <Text style={{fontSize:14,color:'rgba(155,155,155,1)'}}>{Util._getRunHistoryDateFormat(run.start_time)}</Text>
-              <Text style={{fontSize:24,color:'#087DC4'}}>{run.title}</Text>
+              <Text style={{fontSize:24,color:'#087DC4',fontWeight:'bold',marginTop:5}}>{run.title}</Text>
               <View style={{position:'absolute',right:40,top:20,flexDirection:'row'}}>
-                <View style={{position:'relative',top:5}}>
+                <View style={{position:'relative',top:8,paddingHorizontal:8}}>
                   <Image source={require('../../Images/ic_pts_copy.png')} style={{width:24,height:24,tintColor:'#087DC4'}}/>
                 </View>
-                <Text style={{color:'#087DC4',fontSize:24}}>{run.point_earned}</Text>
+                <Text style={{color:'#087DC4',top:8,fontSize:24,fontWeight:'bold'}}>{run.point_earned}</Text>
               </View>
               <View style={{position:'absolute',right:10,top:45}}>
-                <Image source={require('../../Images/btn_next.png')} style={{width:12,height:12,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/>
+                <Image source={require('../../Images/btn_next.png')} style={{width:12,height:12,position:'relative',top:-3,tintColor:'#CFCFCF',paddingHorizontal:15,marginRight:0}} resizeMode={Image.resizeMode.contain}/>
               </View>
-              <View style={{position:'absolute',left:20,bottom:10,flexDirection:'row'}}>
-                <Image source={require('../../Images/ic_distance.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{run.distance+' KM'}</Text>
-                <Image source={require('../../Images/ic_duration.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{Util._secondToMinuteDisplay(run.duration,'time')}</Text>
-                <Image source={require('../../Images/ic_avgspeed.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{run.pace_str}</Text>
-                <Image source={require('../../Images/ic_cal.png')} style={{width:16,height:16,position:'relative',top:4,tintColor:'#CFCFCF'}} resizeMode={Image.resizeMode.contain}/><Text style={{color:'#CFCFCF',fontSize:16,marginRight:10,fontWeight:'bold'}}>{run.calories+' CAL'}</Text>
+              <View style={{position:'absolute',left:15,bottom:10,flexDirection:'row'}}>
+                <Image source={require('../../Images/ic_distance.png')} style={{width:18,height:18,position:'relative',top:-2,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10}}>{run.distance}</Text>
+                <Text style={{color:'#CFCFCF',fontSize:7,top:5,left:-10}}> KM</Text>
+                <Image source={require('../../Images/ic_duration.png')} style={{width:18,height:18,position:'relative',top:-2,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10}}>{Util._secondToMinuteDisplay(run.duration,'time')}</Text>
+                <Image source={require('../../Images/ic_avgspeed.png')} style={{width:16,height:16,position:'relative',top:-2,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10}}>{run.pace_str}</Text>
+                <Image source={require('../../Images/ic_cal.png')} style={{width:18,height:18,position:'relative',top:-2,tintColor:'#CFCFCF',paddingHorizontal:15}} resizeMode={Image.resizeMode.contain}/>
+                <Text style={{color:'#CFCFCF',fontSize:16,marginRight:10}}>{run.calories}</Text>
+                <Text style={{color:'#CFCFCF',fontSize:7,top:5,left:-10}}> CAL</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -422,7 +428,7 @@ class RunHistory extends Component {
     content = run_session;
     return (
       <View style={styles.container}>
-        <View style={{height:height-Global.navbarHeight-30,width:width}}>
+        <View style={{height:height-Global.navbarHeight-30,width:width,borderTopColor:'rgba(20,139,205,1)',borderTopWidth:1}}>
           <ScrollView onScroll={(e)=>{this._handleBottom(e)}} componentDidMount={()=>{this.scrollTo({x:0,y:0,animated:true})}} ref={(scrollView)=>{_scrollView = scrollView}}>
             <View >
               {content}

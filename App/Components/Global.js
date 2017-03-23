@@ -17,6 +17,26 @@ function createLeftButton() {
           </TouchableOpacity>
       );
 }
+function createMoreInboxButton(){
+    return (
+          <TouchableOpacity onPress={()=>{Actions.inbox({title:Global.language.inbox})}}>
+            <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
+              <Image source={require('../Images/ic_inbox_menu.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
+              <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.inbox}</Text>
+            </View>
+          </TouchableOpacity>
+      );
+}
+function createMoreUnreadInboxButton(){
+    return (
+          <TouchableOpacity onPress={()=>{Actions.inbox({title:Global.language.inbox})}}>
+            <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
+              <Image source={require('../Images/ic_inbox_menu_on.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
+              <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.inbox}</Text>
+            </View>
+          </TouchableOpacity>
+      );
+}
 function createNoMailButton() {
       return (
           <TouchableOpacity onPress={()=>{Actions.inbox()}}>

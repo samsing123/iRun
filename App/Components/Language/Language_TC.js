@@ -102,7 +102,26 @@ var TC = {
     cancel:'取消',
     no_record:'沒有記錄',
     running_frequency:'跑步頻率',
-    optional:'可選的',
+
+    redefining_standards: '../Images/img_logo.png',
+    
+    FEED: '生活資訊',
+    FEED_desc: '定期推送您感興趣的健康生活資訊。',
+    SHARE: '分享',
+    SHARE_desc: '保持跑步決心，與家人好友分享您的練習成果。',
+    REWARDS: '獎賞',
+    REWARDS_desc: '透過跑步累積分數，換取精彩獎賞。',
+    EVENTS: '活動',
+    EVENTS_desc: '參與AXA安盛的活動，為您及社區注入更多生活動力',
+    GETSTARTED: '開始',
+
+    REG_WITH_FB: '以 FACEBOOK 帳戶註冊',
+    REG_WITH_EMAIL: '以 Email 註冊',
+    LOGIN: '登入',
+    TERMS_OF_USE: '條款及細則',
+    PRIVACY_POLICY: '隱私政策',
+    ACCEPT: '接受',
+    DECLINE: '拒絕',
 };
 
 module.exports = TC;

@@ -70,7 +70,6 @@ class Run extends Component {
     super(props);
     this.state={
       trueSwitchIsOn: false,
-     
       is_run_now:true,
       distance:'Distance',
       duration:'Duration',
@@ -160,13 +159,12 @@ class Run extends Component {
     }
     Global._sendPostRequest(data,'api/run-start',this._registerCallback);
   }
+  
    _sendStartRunRequest(){
     var date = new Date();
     var date1 = new Date().getHours();
     
-    if(!isNaN(temperature)){
-      console.log("date1",date1)
-      console.log("is not a number")
+    if(isNaN(temperature)){
       console.log("is not a number",temperature)
       console.log("true or false",(!isNaN(temperature)))
         fetch(Global.serverHost+'api/home')
@@ -674,7 +672,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
-    paddingTop:navbarHeight
+    paddingTop:navbarHeight-50
   },
   scrollContainer:{
     justifyContent: 'center',

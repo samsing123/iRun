@@ -4,10 +4,12 @@ import {
   View,
   TextInput,
   Text, 
+  TouchableWithoutFeedback,
   Dimensions,
   TouchableOpacity
 } from 'react-native';
 import {Actions,ActionConst} from "react-native-router-flux";
+var DismissKeyboard = require('dismissKeyboard');
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
 var Global = require('../Global');
@@ -24,6 +26,7 @@ class EmergencyContact extends React.Component {
         mobile_number:'',
         back:'< BACK',
         }
+    console.log("emergency prop",this.props.run)
     }
     _sendEmergencyContact(){
         Global.emergencyContact = {
@@ -57,33 +60,36 @@ class EmergencyContact extends React.Component {
     }
   render() {
     return (
-      <View style={[styles.container, this.props.style]}>
-        <View style={{alignItems:"center", justifyContent:"center", width: width-60, marginBottom:30}}>
-            <Text style={styles.header}>EMERGENCY CONTACT</Text>
-            <Text style={[styles.warning, styles.warningTxt]}>AXA cares about you, select a trustworthy person. In case of problme we will send SMS to your relative with your exact location</Text>
-            
-        </View>
-        <View style={{flexDirection:"column", width:width}}>
-            <TextInput style={styles.EmergencyInput} maxLength={20} placeholder="Name" onChangeText={(text) => this.setState({name:text})}/>
-            <TextInput style={styles.EmergencyInput} placeholder="Mobie Number" keyboardType="numeric" onChangeText={(text) => this.setState({mobile_number:text})} />
-        </View>
-        <View style={styles.navBtnContainer}>
-            <View style={{width:0.5* width-30}}>
-                <TouchableOpacity onPress={()=>{Actions.running_level()}}style={[styles.navBtn, styles.btnLeft]}><Text style={styles.navBtnTxt}>{this.state.back}</Text></TouchableOpacity>
+        <TouchableWithoutFeedback onPress={()=>{DismissKeyboard()}}>
+            <View style={[styles.container, this.props.style]}>
+                <View style={{alignItems:"center", justifyContent:"center", width: width-60, marginBottom:30}}>
+                    <Text style={styles.header}>EMERGENCY CONTACT</Text>
+                    <Text style={[styles.warning, styles.warningTxt]}>AXA cares about you, select a trustworthy person. In case of problme we will send SMS to your relative with your exact location</Text>
+                    
+                </View>
+                <View style={{flexDirection:"column", width:width}}>
+                    <TextInput style={styles.EmergencyInput} maxLength={20} placeholder="Name" onChangeText={(text) => this.setState({name:text})}/>
+                    <TextInput style={styles.EmergencyInput} placeholder="Mobie Number" keyboardType="numeric" onChangeText={(text) => this.setState({mobile_number:text})} />
+                </View>
+                <View style={styles.navBtnContainer}>
+                    <View style={{width:0.5* width-30}}>
+                        <TouchableOpacity onPress={()=>{Actions.running_level()}}style={[styles.navBtn, styles.btnLeft]}><Text style={styles.navBtnTxt}>{this.state.back}</Text></TouchableOpacity>
+                    </View>
+                    <View style={{width:0.5* width-30, alignItems:"flex-end"}}>
+                        <TouchableOpacity onPress={()=>{this._sendEmergencyContact();Actions.fitnesstrackerconnect({
+                            gender:this.props.gender,
+                            ageArr:this.props.ageArr,
+                            height:this.props.height,
+                            weight:this.props.weight,
+                            run:this.props.run,
+                            })}} style={[styles.navBtn, styles.btnLeft]}>
+                            <Text style={styles.navBtnTxt}>NEXT ></Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
-            <View style={{width:0.5* width-30, alignItems:"flex-end"}}>
-                <TouchableOpacity onPress={()=>{this._sendEmergencyContact();Actions.fitnesstrackerconnect({
-                    gender:this.props.gender,
-                    ageArr:this.props.ageArr,
-                    height:this.props.height,
-                    weight:this.props.weight,
-                    run:this.state.value+1,
-                    })}} style={[styles.navBtn, styles.btnLeft]}>
-                    <Text style={styles.navBtnTxt}>NEXT ></Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
+
     );
   }
 }

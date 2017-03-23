@@ -23,6 +23,7 @@ import {
 import {Actions,ActionConst} from "react-native-router-flux";
 var Tabs = require('react-native-tabs');
 import GoogleAnalytics from 'react-native-google-analytics-bridge';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Swiper from 'react-native-swiper';
 var height = Dimensions.get('window').height;
 var width = Dimensions.get('window').width;
@@ -43,12 +44,10 @@ var Util = require('../Util');
 var OkAlert = require('../Controls/OkAlert');
 var AvailiblePointAlert = require('../Controls/AvailiblePointAlert');
 var FitnessAlert = require('../Controls/FitnessAlert')
-import RNFetchBlob from 'react-native-fetch-blob';
+//import RNFetchBlob from 'react-native-fetch-blob';
 
 import OneSignal from 'react-native-onesignal'; // Import package from node modules
 var RNFS = require('react-native-fs');
-
-
 var temperature='27';
 var testingFeed={
   "FeedList":[
@@ -194,7 +193,7 @@ class Intro extends Component {
   }
   //removed shadow,textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#000000'
   _renderEventList(){
-    return Global.eventArr.map(function(news, i){
+    return Global.eventArr.map((news, i)=>{
       var image;
       if(news.image!=''){
         image =
@@ -207,12 +206,10 @@ class Intro extends Component {
         </View>;
       }
       return(
-        <TouchableOpacity style={{borderRadius:4,paddingBottom:2}} onPress={()=>{Actions.eventdetail(
-          {id:news.id,
-          title:news.title,
-          image:news.image,
-          video:news.video}
-        )}} key={i}>
+        <TouchableOpacity style={{borderRadius:4,paddingBottom:2}} onPress={()=>{
+          console.log("on event press: " + news.id)
+          this._loadEvent(news)
+        }} key={i}>
           {image}
           <View style={{backgroundColor:'rgba(0,0,0,0)',borderRadius:4,height:230,width:width,position:'absolute',top:0,left:0,alignItems:'flex-start',justifyContent:'flex-start'}}>
             <Text style={{fontSize:14,color:'white',padding:8}}>{news.date}</Text>
@@ -221,6 +218,49 @@ class Intro extends Component {
         </TouchableOpacity>
       )
     });
+  }
+   _loadEvent(news) {
+    var data = {
+      method: 'GET'
+    };
+    console.log('geting event detail');
+    Global._sendGetRequest(data,'api/event-detail?id=' + news.id,(v)=>{
+      console.log("event detail return", v);
+      this._eventLoaded(v, news);
+    });
+  }
+
+  _eventLoaded(response, news) {
+    var date = Util._getEventDetailDate(response.response.start_time.split(' ')[0],response.response.end_time.split(' ')[0]);
+    var tagList = Util._getTag(response.response.share_hashtag);
+    var tempContent = {
+      contentType: 'link',
+      commonParameters: {
+        hashtag: '#'+Global.global_setting.facebook.tags[0]
+      },
+      contentTitle:response.response.share_title,
+      contentDescription:response.response.share_msg,
+      contentUrl: response.response.link,
+    };
+
+    eventData = {
+      tag:tagList,
+      htmlContent:'<html><body><div id="wrapper">'+response.response.desc+'</div><script>window.location.hash =1; document.title = document.getElementById("wrapper").offsetHeight+40;</script></body></html>',
+      date:date,
+      shareLinkContent:tempContent,
+      video:response.response.video,
+      videoContent:'<html><iframe align="center" width="'+width+'" height="240" src="https://www.youtube.com/embed/'+response.response.video+'+?autoplay=0&controls=0&showinfo=0" frameborder="0" allowfullscreen style="position:absolute;left:0;top:0"></iframe></html>',
+      title:news.title,
+      image:news.image,
+  };
+    console.log("go to event detail", eventData);
+    Actions.eventdetail(eventData);
+    // {
+    //       id:news.id,
+    //       title:news.title,
+    //       image:news.image,
+    //       video:news.video,
+    //     }
   }
   _eventTrigger(){
     Actions.refresh();
@@ -490,11 +530,19 @@ class Intro extends Component {
 
       var weatherImagePath = Util._getWeatherImage(weatherNumber);
       var Home = <View style={{height:height-130}}>
-      <ScrollView contentOffset={{x:0,y:this.state.scrollY}} 
-        ref={(scrollView) => { this.homeScroll = scrollView; }} 
-        contentContainerStyle={styles.scrollContainer} 
-        pagingEnabled={true} onScroll={this._handleScroll} 
-        scrollEventThrottle={16}>
+      <ParallaxScrollView  backgroundColor="white"
+          
+          parallaxHeaderHeight={0}
+          stickyHeaderHeight={0}
+          onScroll={(e)=>{
+            var temp = 208 - e.nativeEvent.contentOffset.y;
+            if(temp<5){
+              temp=5;
+            }
+            
+          }}
+          
+         >
         <View>
           <Image source={{uri:Global.serverHost+'images/'+bgImage}} style={{height:height*0.5,width:width}}/>
           <View style={{position:'absolute',left:width*0.1,top:height*0.03}}>
@@ -517,7 +565,7 @@ class Intro extends Component {
         {last_run}
         {eventList}
         {tumblrList}
-      </ScrollView>
+      </ParallaxScrollView>
       </View>;
       /* detail for last run
       <View style={{flexDirection:'row',paddingLeft:18,position:'relative',top:-3}}>

@@ -218,7 +218,7 @@ export default class RootRouter extends Component {
         var url = responseJson.response.posts[i].short_url;
         var tumblrPost = {
           title:title,
-          htmlContent:'<html>'+header+'<body>'+'<div id="wrapper">'+content+'</div>'+script+'</body>'+'</html>',
+          htmlContent:'<html>'+header+'<body>'+'<div id="wrapper" >'+content+'</div>'+script+'</body>'+'</html>',
           image:responseJson.response.posts[i].photos[0].alt_sizes[2].url,
           tag:tag,
           url:url
@@ -445,8 +445,7 @@ export default class RootRouter extends Component {
                 <Scene renderRightButton={createRightButton} key="appintro" component={appintro} title="App Intro" hideNavBar={true} initial={is_first}/>
                 <Scene key="home" shouldHideBorder={true} component={Home} noBackBtn={true} title="HOME" navigationBarStyle={{backgroundColor:'rgba(255,255,255,1)'}} renderRightButton={createRightButton} renderLeftButton={this.state.createLeftButton} initial={is_login}>
                 </Scene>
-                <Scene key="tmp" component={tmp} />
-                
+                <Scene key="tmp" component={tmp} />             
                 <Scene renderRightButton={createRightButton} key="frontpage" component={FrontPage} title="FrontPage" hideNavBar={true} initial={is_frontpage}/>
                 <Scene renderRightButton={createRightButton} key="register" component={Register} title="Register" hideNavBar={true}/>
                 <Scene renderRightButton={createRightButton} key="login" component={Login} title="Login" hideNavBar={true}/>

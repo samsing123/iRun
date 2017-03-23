@@ -715,7 +715,10 @@ class Map extends Component {
   }
   _checkCurrentState(){
     if(this.state.share){
-      Actions.refresh({onBack:()=>{this.setState(share:false)}});
+      Actions.refresh({
+        isBackDisablws:true,        
+        onBack:()=>{this.setState(share:false)},
+      });
     }else{
       Actions.refresh({onBack:()=>{Actions.pop()}});
     }
@@ -725,7 +728,17 @@ class Map extends Component {
     this.setState({
       share:true
     });
-    Actions.refresh({onBack:()=>{this.setState({share:false})}});
+    Actions.refresh({
+      onBack:()=>{
+        this.setState({share:false})
+        Actions.refresh({
+          isBackDisablws:true,
+          title:"Result",
+        })
+      },
+      title:"SHARE",
+      isBackDisablws:false
+    });
   }
 
   _openCamera(){

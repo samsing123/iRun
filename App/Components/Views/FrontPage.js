@@ -225,17 +225,17 @@ class FrontPage extends Component {
 
           <Image source={require('../../Images/img_applogo.png')} style={{width:167,height:100,marginTop:5}} resizeMode={Image.resizeMode.contain}/>
           <View style={{paddingTop:60}}>
-            <Button onPress={()=>{this.openTNCAlert('fb')}} style={{backgroundColor:'#395797',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER WITH FACEBOOK</Text></Button>
+            <Button onPress={()=>{this.openTNCAlert('fb')}} style={{backgroundColor:'#395797',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>{Global.language.REG_WITH_FB}</Text></Button>
           </View>
           <View style={{paddingTop:14}}>
-            <Button onPress={()=>{this.openTNCAlert('email')}} style={{backgroundColor:'#3D85FD',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>REGISTER WITH EMAIL</Text></Button>
+            <Button onPress={()=>{this.openTNCAlert('email')}} style={{backgroundColor:'#3D85FD',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>{Global.language.REG_WITH_EMAIL}</Text></Button>
           </View>
           <View style={{paddingTop:14}}>
-            <Button onPress={()=>{Actions.login()}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>{Global.language.login}</Text></Button>
+            <Button onPress={()=>{Actions.login()}} style={{backgroundColor:'rgba(0,0,0,0)',borderWidth:1,borderColor:'#fff',width:240,height:40,borderRadius:4}} transparent={true}><Text style={{color:'#fff',fontSize:12}}>{Global.language.LOGIN}</Text></Button>
           </View>
         </View>
-        <TNCAlert message='TNC' ref='alert1' callback={()=>{this.openPRIVACYAlert()}} title='TERMS OF USE'/>
-        <TNCAlert message='PRIVACY' ref='alert2' callback={()=>{this.goToNext()}} title='PRIVACY POLICY'/>
+        <TNCAlert message='TNC' ref='alert1' callback={()=>{this.openPRIVACYAlert()}} title={Global.language.TERMS_OF_USE}/>
+        <TNCAlert message='PRIVACY' ref='alert2' callback={()=>{this.goToNext()}} title={Global.language.PRIVACY_POLICY}/>
 
         <View style={{position:'absolute',bottom:0,right:0}}>
           <TouchableOpacity onPress={()=>{Actions.personalinformation()}}>

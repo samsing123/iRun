@@ -939,7 +939,10 @@ class Map extends Component {
     this.setState({
       share:true
     });
-    Actions.refresh({onBack:()=>{this.setState({share:false})}});
+    Actions.refresh({
+      onBack:()=>{this.setState({share:false})},
+      title:"SHARE"
+    });
     BackAndroid.addEventListener('hardwareBackPress', () => {
         try {
             if(this.state.share){
@@ -1113,9 +1116,13 @@ class Map extends Component {
           </View>
         </View>
 
-        {this.state.share?<TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
-          <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
-        </TouchableOpacity>:<View/>}
+        {
+          this.state.share
+          ? <TouchableOpacity onPress={()=>{this._openCamera()}} style={{position:'absolute',right:10,top:Global.navbarHeight+10}}>
+              <Image source={require('../../Images/btn_share_camera.png')} style={{width:48,height:48}}/>
+            </TouchableOpacity>
+          : <View/>
+        }
         {run_info}
 
       </ScrollView>

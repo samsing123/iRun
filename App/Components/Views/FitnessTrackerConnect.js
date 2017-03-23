@@ -159,7 +159,7 @@ class FitnessTrackerConnect extends Component {
       exercise:this.props.run,
       interest:this.interestArr,
     });
-    console.log(temp);
+    console.log("fitness temp",temp);
     let data = {
       method: 'POST',
       body: JSON.stringify({
@@ -352,7 +352,13 @@ class FitnessTrackerConnect extends Component {
           <TouchableOpacity onPress={()=>{this._fitbitAuth()}}>
             <Image source={{uri:'https://designerfund.com/bridge/wp-content/uploads/2015/08/fitbit.png'}} style={{width:200,height:50}} resizeMode={Image.resizeMode.contain}/>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.interest()}}>
+          <TouchableOpacity onPress={()=>{Actions.interest({
+            gender:this.props.gender,
+            ageArr:this.props.ageArr,
+            height:this.props.height,
+            weight:this.props.weight,
+            run:this.props.run,
+          })}}>
             <Text style={{color:'rgba(74,74,74,1)',fontSize:18,paddingTop:14}}>I have no fitness tracker</Text>
           </TouchableOpacity>
         </View>
@@ -363,13 +369,21 @@ class FitnessTrackerConnect extends Component {
           <TouchableOpacity onPress={()=>{Actions.EmergencyContact()}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.back}</Text></TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
-          <TouchableOpacity onPress={()=>{Actions.interest({
-            gender:this.props.gender,
-            ageArr:this.props.ageArr,
-            height:this.props.height,
-            weight:this.props.weight,
-            run:this.props.run,
-          })}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>NEXT ></Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{
+            let temp ={
+               gender:this.props.gender,
+                ageArr:this.props.ageArr,
+                height:this.props.height,
+                weight:this.props.weight,
+                run:this.props.run,
+            }
+            Actions.interest({
+              gender:this.props.gender,
+              ageArr:this.props.ageArr,
+              height:this.props.height,
+              weight:this.props.weight,
+              run:this.props.run,
+          });console.log("fitness temp",temp);}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>NEXT ></Text></TouchableOpacity>
         </View>
       </View>
     );

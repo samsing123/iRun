@@ -116,7 +116,7 @@ class Running_level extends Component {
       checked:false,
       email:'',
       password:'',
-      value: 0,
+      value: 1,
       back:'< BACK',
       next:'NEXT >',
       run_level:'LIGHT',
@@ -243,7 +243,7 @@ class Running_level extends Component {
           <Slider style={{position:'relative',top:-136,transform: [
               { rotate: '270deg'},
             ]}}
-            value={this.state.value}
+            value={this.state.value-1}
             trackStyle={customStyles.track}
             thumbStyle={customStyles.thumb}
             minimumTrackTintColor={'#148bcd'} 
@@ -258,13 +258,17 @@ class Running_level extends Component {
           </TouchableOpacity>
         </View>
         <View style={{position:'absolute',right:0,bottom:26,paddingRight:28}}>
-          <TouchableOpacity onPress={()=>{Actions.EmergencyContact({
+          <TouchableOpacity onPress={()=>{
+            let tmp = {
               gender:this.props.gender,
               ageArr:this.props.ageArr,
               height:this.props.height,
               weight:this.props.weight,
               run:this.state.value+1,
-            })}}><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.next}</Text>
+            };
+            console.log("Running_levellog", tmp)
+            Actions.EmergencyContact(tmp)}
+          }><Text style={{color:'#148bcd',fontSize:17,fontWeight:'bold'}}>{this.state.next}</Text>
           </TouchableOpacity>
         </View>
       </View>

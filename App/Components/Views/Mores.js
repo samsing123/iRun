@@ -65,6 +65,7 @@ var testingFeed={
   ]
 }
 class Mores extends Component {
+  
   constructor(props){
     super(props);
     this.state={
@@ -77,6 +78,7 @@ class Mores extends Component {
       duration:'Duration',
       opacity:0,
       scrollValue:0,
+      createLeftButton:false,
     }
     GoogleAnalytics.setTrackerId('UA-90865128-2');
     GoogleAnalytics.trackScreenView('Home');
@@ -85,6 +87,7 @@ class Mores extends Component {
 
   componentDidMount(){
     AppEventEmitter.addListener('changeLanguage', ()=>{this.setState({refresh:true})});
+    this._getInboxListInFirstTime();
   }
 
   /*
@@ -92,9 +95,38 @@ class Mores extends Component {
     return <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Home</Text></View>;
   }
   */
-  render() {
+  _getInboxListInFirstTime(){
+      let data = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      Global._sendPostRequest(data,'api/inbox',(responseJson)=>{this._inboxCallback(responseJson)});
+    }
+    _inboxCallback(response){
 
+      if(response.status=='success'){
+        if(response.response.message_unread > 0){
+          this.setState({createLeftButton:true});
+        }else{
+          this.setState({createLeftButton:false});
+        }
+    }
+  }
+    _createInboxButton(){
+      console.log("call _createInboxButton")
+      if(this.state.createLeftButton){
+        console.log("call moreUnread")
+        Global.createMoreUnreadInboxButton;
+      }else{
+         Global.createMoreInboxButton;
+      }
+    }
+  render() {
+    var isUnread = (this.state.createLeftButton)?(require('../../Images/ic_inbox_menu_on.png')):require('../../Images/ic_inbox_menu.png');
     return (
+      
       <ScrollView>
       <View style={styles.container}>
         <Image style={{height:280,width:width,backgroundColor:'black'}} source={require('../../Images/bg_more.png')}>
@@ -109,10 +141,11 @@ class Mores extends Component {
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{Actions.inbox({title:Global.language.inbox})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
-              <Image source={require('../../Images/ic_inbox_menu.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
+              <Image source={isUnread} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
               <Text style={{fontSize:14,padding:15,marginLeft:10}}>{Global.language.inbox}</Text>
             </View>
           </TouchableOpacity>
+          
           <TouchableOpacity onPress={()=>{Actions.setting({title:Global.language.setting})}}>
             <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1',flexDirection:'row'}}>
               <Image source={require('../../Images/ic_setting.png')} style={{width:14,height:14,marginTop:15,marginLeft:15}} resizeMode={Image.resizeMode.contain}/>
@@ -124,11 +157,7 @@ class Mores extends Component {
               <Text style={{fontSize:14,padding:15,marginLeft:20,color:'rgba(0,0,0,0)'}}>Back To FontPage (For Testing)</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{Actions.running_level()}}>
-            <View style={{borderBottomWidth:1,borderBottomColor:'#F1F1F1'}}>
-              <Text style={{fontSize:14,padding:15,marginLeft:20,color:'rgba(0,0,0,0)'}}>Emergenct Contacct</Text>
-            </View>
-          </TouchableOpacity>
+         
         </View>
       </View>
       </ScrollView>

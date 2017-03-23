@@ -151,15 +151,15 @@ class Interest extends Component {
   }
   */
   _sendEditProfile(){
-    var temp = JSON.stringify({
+    var temp = {
       gender: this.props.gender,
       age_range: this.props.ageArr,
       height:this.props.height,
       weight:this.props.weight,
       exercise:this.props.run,
       interest:this.interestArr,
-    });
-    console.log(temp);
+    };
+    console.log("this is temp",temp);
     let data = {
       method: 'POST',
       body: JSON.stringify({
@@ -185,6 +185,7 @@ class Interest extends Component {
     */
   }
   _updateProfile(responseJson){
+    console.log("will go home")
     if(responseJson.status=='success'){
       Actions.home({type:ActionConst.RESET,fitnesstracker:true});
     }else{
@@ -324,6 +325,7 @@ class Interest extends Component {
   }
 
   _setInterestForProfileEditing(){
+    console.log("_setInterestForProfileEditing")
     Global.tempInterest = this.interestArr;
     Global.user_profile.interest = this.interestArr;
     Actions.pop();
